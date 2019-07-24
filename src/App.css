@@ -7,6 +7,9 @@
   height: 40vmin;
   pointer-events: none;
 }
+.marginTop {
+  margin-top: 10px;
+}
 
 .App-header {
   background-color: #282c34;

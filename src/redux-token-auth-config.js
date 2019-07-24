@@ -1,27 +1,22 @@
-import { generateAuthActions } from 'redux-token-auth'
-import { authUrl } from './constants'
+import { generateAuthActions } from "redux-token-auth";
+import { authUrl } from "./constants";
 
 const config = {
   authUrl,
   userAttributes: {
-    firstName: 'first_name',
-    imageUrl: 'image',
+    name: "name",
+    imageUrl: "image"
   },
   userRegistrationAttributes: {
-    firstName: 'first_name',
-  },
-}
+    name: "name"
+  }
+};
 
 const {
   registerUser,
   signInUser,
   signOutUser,
-  verifyCredentials,
-} = generateAuthActions(config)
+  verifyCredentials
+} = generateAuthActions(config);
 
-export {
-  registerUser,
-  signInUser,
-  signOutUser,
-  verifyCredentials,
-}
+export { registerUser, signInUser, signOutUser, verifyCredentials };

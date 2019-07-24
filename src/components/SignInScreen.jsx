@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { signInUser } from '../redux-token-auth-config' // <-- note this is YOUR file, not the redux-token-auth NPM module
-
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { signInUser } from "../redux-token-auth-config";
+import { Form, Button } from "semantic-ui-react";
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: ''
+      email: "",
+      password: ""
     };
 
     this.onChange = this.onChange.bind(this);
@@ -18,50 +18,58 @@ class SignInScreen extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-
-  submitForm = (e) => {
+  submitForm = e => {
     e.preventDefault();
     const { signInUser } = this.props;
-    const {
-      email,
-      password
-    } = this.state;
-    signInUser({email, password}).then((resp) => {
-      console.log("Logged In now.");
-    }).catch((error) => {
-      console.log('error is', error);
-    });
-  }
+    const { email, password } = this.state;
+    signInUser({ email, password })
+      .then(resp => {
+        console.log("Logged In now.");
+        this.props.history.push("/logout");
+      })
+      .catch(error => {
+        console.log("error is", error);
+      });
+  };
 
   render() {
     const { submitForm } = this;
     return (
-      <div>
-        <form onSubmit={submitForm}>
-          <div>
-            <label>Email: </label>
-            <br/>
-            <input type="text" name="email" onChange={this.onChange} value={this.state.email} />
-          </div>
+      <React.Fragment>
+        <Form onSubmit={submitForm}>
+          <Form.Input
+            icon="at"
+            iconPosition="left"
+            placeholder="Enter your email"
+            type="text"
+            name="email"
+            onChange={this.onChange}
+            value={this.state.email}
+          />
+          <Form.Input
+            icon="key"
+            iconPosition="left"
+            placeholder="Enter Password"
+            type="password"
+            name="password"
+            onChange={this.onChange}
+            value={this.state.password}
+          />
 
-          <br/>
-
-          <div>
-            <label>Password: </label>
-            <br/>
-            <input type="password" name="password" onChange={this.onChange} value={this.state.password} />
-          </div>
-
-          <br/>
-
-        <button type="submit">LOGIN</button>
-      </form>
-      </div>
+          <Button
+            basic
+            color="blue"
+            content="Login"
+            icon="sign in"
+            labelPosition="left"
+          />
+        </Form>
+      </React.Fragment>
     );
   }
 }
 
 export default connect(
   null,
-  { signInUser },
-)(SignInScreen)
+  { signInUser }
+)(SignInScreen);

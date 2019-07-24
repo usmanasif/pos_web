@@ -1,14 +1,15 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { registerUser } from '../redux-token-auth-config' // <-- note this is YOUR file, not the redux-token-auth NPM module
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { registerUser } from "../redux-token-auth-config";
+import { Form, Button } from "semantic-ui-react";
 
 class RegisterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      firstName: '',
-      password: ''
+      email: "",
+      password: "",
+      name: ""
     };
 
     this.onChange = this.onChange.bind(this);
@@ -19,49 +20,67 @@ class RegisterScreen extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  submitForm (e) {
-    e.preventDefault()
-    const { registerUser } = this.props
-    const {
-      email,
-      firstName,
-      password,
-    } = this.state;
-    registerUser({email, firstName, password}).then((response) => {
-      console.log('response', response);
-    }).catch((error) => {
-      console.log('error is', error);
-    });
+  submitForm(e) {
+    e.preventDefault();
+    const { registerUser } = this.props;
+    const { email, name, password } = this.state;
+    registerUser({ email, name, password })
+      .then(response => {
+        console.log("response", response);
+        this.props.history.push("/logout");
+      })
+      .catch(error => {
+        console.log("error is", error);
+      });
   }
 
   render() {
     const { submitForm } = this;
     return (
-      <form onSubmit={submitForm}>
-        <div>
-          <label>Email: </label>
-          <br/>
-          <input type="text" name="email" onChange={this.onChange} value={this.state.email} />
-        </div>
+      <React.Fragment>
+        <Form onSubmit={submitForm}>
+          <Form.Input
+            icon="user"
+            iconPosition="left"
+            placeholder="Enter your name"
+            type="text"
+            name="name"
+            onChange={this.onChange}
+            value={this.state.name}
+          />
+          <Form.Input
+            icon="at"
+            iconPosition="left"
+            placeholder="Enter your email"
+            type="email"
+            name="email"
+            onChange={this.onChange}
+            value={this.state.email}
+          />
+          <Form.Input
+            icon="key"
+            iconPosition="left"
+            placeholder="Enter Password"
+            type="password"
+            name="password"
+            onChange={this.onChange}
+            value={this.state.password}
+          />
 
-        <br/>
-
-        <div>
-          <label>Password: </label>
-          <br/>
-          <input type="password" name="password" onChange={this.onChange} value={this.state.password} />
-        </div>
-
-        <br/>
-
-        <button type="submit">SIGNUP</button>
-      </form>
+          <Button
+            basic
+            color="blue"
+            content="Register"
+            icon="signup"
+            labelPosition="left"
+          />
+        </Form>
+      </React.Fragment>
     );
   }
-
 }
 
 export default connect(
   null,
-  { registerUser },
+  { registerUser }
 )(RegisterScreen);

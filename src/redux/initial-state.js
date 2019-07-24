@@ -4,11 +4,11 @@ const initialState = {
       isLoading: false,
       isSignedIn: false,
       attributes: {
-        firstName: null, // <-- Just an example. Attributes are whatever you specify in your cofig (below).
-      },
-    },
-  },
+        name: null // <-- Just an example. Attributes are whatever you specify in your cofig (below).
+      }
+    }
+  }
   // All your other state
-}
+};
 
-export default initialState
+export default initialState;

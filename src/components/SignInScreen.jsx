@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { signInUser } from "../redux-token-auth-config";
 import { Form, Button } from "semantic-ui-react";
-import { Redirect } from "react-router-dom";
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
-      password: "",
-      redirect: false
+      password: ""
     };
 
     this.onChange = this.onChange.bind(this);
@@ -27,9 +25,7 @@ class SignInScreen extends Component {
     signInUser({ email, password })
       .then(resp => {
         console.log("Logged In now.");
-        let redirect = this.state.redirect;
-        redirect = true;
-        this.setState({ redirect });
+        this.props.history.push("/logout");
       })
       .catch(error => {
         console.log("error is", error);
@@ -40,7 +36,6 @@ class SignInScreen extends Component {
     const { submitForm } = this;
     return (
       <React.Fragment>
-        {this.state.redirect && <Redirect to="/logout" />}
         <Form onSubmit={submitForm}>
           <Form.Input
             icon="at"

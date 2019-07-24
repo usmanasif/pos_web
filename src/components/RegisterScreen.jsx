@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { registerUser } from "../redux-token-auth-config";
 import { Form, Button } from "semantic-ui-react";
+import { Redirect } from "react-router-dom";
 
 class RegisterScreen extends Component {
   constructor(props) {
@@ -9,7 +10,8 @@ class RegisterScreen extends Component {
     this.state = {
       email: "",
       password: "",
-      name: ""
+      name: "",
+      redirect: false
     };
 
     this.onChange = this.onChange.bind(this);
@@ -27,6 +29,9 @@ class RegisterScreen extends Component {
     registerUser({ email, name, password })
       .then(response => {
         console.log("response", response);
+        let redirect = this.state.redirect;
+        redirect = true;
+        this.setState({ redirect });
       })
       .catch(error => {
         console.log("error is", error);
@@ -36,43 +41,46 @@ class RegisterScreen extends Component {
   render() {
     const { submitForm } = this;
     return (
-      <Form onSubmit={submitForm}>
-        <Form.Input
-          icon="user"
-          iconPosition="left"
-          placeholder="Enter your name"
-          type="text"
-          name="name"
-          onChange={this.onChange}
-          value={this.state.name}
-        />
-        <Form.Input
-          icon="at"
-          iconPosition="left"
-          placeholder="Enter your email"
-          type="text"
-          name="email"
-          onChange={this.onChange}
-          value={this.state.email}
-        />
-        <Form.Input
-          icon="key"
-          iconPosition="left"
-          placeholder="Enter Password"
-          type="password"
-          name="password"
-          onChange={this.onChange}
-          value={this.state.password}
-        />
+      <React.Fragment>
+        {this.state.redirect && <Redirect to="/logout" />}
+        <Form onSubmit={submitForm}>
+          <Form.Input
+            icon="user"
+            iconPosition="left"
+            placeholder="Enter your name"
+            type="text"
+            name="name"
+            onChange={this.onChange}
+            value={this.state.name}
+          />
+          <Form.Input
+            icon="at"
+            iconPosition="left"
+            placeholder="Enter your email"
+            type="text"
+            name="email"
+            onChange={this.onChange}
+            value={this.state.email}
+          />
+          <Form.Input
+            icon="key"
+            iconPosition="left"
+            placeholder="Enter Password"
+            type="password"
+            name="password"
+            onChange={this.onChange}
+            value={this.state.password}
+          />
 
-        <Button
-          basic
-          color="blue"
-          content="Register"
-          icon="signup"
-          labelPosition="left"
-        />
-      </Form>
+          <Button
+            basic
+            color="blue"
+            content="Register"
+            icon="signup"
+            labelPosition="left"
+          />
+        </Form>
+      </React.Fragment>
     );
   }
 }

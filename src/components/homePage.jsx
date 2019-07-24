@@ -2,7 +2,7 @@ import React from "react";
 import RegisterScreen from "./RegisterScreen";
 import SignInScreen from "./SignInScreen";
 import { Divider, Grid, Header, Icon, Segment, Label } from "semantic-ui-react";
-const HomePage = () => {
+const HomePage = props => {
   return (
     <Segment color="blue">
       <Grid columns={2} relaxed="very">
@@ -19,7 +19,7 @@ const HomePage = () => {
                 Register
               </h1>
             </Header>
-            <RegisterScreen />
+            <RegisterScreen {...props} />
           </Grid.Column>
 
           <Grid.Column>
@@ -32,7 +32,7 @@ const HomePage = () => {
                 Login
               </h1>
             </Header>
-            <SignInScreen />
+            <SignInScreen {...props} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

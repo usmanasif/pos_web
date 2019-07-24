@@ -1,7 +1,3 @@
-// const authUrl = "localhost:3000/auth/sign_in";
+// We need to have subdomain in a var
 
-// export { authUrl };
-
-
-
-export const authUrl = "http://pos.api.localhost:3000/auth";
+export const authUrl = "http://devsinc.lvh.me:3000/auth";

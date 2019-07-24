@@ -11,6 +11,7 @@ console.log(r)
 
 if(r){
   r.then((resp)=>{
+    // This is not working fine in each case for now
     console.log("Logged In")
   })
 } else {

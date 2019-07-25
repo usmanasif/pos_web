@@ -6,7 +6,7 @@ import SignOut from "../authentication/signOut";
 import { Container } from "semantic-ui-react";
 import Auth from "../authentication/auth";
 import Header from "../navbar/header";
-import Home from "../company/home"
+import Home from "../company/home";
 import "./App.css";
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <Header />
           <Switch>
             <Route path="/" exact component={Auth} />
-            <Route path="/company" exact component={Home} />
+            <Route path="/home" exact component={Home} />
             <Route path="/register" component={SignUp} />
             <Route path="/login" component={SignIn} />
             <Route path="/logout" component={SignOut} />

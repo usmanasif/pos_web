@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { registerUser } from "../redux-token-auth-config";
+import { signInUser } from "../../redux/redux-token-auth-config";
 import { Form, Button } from "semantic-ui-react";
-
-class RegisterScreen extends Component {
+class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
-      password: "",
-      name: ""
+      password: ""
     };
 
     this.onChange = this.onChange.bind(this);
@@ -20,19 +18,19 @@ class RegisterScreen extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  submitForm(e) {
+  submitForm = e => {
     e.preventDefault();
-    const { registerUser } = this.props;
-    const { email, name, password } = this.state;
-    registerUser({ email, name, password })
-      .then(response => {
-        console.log("response", response);
-        this.props.history.push("/logout");
+    const { signInUser } = this.props;
+    const { email, password } = this.state;
+    signInUser({ email, password })
+      .then(resp => {
+        console.log("Logged In now.");
+        this.props.history.push("/company");
       })
       .catch(error => {
         console.log("error is", error);
       });
-  }
+  };
 
   render() {
     const { submitForm } = this;
@@ -40,19 +38,10 @@ class RegisterScreen extends Component {
       <React.Fragment>
         <Form onSubmit={submitForm}>
           <Form.Input
-            icon="user"
-            iconPosition="left"
-            placeholder="Enter your name"
-            type="text"
-            name="name"
-            onChange={this.onChange}
-            value={this.state.name}
-          />
-          <Form.Input
-            icon="at"
+            icon="mail"
             iconPosition="left"
             placeholder="Enter your email"
-            type="email"
+            type="text"
             name="email"
             onChange={this.onChange}
             value={this.state.email}
@@ -70,8 +59,8 @@ class RegisterScreen extends Component {
           <Button
             basic
             color="blue"
-            content="Register"
-            icon="signup"
+            content="Login"
+            icon="sign in"
             labelPosition="left"
           />
         </Form>
@@ -82,5 +71,5 @@ class RegisterScreen extends Component {
 
 export default connect(
   null,
-  { registerUser }
-)(RegisterScreen);
+  { signInUser }
+)(SignIn);

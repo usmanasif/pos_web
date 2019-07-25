@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { signOutUser } from "../redux-token-auth-config";
+import { signOutUser } from "../../redux/redux-token-auth-config";
 import { Button } from "semantic-ui-react";
-class SiteHeader extends Component {
+class SignOut extends Component {
   signOut = e => {
     e.preventDefault();
     const { signOutUser } = this.props;
     signOutUser() // <-<-<-<-<- here's the important part <-<-<-<-<-
-      .then(res => console.log("user Logged out.....  ", SiteHeader))
+      .then(res => console.log("user Logged out.....  ", SignOut))
       .catch(err => console.log(err));
   };
 

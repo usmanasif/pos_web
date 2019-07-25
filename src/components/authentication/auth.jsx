@@ -2,7 +2,7 @@ import React from "react";
 import SignUp from "./signUp";
 import SignIn from "./signIn";
 import { Divider, Grid, Header, Icon, Segment, Label } from "semantic-ui-react";
-const HomePage = props => {
+const Auth = props => {
   return (
     <Segment color="blue">
       <Grid columns={2} relaxed="very">
@@ -36,4 +36,4 @@ const HomePage = props => {
   );
 };
 
-export default HomePage;
+export default Auth;

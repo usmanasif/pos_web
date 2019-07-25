@@ -34,4 +34,4 @@ class SignOut extends Component {
 export default connect(
   null,
   { signOutUser }
-)(SiteHeader);
+)(SignOut);

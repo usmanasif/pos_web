@@ -1,6 +1,6 @@
 import React from "react";
 import { Divider, Flag } from "semantic-ui-react";
-const PageHeader = () => {
+const Header = () => {
   return (
     <React.Fragment>
       <h3>
@@ -14,4 +14,4 @@ const PageHeader = () => {
   );
 };
 
-export default PageHeader;
+export default Header;

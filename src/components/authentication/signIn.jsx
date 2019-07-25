@@ -25,7 +25,7 @@ class SignIn extends Component {
     signInUser({ email, password })
       .then(resp => {
         console.log("Logged In now.");
-        this.props.history.push("/company");
+        this.props.history.push("/home");
       })
       .catch(error => {
         console.log("error is", error);

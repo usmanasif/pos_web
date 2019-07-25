@@ -7,13 +7,13 @@ class SignOut extends Component {
     e.preventDefault();
     const { signOutUser } = this.props;
     signOutUser() // <-<-<-<-<- here's the important part <-<-<-<-<-
-      .then(res => console.log("user Logged out.....  ", SignOut))
+      .then(res => console.log("user Logged out.....  ", res))
       .catch(err => console.log(err));
   };
 
   render() {
     const { signOut } = this;
-    if (!localStorage.getItem("access-token")) {
+    if (!this.props.isSignedIn) {
       return null;
     }
     return (
@@ -31,7 +31,12 @@ class SignOut extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  const { isSignedIn } = state.reduxTokenAuth.currentUser;
+  return { isSignedIn };
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   { signOutUser }
 )(SignOut);

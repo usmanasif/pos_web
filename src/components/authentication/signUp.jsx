@@ -26,7 +26,7 @@ class SignUp extends Component {
     registerUser({ email, name, password })
       .then(response => {
         console.log("response", response);
-        this.props.history.push("/company");
+        this.props.history.push("/home");
       })
       .catch(error => {
         console.log("error is", error);

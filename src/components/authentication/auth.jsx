@@ -1,6 +1,6 @@
 import React from "react";
-import SignUp from "../authentication/signUp";
-import SignIn from "../authentication/signIn";
+import SignUp from "./signUp";
+import SignIn from "./signIn";
 import { Divider, Grid, Header, Icon, Segment, Label } from "semantic-ui-react";
 const HomePage = props => {
   return (

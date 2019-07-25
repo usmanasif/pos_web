@@ -1,5 +1,5 @@
 import { generateAuthActions } from "redux-token-auth";
-import { authUrl } from "./constants";
+import { authUrl } from "../utils/constants";
 
 const config = {
   authUrl,

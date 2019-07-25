@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { signOutUser } from "../redux-token-auth-config";
+import { signOutUser } from "../../redux/redux-token-auth-config";
 import { Button } from "semantic-ui-react";
 class SiteHeader extends Component {
   signOut = e => {

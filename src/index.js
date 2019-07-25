@@ -7,17 +7,7 @@ import { verifyCredentials } from "./redux/redux-token-auth-config"; // <-- note
 import "semantic-ui-css/semantic.min.css";
 
 const store = configureStore();
-var r = verifyCredentials(store);
-console.log(r);
-
-if (r) {
-  r.then(resp => {
-    // this is not working properly
-    console.log("Logged In");
-  });
-} else {
-  console.log("Logged Out");
-}
+verifyCredentials(store);
 
 ReactDOM.render(
   <Provider store={store}>

@@ -12,22 +12,19 @@ class Home extends Component {
                 about_you:'',
                 logo:''
         }
-        this.onChange = this.onChange.bind(this);
-        this.uploadImage = this.uploadImage.bind(this);
-        this.createCompany = this.createCompany.bind(this);
     }
 
-    onChange(e) {
+    onChange = (e) => {
         this.setState({ 
             [e.target.name] : e.target.value
          });
     }
 
-    uploadImage(url){
+    uploadImage = (url) => {
         this.setState({logo: url})
      }
 
-    createCompany(){
+    createCompany = () =>{
         console.log(this.state)
         const {name, subdomain, about_you, logo} =this.state;
         Axios.post(localUrl+"/companies",{name, subdomain, about_you, logo}) 

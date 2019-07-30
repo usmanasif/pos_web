@@ -1,6 +1,7 @@
 import { generateAuthActions } from "redux-token-auth";
-import { authUrl } from "../utils/constants";
+import {apiUrl} from "../utils/api-config";
 
+var authUrl = apiUrl + '/auth'
 const config = {
   authUrl,
   userAttributes: {

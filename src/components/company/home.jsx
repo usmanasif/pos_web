@@ -1,8 +1,14 @@
 import React, { Component } from 'react'
+<<<<<<< HEAD
 import Axios from 'axios';
 import {Form, Grid} from "semantic-ui-react";
 import ImageUpload from "../imageUploader/imageUpload"
 import {apiUrl} from "../../utils/api-config";
+=======
+import Navigation from './navigation'
+import NewReciept from './newReciept'
+
+>>>>>>> new reciept/bill page design
 class Home extends Component {
     constructor(props){
         super(props)
@@ -41,6 +47,7 @@ class Home extends Component {
 
     render() {
         return (
+<<<<<<< HEAD
             <Grid centered>
                 <Grid.Row>
                     <Grid.Column width={8}>
@@ -72,6 +79,12 @@ class Home extends Component {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
+=======
+            <div>
+                <Navigation></Navigation>
+                <NewReciept></NewReciept>
+            </div>
+>>>>>>> new reciept/bill page design
         )
     }
 }

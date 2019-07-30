@@ -26,6 +26,23 @@
   color: #61dafb;
 }
 
+/* file uploader */
+.fileContainer p {
+  font-size: 12px;
+  margin: 8px 0 4px;
+  display: none;
+}
+.imguploader{
+  text-align: center;
+}
+.imguploader img{
+  height: 100px;
+  width: 100px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  border-radius: 50%;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -4,9 +4,7 @@ import NewReciept from './newReciept'
 class Home extends Component {
     render() {
         return (
-            <div>
-                <NewReciept></NewReciept>
-            </div>
+            <NewReciept></NewReciept>
         )
     }
 }

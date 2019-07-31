@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Axios from 'axios';
 import {Form, Grid} from "semantic-ui-react";
 import ImageUpload from "../imageUploader/imageUpload"
-import {localUrl} from "../../utils/constants";
+import {apiUrl} from "../../utils/api-config";
 
 class CreateCompany extends Component {    
     constructor(props){
@@ -28,7 +28,7 @@ class CreateCompany extends Component {
     createCompany = () =>{
         console.log(this.state)
         const {name, subdomain, about_you, logo} =this.state;
-        Axios.post(localUrl+"/companies",{name, subdomain, about_you, logo}) 
+        Axios.post(apiUrl+"/companies",{name, subdomain, about_you, logo}) 
             .then(function (response) {
                 // handle success
                 console.log(response);

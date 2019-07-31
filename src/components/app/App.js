@@ -20,8 +20,8 @@ function App({ isSignedIn }) {
         </div>
         <Container className="marginTop" textAlign="justified">
           <Switch>
-            <Route path="/home" exact component={Home} />
-            <Route path="/company/create" exact component={CreateCompany} />
+            <Route path="/home" exact component={isSignedIn ? Home : Auth} />
+            <Route path="/company/create" exact component={isSignedIn ? CreateCompany : Auth} />
             <Route path="/register" component={SignUp} />
             <Route path="/login" component={SignIn} />
             <Route path="/logout" component={SignOut} />

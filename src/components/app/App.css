@@ -8,9 +8,14 @@
   pointer-events: none;
 }
 .marginTop {
-  margin-top: 40px;
+  margin-top: 18vh;
 }
-
+.m-10 {
+  margin: 10px;
+}
+.m-5 {
+  margin: 5px;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -32,10 +37,10 @@
   margin: 8px 0 4px;
   display: none;
 }
-.imguploader{
+.imguploader {
   text-align: center;
 }
-.imguploader img{
+.imguploader img {
   height: 100px;
   width: 100px;
   margin-bottom: 15px;

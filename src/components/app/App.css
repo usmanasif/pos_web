@@ -16,6 +16,14 @@
 .m-5 {
   margin: 5px;
 }
+.loading_img {
+  margin-top: 18vh;
+  margin-left: 35vw;
+}
+
+.Toastify__toast--default {
+  color: black;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

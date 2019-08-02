@@ -1,12 +1,16 @@
 import { generateAuthActions } from "redux-token-auth";
-import {apiUrl} from "../utils/api-config";
+import { apiUrl, apiSubDomain, pathName } from "../utils/api-config";
 
-var authUrl = apiUrl + '/auth'
+var authUrl =
+  apiSubDomain === "www" || pathName === "/admin"
+    ? apiUrl + "/admin_auth"
+    : apiUrl + "/auth";
 const config = {
   authUrl,
   userAttributes: {
     name: "name",
-    imageUrl: "image"
+    imageUrl: "image",
+    isSuperAdmin: "super_admin"
   },
   userRegistrationAttributes: {
     name: "name"

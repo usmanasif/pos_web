@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 class ImageUpload extends Component {
   constructor(props) {
     super(props);
+    debugger;
     this.state = {
-      imageUrl: ''
+      imageUrl: props.logo ? props.logo : ""
     };
+    debugger;
     this._handleImageChange = this._handleImageChange.bind(this);
-  }  
+  }
 
   _handleImageChange(e) {
     e.preventDefault();
@@ -20,23 +22,18 @@ class ImageUpload extends Component {
       this.setState({
         imageUrl: reader.result
       });
-    }
-
-    console.log(file);
-    if(file)
-      reader.readAsDataURL(file)
+    };
+    if (file) reader.readAsDataURL(file);
   }
 
   render() {
     return (
       <div className="imguploader">
-          <input type="file" onChange={this._handleImageChange} />
-          {this.state.imageUrl?
-          <img src={this.state.imageUrl} alt="" />
-            : null}
+        <input type="file" onChange={this._handleImageChange} />
+        {this.state.imageUrl ? <img src={this.state.imageUrl} alt="" /> : null}
       </div>
-    )
-  }  
+    );
+  }
 }
 
 export default ImageUpload;

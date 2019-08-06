@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import http from "../../services/httpService";
-import { Form, Grid } from "semantic-ui-react";
+import { Form, Button, Header, Modal } from "semantic-ui-react";
 import ImageUpload from "../imageUploader/imageUpload";
 import { apiUrl } from "../../utils/api-config";
 import { toast } from "react-toastify";
@@ -14,7 +14,12 @@ class CreateCompany extends Component {
       logo: ""
     };
   }
-
+  componentDidMount() {
+    if (this.props.company) {
+      const { id, name, subdomain, about_you, logo } = this.props.company;
+      this.setState({ id, name, subdomain, about_you, logo });
+    }
+  }
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -27,11 +32,25 @@ class CreateCompany extends Component {
 
   createCompany = () => {
     const { name, subdomain, about_you, logo } = this.state;
+    toast(<h3>{name} Creating...</h3>);
     http
       .post(apiUrl + "/companies", { name, subdomain, about_you, logo })
       .then(response => {
-        console.log("this is response :", response);
         toast(<h3>{response.data["name"]} Created Successfully</h3>);
+        this.setState({ name: "", subdomain: "", about_you: "", logo: "" });
+        this.props.reload(this.props.lastPage);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  updateCompany = () => {
+    const { id, name, subdomain, about_you, logo } = this.state;
+    http
+      .put(apiUrl + `/companies/${id}`, { name, subdomain, about_you, logo })
+      .then(response => {
+        toast(<h3>{response.data["name"]} Updated Successfully</h3>);
+        this.props.reload(this.props.current_page);
       })
       .catch(error => {
         console.log(error);
@@ -39,10 +58,28 @@ class CreateCompany extends Component {
   };
 
   render() {
+    const { company } = this.props;
     return (
-      <Grid textAlign="left">
-        <Grid.Row>
-          <Grid.Column width={8}>
+      <Modal
+        dimmer="inverted"
+        trigger={
+          <Button
+            basic
+            color="blue"
+            icon="pencil"
+            content={company ? "Edit" : "Create Company"}
+          />
+        }
+        basic
+        size="tiny"
+        header={
+          <Header
+            icon="building"
+            content={company ? `Edit ${company.name}` : "Create New Company"}
+          />
+        }
+        content={
+          <div className="padding-2vw">
             <Form>
               <Form.Input
                 fluid
@@ -67,16 +104,22 @@ class CreateCompany extends Component {
                 onChange={this.onChange}
                 value={this.state.about_you}
               />
-              <ImageUpload imageURL={this.uploadImage} />
-              <Form.Button primary onClick={this.createCompany}>
-                Register Company
-              </Form.Button>
+              <ImageUpload imageURL={this.uploadImage} logo={this.state.logo} />
             </Form>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+          </div>
+        }
+        actions={[
+          "Cancel",
+          {
+            key: "ok",
+            color: "blue",
+            content: company ? "Update Company" : "Register Company",
+            positive: true,
+            onClick: company ? this.updateCompany : this.createCompany
+          }
+        ]}
+      />
     );
   }
 }
-
 export default CreateCompany;

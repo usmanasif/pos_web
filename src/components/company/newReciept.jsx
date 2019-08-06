@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Input, Form, Button, Grid, Message} from 'semantic-ui-react';
+import { Input, Form, Button, Grid, Message, Dropdown} from 'semantic-ui-react';
 import Axios from 'axios';
 import {apiUrl} from "../../utils/api-config";
 
@@ -17,12 +17,16 @@ class NewReciept extends Component {
       quantityEmptyError: false,
       quantityExceededError: false,
       invalidForm: false,
-      total: 0
+      total: 0,
+      discounted_total: 0,
+      discounts: [],
+      current_discount: ''
     };
   }
 
   componentWillMount = () => {
     this.getData();
+    this.getDiscounts();
   }
 
   getData = () => {
@@ -30,6 +34,16 @@ class NewReciept extends Component {
     .then(response => {
       this.setState({
         data: response.data
+      });
+    });
+  }
+
+  getDiscounts = () => {
+    Axios.get(apiUrl+"/api/v1/discounts")
+    .then(response => {
+      console.log(response);
+      this.setState({
+        discounts: response.data
       });
     });
   }
@@ -92,7 +106,16 @@ class NewReciept extends Component {
     }
     let total_bill = this.state.total;
     total_bill = total_bill + (Number((current_item["unit_price"]*quantity).toFixed(2)))
-    this.setState({selected_items: updated, item_count: new_count, total: total_bill});
+
+    let discounted_bill = 0;
+    if(this.state.current_discount)
+    {
+      discounted_bill = this.discountedPrice(total_bill)
+    }
+    else {
+      discounted_bill = total_bill
+    }
+    this.setState({selected_items: updated, item_count: new_count, total: total_bill, discounted_total: discounted_bill});
   }
 
   renderTableData() {
@@ -125,15 +148,33 @@ class NewReciept extends Component {
       this.setState({invalidForm: false})
     }
 
-    Axios.post(apiUrl+"/api/v1/invoices", {total: this.state.total, sold_items_attributes: this.state.selected_items})
+    Axios.post(apiUrl+"/api/v1/invoices", {total: this.state.discounted_total, sold_items_attributes: this.state.selected_items, discount_id: this.state.current_discount.id})
       .then(response => {
         this.getData();
-        this.setState({selected_items: [], current_quantity: 0, current_item: [], total: 0, item_count: 0});
+        this.setState({selected_items: [], current_quantity: 0, current_item: [], total: 0, item_count: 0, current_discount: '', discounted_total: 0});
       })
   }
 
-  render() {
+  setDiscount = (e) => {
+    let selected_discount = e;
+    this.setState({current_discount: selected_discount}, () => {
+      if(this.state.total > 0) {
+        let total = this.state.total
+        this.setState({discounted_total: this.discountedPrice(total)})
+      }
+    });
+  }
 
+  clearDiscount = () => {
+    this.setState({current_discount: '', discounted_total: this.state.total})
+  }
+
+  discountedPrice = (total_bill) => {
+    let discount_amount = total_bill*(this.state.current_discount.rate/100)
+    return (total_bill - discount_amount)
+  }
+
+  render() {
     const itemList = this.state.data.map(
       ({ name, id, sale_price, current_stock }) => {
         return{ 
@@ -142,6 +183,17 @@ class NewReciept extends Component {
          unit_price: sale_price,
          current_stock: current_stock,
          item_id: id
+        }
+       }
+    );
+
+    let discountsList = this.state.discounts.map(
+      ({ id, detail, rate }) => {
+        return{ 
+         value: detail, 
+         label: detail,
+         rate: rate,
+         id: id
         }
        }
     );
@@ -224,8 +276,32 @@ class NewReciept extends Component {
                           <tr><th></th>
                           <th></th>
                           <th></th>
-                          <th><b>Total Bill:</b></th>
+                          <th><b>Total Bills:</b></th>
                           <th>{Number(this.state.total).toFixed(2)}</th>
+                          </tr>
+                          <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th className="width-32">
+                          <Select placeholder='Select a discount' value={this.state.current_discount} options={discountsList} onChange={this.setDiscount}/>
+                          </th>
+                          <th><span>
+                            { this.state.current_discount 
+                            ?
+                              Number(this.state.current_discount.rate).toFixed(1) + ' %'
+                            :
+                              '00.0 %'
+                            }
+                            </span>
+                            <span className="clear remove-discount-btn" onClick={this.clearDiscount}>&times;</span>
+                          </th>
+                          </tr>
+                          <tr><th></th>
+                          <th></th>
+                          <th></th>
+                          <th><b>Final Amount:</b></th>
+                          <th>{Number(this.state.discounted_total).toFixed(2)}</th>
                           </tr>
                       </tfoot>
                   </table>

@@ -84,6 +84,23 @@
   box-shadow: 0 0 5px #2185d0;
 }
 
+.width-32 {
+  width: 32%;
+}
+
+.remove-discount-btn {
+  padding-left: 8px;
+  position: absolute;
+  font-size: xx-large;
+  color: crimson;
+  cursor:pointer;
+}
+
+.delete-invoice-item {
+  padding-left: 25px;
+  cursor:pointer;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import AdminAuth from "../authentication/adminAuth";
-import AdminNav from "../navbar/adminNav";
+import CompanyHome from "../company/companyHome";
 import "react-toastify/dist/ReactToastify.css";
 import "../app/App.css";
 
@@ -12,11 +12,10 @@ function AdminApp({ isSignedIn, isLoading, isSuperAdmin }) {
       <img className="loading_img" src="./images/cart.gif" alt="Loading...." />
     );
   }
-  debugger;
   return (
     <div className="App">
       <ToastContainer />
-      {isSignedIn && isSuperAdmin && <AdminNav />}
+      {isSignedIn && isSuperAdmin && <CompanyHome />}
       {!isSignedIn && <AdminAuth />}
     </div>
   );

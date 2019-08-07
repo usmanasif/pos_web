@@ -49,6 +49,14 @@
 .Toastify__toast--default {
   color: black;
 }
+
+.nav_menu_item {
+  height: 100%;
+}
+.nav_menu_menu_item {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
 .ui.inverted.dimmer > .ui.modal {
   box-shadow: 1px 3px 10px 2px rgba(0, 0, 0, 0.2) !important;
   background-color: white;

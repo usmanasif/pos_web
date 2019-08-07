@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Input, Form, Button, Grid, Message, Dropdown} from 'semantic-ui-react';
-import Axios from 'axios';
+import http from "../../services/httpService";
+import { Input, Form, Button, Grid, Message} from 'semantic-ui-react';
 import {apiUrl} from "../../utils/api-config";
 
 class NewReciept extends Component {
@@ -30,7 +30,7 @@ class NewReciept extends Component {
   }
 
   getData = () => {
-    Axios.get(apiUrl+"/api/v1/items")
+    http.get(apiUrl+"/api/v1/items")
     .then(response => {
       this.setState({
         data: response.data
@@ -39,9 +39,8 @@ class NewReciept extends Component {
   }
 
   getDiscounts = () => {
-    Axios.get(apiUrl+"/api/v1/discounts")
+    http.get(apiUrl+"/api/v1/discounts")
     .then(response => {
-      console.log(response);
       this.setState({
         discounts: response.data
       });
@@ -148,7 +147,7 @@ class NewReciept extends Component {
       this.setState({invalidForm: false})
     }
 
-    Axios.post(apiUrl+"/api/v1/invoices", {total: this.state.discounted_total, sold_items_attributes: this.state.selected_items, discount_id: this.state.current_discount.id})
+    http.post(apiUrl+"/api/v1/invoices", {total: this.state.discounted_total, sold_items_attributes: this.state.selected_items, discount_id: this.state.current_discount.id})
       .then(response => {
         this.getData();
         this.setState({selected_items: [], current_quantity: 0, current_item: [], total: 0, item_count: 0, current_discount: '', discounted_total: 0});
@@ -276,7 +275,7 @@ class NewReciept extends Component {
                           <tr><th></th>
                           <th></th>
                           <th></th>
-                          <th><b>Total Bills:</b></th>
+                          <th><b>Total Bill:</b></th>
                           <th>{Number(this.state.total).toFixed(2)}</th>
                           </tr>
                           <tr>

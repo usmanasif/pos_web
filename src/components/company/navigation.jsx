@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Menu, Segment } from "semantic-ui-react";
 import SignOut from "../authentication/signOut";
-// import Home from "../company/home";
 
 class Navigation extends Component {
   state = { activeItem: "Create Invoice" };

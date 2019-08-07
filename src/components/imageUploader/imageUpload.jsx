@@ -3,11 +3,9 @@ import React, { Component } from "react";
 class ImageUpload extends Component {
   constructor(props) {
     super(props);
-    debugger;
     this.state = {
       imageUrl: props.logo ? props.logo : ""
     };
-    debugger;
     this._handleImageChange = this._handleImageChange.bind(this);
   }
 

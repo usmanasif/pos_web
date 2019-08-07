@@ -8,9 +8,51 @@
   pointer-events: none;
 }
 .marginTop {
-  margin-top: 40px;
+  margin-top: 18vh;
+}
+.m-10 {
+  margin: 10px;
+}
+.m-5 {
+  margin: 5px;
+}
+.padding-2vw {
+  padding: 2vw;
+}
+.border-delete {
+  border-left: 3px solid #e1524e !important;
+}
+.border-update {
+  border-left: 3px solid #2488ee !important;
+}
+.bg-update {
+  background-color: #2587ee21;
+}
+.bg-delete {
+  background-color: #e1524e24;
+}
+.loading_img {
+  margin-top: 18vh;
+  margin-left: 35vw;
+}
+.active_page {
+  color: white !important;
+  background-color: #2185d0 !important;
+}
+.table_loading_img {
+  margin-left: 35vw;
+}
+.company_logo {
+  width: 5vw;
 }
 
+.Toastify__toast--default {
+  color: black;
+}
+.ui.inverted.dimmer > .ui.modal {
+  box-shadow: 1px 3px 10px 2px rgba(0, 0, 0, 0.2) !important;
+  background-color: white;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -32,15 +74,14 @@
   margin: 8px 0 4px;
   display: none;
 }
-.imguploader{
+.imguploader {
   text-align: center;
 }
-.imguploader img{
+.imguploader img {
   height: 100px;
-  width: 100px;
-  margin-bottom: 15px;
   margin-top: 15px;
-  border-radius: 50%;
+  border-radius: 5%;
+  box-shadow: 0 0 5px #2185d0;
 }
 
 @keyframes App-logo-spin {

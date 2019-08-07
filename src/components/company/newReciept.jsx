@@ -26,9 +26,8 @@ class NewReciept extends Component {
   }
 
   getData = () => {
-    Axios.get(apiUrl+"/items")
+    Axios.get(apiUrl+"/api/v1/items")
     .then(response => {
-      console.log(response);
       this.setState({
         data: response.data
       });

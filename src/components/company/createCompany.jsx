@@ -21,8 +21,18 @@ class CreateCompany extends Component {
     }
   }
   onChange = e => {
+    const { name, value } = e.target;
+    if (name === "subdomain") {
+      if (["www", "Admin"].includes(value)) {
+        toast(`${value} cannot be use as subdomain`);
+        this.setState({ subdomain: "" });
+      } else if (!/^(\d|\w)+$/.test(value)) {
+        toast(`Invaild value for subdomain`);
+        this.setState({ subdomain: "" });
+      }
+    }
     this.setState({
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
@@ -89,6 +99,7 @@ class CreateCompany extends Component {
                 name="name"
                 onChange={this.onChange}
                 value={this.state.name}
+                required
               />
               <Form.Input
                 fluid
@@ -97,6 +108,7 @@ class CreateCompany extends Component {
                 name="subdomain"
                 onChange={this.onChange}
                 value={this.state.subdomain}
+                required
               />
               <Form.TextArea
                 label="About"

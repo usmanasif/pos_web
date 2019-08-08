@@ -16,6 +16,7 @@ class NewReciept extends Component {
       itemEmptyError: false,
       quantityEmptyError: false,
       quantityExceededError: false,
+      stockEmptyError: false,
       invalidForm: false,
       total: 0,
       discounted_total: 0,
@@ -53,15 +54,13 @@ class NewReciept extends Component {
     });
   };
 
-  populateSelectedItems = () => {
+  errorCheck = () => {
     let quantity = this.state.current_quantity;
     let current_item = this.state.current_item;
-    let updated = [...this.state.selected_items];
 
-    //Error handling
     if(this.state.current_item.length == 0){
       this.setState({itemEmptyError: true})
-      return null;
+      return false;
     }
     else {
       this.setState({itemEmptyError: false})
@@ -69,7 +68,7 @@ class NewReciept extends Component {
 
     if(this.state.current_quantity == ''){
       this.setState({quantityEmptyError: true})
-      return null;
+      return false;
     }
     else {
       this.setState({quantityEmptyError: false})
@@ -77,18 +76,36 @@ class NewReciept extends Component {
 
     if(current_item["current_stock"] < quantity){
       this.setState({quantityExceededError: true})
-      return null;
+      return false;
     }
     else {
       this.setState({quantityExceededError: false})
     }
 
+    return true;
+  }
+
+  populateSelectedItems = () => {
+    let quantity = this.state.current_quantity;
+    let current_item = this.state.current_item;
+    let updated = [...this.state.selected_items];
+
+    if(!this.errorCheck()){
+      return null;
+    }
+
+    const stock = current_item["current_stock"];
+
     let new_quantity = current_item["current_stock"] - quantity;
     current_item["current_stock"] = new_quantity
     this.setState({current_item})
 
-    let new_count = this.state.item_count;
-    new_count++;
+    let new_data = [...this.state.data];
+    new_data.map((data, index) => {
+      if(data.id === current_item["item_id"]){
+        data.current_stock -= quantity 
+      }
+    });
 
     let isSameItem = false
 
@@ -99,14 +116,25 @@ class NewReciept extends Component {
       }
     });
 
+    let new_count = this.state.item_count;
     if(!isSameItem){
-      current_item = { item_count: new_count, ...current_item, quantity: Number(quantity) };
+      new_count++;
+      current_item = { item_count: new_count, ...current_item, quantity: Number(quantity), original_quantity: stock };
       updated.push(current_item);
     }
-    let total_bill = this.state.total;
-    total_bill = total_bill + (Number((current_item["unit_price"]*quantity).toFixed(2)))
 
-    let discounted_bill = 0;
+    this.setState({selected_items: updated, item_count: new_count, data: new_data}, function () {
+      this.setTotalBill();
+    });
+  }
+
+  setTotalBill = () => {
+    let total_bill = 0.0;
+    this.state.selected_items.map((data, index) => {
+      total_bill = total_bill + parseFloat(Number(data.unit_price*data.quantity).toFixed(2))
+    })
+
+    let discounted_bill = 0.0;
     if(this.state.current_discount)
     {
       discounted_bill = this.discountedPrice(total_bill)
@@ -114,7 +142,8 @@ class NewReciept extends Component {
     else {
       discounted_bill = total_bill
     }
-    this.setState({selected_items: updated, item_count: new_count, total: total_bill, discounted_total: discounted_bill});
+
+    this.setState({total: total_bill, discounted_total: discounted_bill})
   }
 
   renderTableData() {
@@ -126,9 +155,33 @@ class NewReciept extends Component {
             <td>{value}</td>
             <td>{unit_price}</td>
             <td>{quantity}</td>
-            <td>{Number((unit_price*quantity).toFixed(2))}</td>
+            <td><span>{Number((unit_price*quantity).toFixed(2))}</span><Button floated="right" icon="trash" className="remove-item-icon" onClick={() => {this.removeItem(index)}}/></td>
           </tr>
       )
+    })
+  }
+
+  removeItem = (index) => {
+    let new_selected = [...this.state.selected_items]
+    let new_data = [...this.state.data]
+    let item = new_selected.splice(index, 1)
+    let count = 0;
+
+    //assign new indexes
+    new_selected.map((data, index) => {
+      count++;
+      data.item_count = count;
+    });
+
+    //reset quantity
+    new_data.map((data, index) => {
+      if(data.id === item[0].item_id){
+        data.current_stock = item[0].original_quantity
+      }
+    });
+
+    this.setState({selected_items: new_selected, data: new_data, item_count: count}, function(){
+      this.setTotalBill();
     })
   }
 
@@ -149,7 +202,7 @@ class NewReciept extends Component {
 
     http.post(apiUrl+"/api/v1/invoices", {total: this.state.discounted_total, sold_items_attributes: this.state.selected_items, discount_id: this.state.current_discount.id})
       .then(response => {
-        this.getData();
+        this.getData(); 
         this.setState({selected_items: [], current_quantity: 0, current_item: [], total: 0, item_count: 0, current_discount: '', discounted_total: 0});
       })
   }

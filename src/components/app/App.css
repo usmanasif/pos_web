@@ -104,9 +104,10 @@
   cursor:pointer;
 }
 
-.delete-invoice-item {
-  padding-left: 25px;
-  cursor:pointer;
+.remove-item-icon {
+  background: none !important;
+  color: darkred !important;
+  padding: 3px 0px 0px 0px !important;
 }
 
 @keyframes App-logo-spin {

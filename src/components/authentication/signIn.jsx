@@ -24,11 +24,11 @@ class SignIn extends Component {
     const { email, password } = this.state;
     signInUser({ email, password })
       .then(resp => {
-        console.log("Logged In now.");
+        //console.log("Logged In now.");
         this.props.history.push("/home");
       })
       .catch(error => {
-        console.log("error is", error);
+        //console.log("error is", error);
       });
   };
 

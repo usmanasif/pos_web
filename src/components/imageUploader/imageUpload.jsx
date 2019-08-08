@@ -21,6 +21,7 @@ class ImageUpload extends Component {
         imageUrl: reader.result
       });
     };
+    
     if (file) reader.readAsDataURL(file);
   }
 

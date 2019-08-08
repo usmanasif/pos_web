@@ -85,7 +85,10 @@
 .imguploader {
   text-align: center;
 }
-.imguploader img {
+.imguploader input{
+  margin-bottom: 15px !important;
+}
+.imguploader img{
   height: 100px;
   margin-top: 15px;
   border-radius: 5%;
@@ -108,6 +111,15 @@
   padding-left: 25px;
   cursor:pointer;
 }
+
+#addItem, #addcategory{
+  float: right;
+  margin-top: -4%;
+}
+.categoryForm, .itemForm{
+  padding: 25px;
+} 
+
 
 @keyframes App-logo-spin {
   from {

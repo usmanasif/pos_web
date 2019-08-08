@@ -24,7 +24,7 @@ class Navigation extends Component {
             onClick={this.handleItemClick}
           />
         </Link>
-        <Link to="/login">
+        <Link to="/inventory">
           <Menu.Item
             className="nav_menu_item"
             name="Inventory"

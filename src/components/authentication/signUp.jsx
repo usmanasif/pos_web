@@ -25,11 +25,11 @@ class SignUp extends Component {
     const { email, name, password } = this.state;
     registerUser({ email, name, password })
       .then(response => {
-        console.log("response", response);
+        //console.log("response", response);
         this.props.history.push("/home");
       })
       .catch(error => {
-        console.log("error is", error);
+        //console.log("error is", error);
       });
   }
 

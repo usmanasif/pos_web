@@ -1,0 +1,60 @@
+{
+    "categories": [
+       {
+         "id": "1", 
+         "name": "Men", 
+         "children":
+           [
+             {
+              "id": "3",
+              "name": "watches", 
+              "children":
+                [ 
+                 {
+                   "id": "4", 
+                   "name": "Auto",
+                   "price":"300",
+                   "quantity":"200",
+                   "children": []
+                 },
+                 {
+                  "id": "6", 
+                  "name": "caa",
+                  "price":"300",
+                  "quantity":"200",
+                  "children": []
+                },
+                 {
+                  "id": "5", 
+                  "name": "Quartz", 
+                  "children": 
+                    [
+                      {
+                        "id": "6", 
+                        "name": "Seiko", 
+                        "price":"300",
+                        "quantity":"200",
+                        "children": []
+                        
+                      }
+                    ]
+                  } 
+                ]
+             }
+            ]
+        }, 
+       {
+          "id": "2", 
+          "name": "Women",
+          "children": [
+            {
+              "id": "6", 
+              "name": "caa",
+              "price":"300",
+              "quantity":"200",
+              "children": []
+            }
+          ]
+        }
+      ]
+  }

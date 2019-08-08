@@ -9,7 +9,7 @@ axios.interceptors.request.use(data => {
 axios.interceptors.response.use(
   data => {
     if (!data.config.url.includes("auth/")) {
-      updateLocalStorage(data.headers);
+      // updateLocalStorage(data.headers);
     }
     return data;
   },

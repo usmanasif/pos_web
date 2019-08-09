@@ -17,6 +17,9 @@
   margin: 5px;
 }
 .padding-2vw {
+  padding: 2vw;
+}
+.padding-bottom-2vw {
   padding-bottom: 2vw;
 }
 .border-delete {

@@ -92,7 +92,7 @@ class CreateCompany extends Component {
           content={company ? `Edit ${company.name}` : "Create New Company"}
         />
         <Modal.Content>
-          <div className="padding-2vw">
+          <div className="padding-bottom-2vw">
             <Form onSubmit={company ? this.updateCompany : this.createCompany}>
               <Form.Input
                 fluid

@@ -24,8 +24,6 @@ export default class AddCategory extends Component {
   };
 
   show = dimmer => () => {
-    console.log(this.props);
-    console.log(categoryList);
     this.setState({ dimmer, open: true });
     categoryList = this.props.data;
     this.createOptions(this.props.data);
@@ -35,6 +33,11 @@ export default class AddCategory extends Component {
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handleChange = (e, { value }) => {
+    this.setState({ value });
+    this.updateCategoryOptions(value);
   };
 
   addCategory = () => {
@@ -64,10 +67,6 @@ export default class AddCategory extends Component {
     }
   };
 
-  handleChange = (e, { value }) => {
-    this.setState({ value });
-    this.updateCategoryOptions(value);
-  };
 
   createOptions = options => {
     let penalArray = [];
@@ -86,7 +85,6 @@ export default class AddCategory extends Component {
         <Dropdown
           placeholder="category"
           fluid
-          search
           selection
           options={opt}
           onChange={this.handleChange}

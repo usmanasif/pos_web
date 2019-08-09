@@ -106,7 +106,6 @@ export default class Inventory extends Component {
   };
   render() {
     const { column, data, direction, apiResponse, item } = this.state;
-    debugger;
     return (
       <div>
         <Grid>
@@ -120,7 +119,7 @@ export default class Inventory extends Component {
                 placeholder="Search..."
                 onChange={this.searchHandler}
               />
-              <AddItem addItem={this.addItem} />
+              <AddItem addItem={this.addItem} data={apiResponse} />
               <AddCategory data={apiResponse} />
             </Form>
             <Table sortable celled fixed>

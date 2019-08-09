@@ -25,8 +25,7 @@ class SignUp extends Component {
     const { registerUser } = this.props;
     const { email, name, password } = this.state;
     registerUser({ email, name, password })
-      .then(response => {
-        //console.log("response", response);
+      .then(() => {
         this.props.history.push("/home");
       })
       .catch(error => {
@@ -36,13 +35,13 @@ class SignUp extends Component {
         Object.keys(errors).map(
           e =>
             e !== "full_messages" &&
-            toast(`${e} ${errors[e]}`, { autoClose: false })
+            toast.error(`${e.toUpperCase()} ${errors[e]}`, { autoClose: false })
         );
       });
   }
 
   render() {
-    const { submitForm, errors } = this;
+    const { submitForm } = this;
     console.log("props: ", this.props);
     return (
       <React.Fragment>

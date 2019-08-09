@@ -28,7 +28,6 @@ class CreateCompany extends Component {
         toast(`${value} cannot be use as subdomain`);
         this.setState({ subdomain: "" });
       } else if (!/^(\d|\w)+$/.test(value)) {
-        toast(`Invaild value for subdomain`);
         this.setState({ subdomain: "" });
       }
     }
@@ -112,7 +111,6 @@ class CreateCompany extends Component {
                     label="Domain name"
                     placeholder="Enter domain name"
                     name="subdomain"
-                    pattern="/^(\d|\w)+$/"
                     onChange={this.onChange}
                     value={this.state.subdomain}
                     required

@@ -25,13 +25,13 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-function updateLocalStorage(res) {
-  localStorage.setItem("access-token", res["access-token"]);
-  localStorage.setItem("token-type", res["token-type"]);
-  localStorage.setItem("client", res["client"]);
-  localStorage.setItem("uid", res["uid"]);
-  localStorage.setItem("expiry", res["expiry"]);
-}
+// function updateLocalStorage(res) {
+//   localStorage.setItem("access-token", res["access-token"]);
+//   localStorage.setItem("token-type", res["token-type"]);
+//   localStorage.setItem("client", res["client"]);
+//   localStorage.setItem("uid", res["uid"]);
+//   localStorage.setItem("expiry", res["expiry"]);
+// }
 export default {
   get: axios.get,
   post: axios.post,

@@ -18,6 +18,7 @@ class NewReciept extends Component {
       quantityExceededError: false,
       stockEmptyError: false,
       invalidForm: false,
+      invoiceCreated: false,
       total: 0,
       discounted_total: 0,
       discounts: [],
@@ -202,7 +203,11 @@ class NewReciept extends Component {
 
     http.post(apiUrl+"/api/v1/invoices", {total: this.state.discounted_total, sold_items_attributes: this.state.selected_items, discount_id: this.state.current_discount.id})
       .then(response => {
-        this.getData(); 
+        if(response.status === 201)
+        {
+          this.setState({invoiceCreated: true});
+        }
+        this.getData();
         this.setState({selected_items: [], current_quantity: 0, current_item: [], total: 0, item_count: 0, current_discount: '', discounted_total: 0});
       })
   }
@@ -254,7 +259,7 @@ class NewReciept extends Component {
       <Grid centered>
         <Grid.Row>
             <Grid.Column width={10}>
-              <Form error>
+              <Form error success>
                 <Form.Field
                   type="text"
                   control={Select}
@@ -363,6 +368,16 @@ class NewReciept extends Component {
                       error
                       header='Invoice Empty'
                       content='Please add items to the invoice'
+                    />
+                  :
+                  null
+                  }
+                  {this.state.invoiceCreated
+                  ?
+                    <Message
+                      success
+                      header="Invoice Created"
+                      content='Your invoice has been processed successfully!'
                     />
                   :
                   null

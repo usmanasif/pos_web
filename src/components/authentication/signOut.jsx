@@ -6,7 +6,7 @@ class SignOut extends Component {
   signOut = e => {
     e.preventDefault();
     const { signOutUser } = this.props;
-    signOutUser() // <-<-<-<-<- here's the important part <-<-<-<-<-
+    signOutUser()
       .then(res => console.log("user Logged out.....  ", res))
       .catch(err => console.log(err));
   };

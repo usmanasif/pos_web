@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Segment } from "semantic-ui-react";
+import { Menu } from "semantic-ui-react";
 import SignOut from "../authentication/signOut";
 
 class Navigation extends Component {
-
   render() {
-
     return (
       <Menu>
         <Link to="/home">

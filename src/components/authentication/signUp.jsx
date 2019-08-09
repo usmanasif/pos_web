@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { registerUser } from "../../redux/redux-token-auth-config";
 import { Form, Button } from "semantic-ui-react";
+import { toast } from "react-toastify";
 
 class SignUp extends Component {
   constructor(props) {
@@ -24,17 +25,24 @@ class SignUp extends Component {
     const { registerUser } = this.props;
     const { email, name, password } = this.state;
     registerUser({ email, name, password })
-      .then(response => {
-        //console.log("response", response);
+      .then(() => {
         this.props.history.push("/home");
       })
       .catch(error => {
-        //console.log("error is", error);
+        toast(`Error : ${error.response.statusText}`);
+        console.log("error is", error.response.data.errors);
+        const { errors } = error.response.data;
+        Object.keys(errors).map(
+          e =>
+            e !== "full_messages" &&
+            toast.error(`${e.toUpperCase()} ${errors[e]}`, { autoClose: false })
+        );
       });
   }
 
   render() {
     const { submitForm } = this;
+    console.log("props: ", this.props);
     return (
       <React.Fragment>
         <Form onSubmit={submitForm}>
@@ -46,6 +54,7 @@ class SignUp extends Component {
             name="name"
             onChange={this.onChange}
             value={this.state.name}
+            required
           />
           <Form.Input
             icon="mail"
@@ -55,6 +64,7 @@ class SignUp extends Component {
             name="email"
             onChange={this.onChange}
             value={this.state.email}
+            required
           />
           <Form.Input
             icon="key"
@@ -64,8 +74,9 @@ class SignUp extends Component {
             name="password"
             onChange={this.onChange}
             value={this.state.password}
+            minLength="6"
+            required
           />
-
           <Button
             basic
             color="blue"

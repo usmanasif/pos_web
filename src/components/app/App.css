@@ -19,6 +19,9 @@
 .padding-2vw {
   padding: 2vw;
 }
+.padding-bottom-2vw {
+  padding-bottom: 2vw;
+}
 .border-delete {
   border-left: 3px solid #e1524e !important;
 }
@@ -85,10 +88,10 @@
 .imguploader {
   text-align: center;
 }
-.imguploader input{
+.imguploader input {
   margin-bottom: 15px !important;
 }
-.imguploader img{
+.imguploader img {
   height: 100px;
   margin-top: 15px;
   border-radius: 5%;
@@ -104,7 +107,7 @@
   position: absolute;
   font-size: xx-large;
   color: crimson;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .remove-item-icon {
@@ -113,14 +116,20 @@
   padding: 3px 0px 0px 0px !important;
 }
 
-#addItem, #addcategory{
+.delete-invoice-item {
+  padding-left: 25px;
+  cursor: pointer;
+}
+
+#addItem,
+#addcategory {
   float: right;
   margin-top: -4%;
 }
-.categoryForm, .itemForm{
+.categoryForm,
+.itemForm {
   padding: 25px;
-} 
-
+}
 
 @keyframes App-logo-spin {
   from {

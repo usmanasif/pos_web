@@ -38,6 +38,7 @@ class SignIn extends Component {
       <React.Fragment>
         <Form onSubmit={submitForm}>
           <Form.Input
+            required
             icon="mail"
             iconPosition="left"
             placeholder="Enter your email"
@@ -47,6 +48,7 @@ class SignIn extends Component {
             value={this.state.email}
           />
           <Form.Input
+            required
             icon="key"
             iconPosition="left"
             placeholder="Enter Password"

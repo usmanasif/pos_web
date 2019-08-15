@@ -76,10 +76,16 @@ export default class Inventory extends Component {
 
   deleteItem = index => {
     const copyData = Object.assign([], this.state.data);
-    copyData.splice(index, 1);
-    this.setState({
-      data: copyData
-    });
+    var objToDelete = copyData[index];
+
+    //delete request
+    http
+    .delete(`${apiUrl}/api/v1/items/${objToDelete.id}`)
+    .then(res => {
+      this.fetchItemsData();
+    })
+    .catch(error => console.log("Error: ", error));
+
   };
 
   editItem = obj => {

@@ -56,12 +56,10 @@ export default class AddItem extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-
   handleChange = (e, { value }) => {
     this.setState({ value });
     this.updateCategoryOptions(value);
   };
-
 
   addItem = () => {
     const { code, name, quantity, price, prevObjID } = this.state;
@@ -93,7 +91,6 @@ export default class AddItem extends Component {
     });
   };
 
-
   updateCategoryOptions = value => {
     var matchingObj = itemList.find(cat => cat.name === value);
     if (matchingObj) {
@@ -103,9 +100,7 @@ export default class AddItem extends Component {
       });
       this.createOptions(itemList);
     }
-  };
-
-  
+  };  
 
   createOptions = options => {
     let penalArray = [];
@@ -133,9 +128,6 @@ export default class AddItem extends Component {
       this.setState({ state: this.state });
     }
   };
-
-
-
 
   componentDidMount() {
     if (this.props.itemData) {

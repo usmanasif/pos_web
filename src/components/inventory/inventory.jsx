@@ -44,6 +44,15 @@ export default class Inventory extends Component {
       })
       .catch(function(error) {});
   };
+  
+  fetchItemsData = () => {
+    http
+      .get(`${apiUrl}/api/v1/items`)
+      .then(res => {
+        this.setState({ data: res.data });
+      })
+      .catch(error => console.log("Error: ", error));
+  };
 
   searchHandler = e => {
     this.setState({ item: e.target.value });
@@ -75,7 +84,7 @@ export default class Inventory extends Component {
 
   editItem = obj => {
     const copyData = Object.assign([], this.state.data);
-    var foundIndex = copyData.findIndex(x => x.id == obj.id);
+    var foundIndex = copyData.findIndex(x => x.id === obj.id);
     copyData[foundIndex] = obj;
 
     this.setState({
@@ -83,35 +92,23 @@ export default class Inventory extends Component {
     });
   };
 
-  addItem = obj => {
-    const copyData = Object.assign([], this.state.data);
-    copyData.push(obj);
+  addItem = () =>   this.fetchItemsData();
 
-    this.setState({
-      data: copyData
-    });
-  };
-
+  addCategory = () =>  this.fetchCategoriesData();
+  
   componentDidMount() {
     this.fetchCategoriesData();
     this.fetchItemsData();
   }
-  fetchItemsData = () => {
-    http
-      .get(`${apiUrl}/api/v1/items`)
-      .then(res => {
-        this.setState({ data: res.data });
-      })
-      .catch(error => console.log("Error: ", error));
-  };
+  
   render() {
     const { column, data, direction, apiResponse, item } = this.state;
-    debugger;
+    
     return (
       <div>
         <Grid>
           <Grid.Column width={4}>
-            <CategorySideBar />
+            <CategorySideBar data={apiResponse}/>
           </Grid.Column>
           <Grid.Column width={12}>
             <Form>
@@ -120,8 +117,8 @@ export default class Inventory extends Component {
                 placeholder="Search..."
                 onChange={this.searchHandler}
               />
-              <AddItem addItem={this.addItem} />
-              <AddCategory data={apiResponse} />
+              <AddItem addItem={this.addItem} data={apiResponse} />
+              <AddCategory addCategory = {this.addCategory}  data={apiResponse} />
             </Form>
             <Table sortable celled fixed>
               <Table.Header>
@@ -154,7 +151,8 @@ export default class Inventory extends Component {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {data.filter(searchingFor(item)).map((data, index) => (
+                {
+                data.filter(searchingFor(item)).map((data, index) => (
                   <Table.Row key={data.id}>
                     <Table.Cell>{data.name}</Table.Cell>
                     <Table.Cell>{data.current_stock}</Table.Cell>

@@ -10,6 +10,7 @@ export default class AddCategory extends Component {
     this.state = {
       open: false,
       prevObjID: "",
+      categoryName:"",
       categoryOptions: [],
       dropDownList: []
     };
@@ -18,14 +19,13 @@ export default class AddCategory extends Component {
   initialState = () => {
     this.setState({
       open: false,
+      categoryName:"",
       categoryOptions: [],
       dropDownList: []
     });
   };
 
   show = dimmer => () => {
-    console.log(this.props);
-    console.log(categoryList);
     this.setState({ dimmer, open: true });
     categoryList = this.props.data;
     this.createOptions(this.props.data);
@@ -37,20 +37,25 @@ export default class AddCategory extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  handleChange = (e, { value }) => {
+    this.setState({ value });
+    this.updateCategoryOptions(value);
+  };
+
   addCategory = () => {
     let categoryName = this.state.categoryName;
     let id = this.state.prevObjID;
+    let handler = this;
     http
       .post(apiUrl + "/api/v1/categories", {
         name: categoryName,
         parent_id: id
       })
       .then(function(response) {
-        console.log("response", response);
+        handler.props.addCategory();
       })
       .catch(function(error) {});
 
-    window.location.reload();
     this.initialState();
   };
   updateCategoryOptions = value => {
@@ -64,10 +69,6 @@ export default class AddCategory extends Component {
     }
   };
 
-  handleChange = (e, { value }) => {
-    this.setState({ value });
-    this.updateCategoryOptions(value);
-  };
 
   createOptions = options => {
     let penalArray = [];
@@ -86,7 +87,6 @@ export default class AddCategory extends Component {
         <Dropdown
           placeholder="category"
           fluid
-          search
           selection
           options={opt}
           onChange={this.handleChange}

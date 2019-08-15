@@ -1,16 +1,15 @@
-import _ from "lodash";
 import React, { Component } from "react";
 import {
   Button,
   Modal,
   Form,
   TextArea,
-  Grid,
   Dropdown
 } from "semantic-ui-react";
-import DATA from "../../utils/JSON.json";
 import http from "../../services/httpService.js";
 import { apiUrl } from "../../utils/api-config";
+
+var itemList = [];
 
 export default class AddItem extends Component {
   constructor(props) {
@@ -24,7 +23,6 @@ export default class AddItem extends Component {
       category: "",
       categoryOptions: [],
       dropDownList: [],
-      catObj: DATA.categories
     };
   }
   initialState = () => {
@@ -35,32 +33,84 @@ export default class AddItem extends Component {
       quantity: "",
       price: "",
       category: "",
+      prevObjID: "",
       categoryOptions: [],
       dropDownList: [],
-      catObj: DATA.categories
     });
   };
 
-  show = dimmer => () => {
-    this.setState({ open: true });
-    this.createOptions();
+  setDefaultState = props => {
+    const { name, quantity, price, category } = props;
+    this.setState({ name, quantity, price, category });
   };
+
+  show = dimmer => () => {
+    this.setState({ dimmer, open: true });
+    itemList = this.props.data;
+    this.createOptions(this.props.data);
+  };
+  
   close = () => this.initialState();
 
+  onChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+
   handleChange = (e, { value }) => {
-    this.setState({ category: value });
-    for (var i = 0; i < this.state.catObj.length; i++) {
-      if (this.state.catObj[i].name === value) {
-        this.state.catObj = this.state.catObj[i].children;
-        this.createOptions();
-      }
+    this.setState({ value });
+    this.updateCategoryOptions(value);
+  };
+
+
+  addItem = () => {
+    const { code, name, quantity, price, prevObjID } = this.state;
+
+    http
+      .post(`${apiUrl}/api/v1/items`, {
+        code,
+        name,
+        current_stock: quantity,
+        sale_price: price,
+        category_id: prevObjID
+      })
+      .then(res => {
+        this.props.addItem();
+      })
+      .catch(error => console.log(error));
+      
+    this.initialState();
+  };
+
+  editItem = () => {
+    const { id, children } = this.props.itemData;
+    const { name, quantity, price} = this.state;
+    this.props.editItem({ id, name, price, quantity, children });
+    this.setState({
+      open: false,
+      categoryOptions: [],
+      dropDownList: [],
+    });
+  };
+
+
+  updateCategoryOptions = value => {
+    var matchingObj = itemList.find(cat => cat.name === value);
+    if (matchingObj) {
+      itemList = matchingObj.children;
+      this.setState({
+        prevObjID: matchingObj.id
+      });
+      this.createOptions(itemList);
     }
   };
 
-  createOptions = () => {
+  
+
+  createOptions = options => {
     let penalArray = [];
-    if (this.state.catObj.length > 0) {
-      this.state.catObj.map(data => {
+    if (options.length > 0) {
+      options.map(data => {
         penalArray.push({ key: data.id, text: data.name, value: data.name });
       });
     }
@@ -74,56 +124,19 @@ export default class AddItem extends Component {
         <Dropdown
           placeholder="category"
           fluid
-          search
           selection
           options={opt}
           onChange={this.handleChange}
         />
       );
-
       this.state.dropDownList.push(dropdown);
       this.setState({ state: this.state });
     }
   };
 
-  addItem = () => {
-    const { code, name, quantity, price, category } = this.state;
 
-    http
-      .post(`${apiUrl}/api/v1/items`, {
-        code,
-        name,
-        current_stock: quantity,
-        sale_price: price,
-        category_id: 11
-      })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(error => console.log(error));
-    // this.props.addItem({code, name, quantity, price, category });
-    this.initialState();
-  };
-  editItem = () => {
-    const { id, children } = this.props.itemData;
-    const { name, quantity, price, category } = this.state;
-    this.props.editItem({ id, name, price, quantity, children });
-    this.setState({
-      open: false,
-      categoryOptions: [],
-      dropDownList: [],
-      catObj: DATA.categories
-    });
-  };
 
-  onChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
 
-  setDefaultState = props => {
-    const { name, quantity, price, category } = props;
-    this.setState({ name, quantity, price, category });
-  };
   componentDidMount() {
     if (this.props.itemData) {
       this.setDefaultState(this.props.itemData);
@@ -131,7 +144,8 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open, dimmer, dropDownsArray } = this.state;
+    const { open } = this.state;
+
     return (
       <React.Fragment>
         {this.props.itemData && (

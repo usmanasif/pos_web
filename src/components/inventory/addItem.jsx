@@ -75,17 +75,16 @@ export default class AddItem extends Component {
         category_id: prevObjID
       })
       .then(res => {
-        console.log(res);
+        this.props.addItem();
       })
       .catch(error => console.log(error));
       
-    window.location.reload();    
     this.initialState();
   };
 
   editItem = () => {
     const { id, children } = this.props.itemData;
-    const { name, quantity, price, category } = this.state;
+    const { name, quantity, price} = this.state;
     this.props.editItem({ id, name, price, quantity, children });
     this.setState({
       open: false,
@@ -145,7 +144,8 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open, dimmer, dropDownsArray } = this.state;
+    const { open } = this.state;
+
     return (
       <React.Fragment>
         {this.props.itemData && (

@@ -10,6 +10,7 @@ export default class AddCategory extends Component {
     this.state = {
       open: false,
       prevObjID: "",
+      categoryName:"",
       categoryOptions: [],
       dropDownList: []
     };
@@ -18,6 +19,7 @@ export default class AddCategory extends Component {
   initialState = () => {
     this.setState({
       open: false,
+      categoryName:"",
       categoryOptions: [],
       dropDownList: []
     });
@@ -43,17 +45,17 @@ export default class AddCategory extends Component {
   addCategory = () => {
     let categoryName = this.state.categoryName;
     let id = this.state.prevObjID;
+    let handler = this;
     http
       .post(apiUrl + "/api/v1/categories", {
         name: categoryName,
         parent_id: id
       })
       .then(function(response) {
-        console.log("response", response);
+        handler.props.addCategory();
       })
       .catch(function(error) {});
 
-    window.location.reload();
     this.initialState();
   };
   updateCategoryOptions = value => {

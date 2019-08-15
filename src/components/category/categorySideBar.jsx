@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import http from "../../services/httpService";
-import { apiUrl } from "../../utils/api-config";
 import { Accordion } from "semantic-ui-react";
 
 export default class categorySideBar extends Component {
@@ -34,23 +32,10 @@ export default class categorySideBar extends Component {
     }
     return penalArray;
   };
-
-  fetchCategoriesData = () => {
-    let handler = this;
-    http
-      .get(apiUrl + "/api/v1/categories")
-      .then(function(response) {
-        handler.setState({
-          data: response.data
-        });
-      })
-      .catch(function(error) {});
-  };
-
-  componentDidMount() {
-    this.fetchCategoriesData();
-  }
+   
   render() {
+    this.state.data = this.props.data;
+
     return (
       <div>
         <label>

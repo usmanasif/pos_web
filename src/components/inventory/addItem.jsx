@@ -149,9 +149,6 @@ export default class AddItem extends Component {
     }
   };
 
-  componentWillMount(){
-    console.log("component will mount");
-  }
   componentDidMount() {
     if (this.props.itemData) {
       this.setDefaultState(this.props.itemData);

@@ -33,15 +33,21 @@ export default class AddItem extends Component {
       quantity: "",
       price: "",
       category: "",
-      prevObjID: "",
+      categoryObjID: "",
       categoryOptions: [],
       dropDownList: [],
     });
   };
 
   setDefaultState = props => {
-    const { name, quantity, price, category } = props;
-    this.setState({ name, quantity, price, category });
+    const { name, code, current_stock, sale_price, category } = props;
+    this.setState({ 
+      name, 
+      code,
+      quantity: current_stock, 
+      price: sale_price, 
+      category 
+    });
   };
 
   show = dimmer => () => {
@@ -62,7 +68,7 @@ export default class AddItem extends Component {
   };
 
   addItem = () => {
-    const { code, name, quantity, price, prevObjID } = this.state;
+    const { code, name, quantity, price, categoryObjID } = this.state;
 
     http
       .post(`${apiUrl}/api/v1/items`, {
@@ -70,7 +76,7 @@ export default class AddItem extends Component {
         name,
         current_stock: quantity,
         sale_price: price,
-        category_id: prevObjID
+        category_id: categoryObjID
       })
       .then(res => {
         this.props.addItem();
@@ -81,14 +87,28 @@ export default class AddItem extends Component {
   };
 
   editItem = () => {
-    const { id, children } = this.props.itemData;
-    const { name, quantity, price} = this.state;
-    this.props.editItem({ id, name, price, quantity, children });
-    this.setState({
-      open: false,
-      categoryOptions: [],
-      dropDownList: [],
-    });
+    const {id} = this.props.itemData;
+    const { code, name, quantity, price , categoryObjID} = this.state;
+
+    // api call to update item
+    http
+      .put(`${apiUrl}/api/v1/items/${id}`, {
+        code,
+        name,
+        current_stock: quantity,
+        sale_price: price,
+        category_id: categoryObjID
+      })
+      .then(res => {
+        this.props.editItem();
+      })
+      .catch(error => console.log(error));
+
+      this.setState({
+        open: false,
+        categoryOptions: [],
+        dropDownList: [],
+      });
   };
 
   updateCategoryOptions = value => {
@@ -96,7 +116,7 @@ export default class AddItem extends Component {
     if (matchingObj) {
       itemList = matchingObj.children;
       this.setState({
-        prevObjID: matchingObj.id
+        categoryObjID: matchingObj.id
       });
       this.createOptions(itemList);
     }
@@ -104,7 +124,7 @@ export default class AddItem extends Component {
 
   createOptions = options => {
     let penalArray = [];
-    if (options.length > 0) {
+    if (options && options.length > 0) {
       options.map(data => {
         penalArray.push({ key: data.id, text: data.name, value: data.name });
       });
@@ -129,6 +149,9 @@ export default class AddItem extends Component {
     }
   };
 
+  componentWillMount(){
+    console.log("component will mount");
+  }
   componentDidMount() {
     if (this.props.itemData) {
       this.setDefaultState(this.props.itemData);
@@ -150,7 +173,7 @@ export default class AddItem extends Component {
             </Button>
           )}
           <Modal open={open} onClose={this.close}>
-            <Modal.Header>Add Item</Modal.Header>
+            <Modal.Header>{this.props.itemData ? "Edit Item" : "Add Item"}</Modal.Header>
             <Form className="itemForm">
               <Form.Group widths="2">
                 <Form.Input

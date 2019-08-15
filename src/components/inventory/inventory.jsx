@@ -88,15 +88,7 @@ export default class Inventory extends Component {
 
   };
 
-  editItem = obj => {
-    const copyData = Object.assign([], this.state.data);
-    var foundIndex = copyData.findIndex(x => x.id === obj.id);
-    copyData[foundIndex] = obj;
-
-    this.setState({
-      data: copyData
-    });
-  };
+  editItem = () => this.fetchItemsData();
 
   addItem = () =>   this.fetchItemsData();
 
@@ -158,19 +150,19 @@ export default class Inventory extends Component {
               </Table.Header>
               <Table.Body>
                 {
-                data.filter(searchingFor(item)).map((data, index) => (
-                  <Table.Row key={data.id}>
-                    <Table.Cell>{data.name}</Table.Cell>
-                    <Table.Cell>{data.current_stock}</Table.Cell>
-                    <Table.Cell>{data.category.name}</Table.Cell>
-                    <Table.Cell>{data.sale_price}</Table.Cell>
+                data.filter(searchingFor(item)).map((d, index) => (
+                  <Table.Row key={d.id}>
+                    <Table.Cell>{d.name}</Table.Cell>
+                    <Table.Cell>{d.current_stock}</Table.Cell>
+                    <Table.Cell>{d.category.name}</Table.Cell>
+                    <Table.Cell>{d.sale_price}</Table.Cell>
                     <Table.Cell>
                       <Button
                         color="red"
                         icon="delete"
                         onClick={() => this.deleteItem(index)}
                       />
-                      <AddItem itemData={data} editItem={this.editItem} />
+                      <AddItem itemData={d} editItem={this.editItem} data={apiResponse} />
                     </Table.Cell>
                   </Table.Row>
                 ))}

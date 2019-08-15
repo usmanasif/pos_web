@@ -9,7 +9,7 @@ export default class AddCategory extends Component {
     super(props);
     this.state = {
       open: false,
-      prevObjID: "",
+      categoryObjID: "",
       categoryName:"",
       categoryOptions: [],
       dropDownList: []
@@ -44,7 +44,7 @@ export default class AddCategory extends Component {
 
   addCategory = () => {
     let categoryName = this.state.categoryName;
-    let id = this.state.prevObjID;
+    let id = this.state.categoryObjID;
     let handler = this;
     http
       .post(apiUrl + "/api/v1/categories", {
@@ -63,7 +63,7 @@ export default class AddCategory extends Component {
     if (matchingObj) {
       categoryList = matchingObj.children;
       this.setState({
-        prevObjID: matchingObj.id
+        categoryObjID: matchingObj.id
       });
       this.createOptions(categoryList);
     }

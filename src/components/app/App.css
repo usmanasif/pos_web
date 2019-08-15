@@ -103,7 +103,7 @@
 }
 
 .remove-discount-btn {
-  padding-left: 8px;
+  padding-left: 4px;
   position: absolute;
   font-size: xx-large;
   color: crimson;
@@ -113,6 +113,16 @@
 .remove-item-icon {
   background: none !important;
   color: darkred !important;
+  padding: 3px 0px 0px 0px !important;
+}
+
+.increase-discount-icon {
+  background: none !important;
+  padding: 3px 0px 0px 3px !important;
+}
+
+.decrease-discount-icon {
+  background: none !important;
   padding: 3px 0px 0px 0px !important;
 }
 

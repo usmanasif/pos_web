@@ -118,7 +118,8 @@ class NewReciept extends Component {
         item_count: new_count,
         ...current_item,
         quantity: Number(quantity),
-        original_quantity: stock
+        original_quantity: stock,
+        discount: 0
       };
       updated.push(current_item);
     }
@@ -134,9 +135,11 @@ class NewReciept extends Component {
   setTotalBill = () => {
     let total_bill = 0.0;
     this.state.selected_items.map((data, index) => {
+      let item_bill = this.itemTotal(data);
+
       total_bill =
         total_bill +
-        parseFloat(Number(data.unit_price * data.quantity).toFixed(2));
+        item_bill;
     });
 
     let discounted_bill = 0.0;
@@ -151,15 +154,31 @@ class NewReciept extends Component {
 
   renderTableData() {
     return this.state.selected_items.map((data, index) => {
-      const { item_count, value, unit_price, quantity } = data;
+      const { item_count, value, unit_price, quantity, discount } = data;
       return (
         <tr key={item_count}>
           <td>{item_count}</td>
           <td>{value}</td>
           <td>{unit_price}</td>
           <td>{quantity}</td>
+          <td><Button
+              icon="minus"
+              className="decrease-discount-icon"
+              onClick={() => {
+                this.decreaseDiscount(index);
+              }}
+            />
+            { discount }%
+            <Button
+              icon="plus"
+              className="increase-discount-icon"
+              onClick={() => {
+                this.increaseDiscount(index)
+              }}
+            />
+          </td>
           <td>
-            <span>{Number((unit_price * quantity).toFixed(2))}</span>
+            <span>{Number(this.itemTotal(data)).toFixed(2)}</span>
             <Button
               floated="right"
               icon="trash"
@@ -172,6 +191,39 @@ class NewReciept extends Component {
         </tr>
       );
     });
+  }
+
+  itemTotal = item => {
+    let item_bill = parseFloat(Number(item.unit_price * item.quantity).toFixed(2));
+
+    if(item.discount > 0){
+      let discounted_bill = item_bill * (item.discount/100)
+      item_bill = item_bill - discounted_bill
+    }
+
+    return item_bill;
+  }
+
+  increaseDiscount = index => {
+    let new_selected = [...this.state.selected_items];
+    if(new_selected[index].discount < 100) {
+      new_selected[index].discount += 5;
+      this.setState({selected_items: new_selected}, 
+        function() {
+          this.setTotalBill();
+        })
+    };
+  }
+
+  decreaseDiscount = index => {
+    let new_selected = [...this.state.selected_items];
+    if(new_selected[index].discount > 0) {
+      new_selected[index].discount -= 5;
+      this.setState({selected_items: new_selected}, 
+        function() {
+          this.setTotalBill();
+        });
+    }
   }
 
   removeItem = index => {
@@ -350,6 +402,7 @@ class NewReciept extends Component {
                     <th>Name</th>
                     <th>Sale Price</th>
                     <th>Quantity</th>
+                    <th>Discount</th>
                     <th>Total($)</th>
                   </tr>
                 </thead>
@@ -359,12 +412,14 @@ class NewReciept extends Component {
                     <th />
                     <th />
                     <th />
+                    <th />
                     <th>
                       <b>Total Bill:</b>
                     </th>
                     <th>{Number(this.state.total).toFixed(2)}</th>
                   </tr>
                   <tr>
+                    <th />
                     <th />
                     <th />
                     <th />
@@ -393,6 +448,7 @@ class NewReciept extends Component {
                     </th>
                   </tr>
                   <tr>
+                    <th />
                     <th />
                     <th />
                     <th />

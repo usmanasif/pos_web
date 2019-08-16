@@ -16,7 +16,7 @@ function searchingFor(item) {
 
 const initialPagination = {
   activePage: 1,
-  totalPages: 100,
+  totalPages: 0,
   per_page:10
 }
 
@@ -53,15 +53,16 @@ export default class Inventory extends Component {
       .catch(function(error) {});
   };
   
-  fetchItemsData = () => {
-    
+  fetchItemsData = () => {    
     http
       .get(`${apiUrl}/api/v1/items`)
       .then(res => {
+        const { activePage, per_page} = this.state;
         const itemData = res.data[1];
         this.setState({ 
           data: itemData,
         });
+        this.handlePagination(activePage, per_page);
       })
       .catch(error => console.log("Error: ", error));
   };
@@ -95,7 +96,7 @@ export default class Inventory extends Component {
       .then(res => {
         this.setState({
           data:res.data[1],
-          totalPages:res.data[0].total
+          totalPages: res.data[0].total
         });
       });
   }
@@ -108,9 +109,7 @@ export default class Inventory extends Component {
     http
     .delete(`${apiUrl}/api/v1/items/${objToDelete.id}`)
     .then(res => {
-      const {activePage, per_page} = this.state;
       this.fetchItemsData();
-      this.handlePagination(activePage, per_page);
     })
     .catch(error => console.log("Error: ", error));
 
@@ -118,23 +117,17 @@ export default class Inventory extends Component {
 
   editItem = () => this.fetchItemsData();
 
-  addItem = () =>  {
-    const {activePage, per_page} = this.state;
-    this.fetchItemsData();
-    this.handlePagination(activePage, per_page);
-  }
+  addItem = () =>  this.fetchItemsData();
+
   addCategory = () =>  this.fetchCategoriesData();
   
-  componentWillMount() {
+  componentDidMount() {
     this.fetchCategoriesData();
     this.fetchItemsData();
-
-    const { activePage, per_page} = this.state;
-    this.handlePagination(activePage, per_page);
   }
   
   render() {
-    const { column, data, direction, apiResponse, item,   activePage, totalPages, per_page } = this.state;
+    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page } = this.state;
     
     return (
       <div>
@@ -203,7 +196,10 @@ export default class Inventory extends Component {
                 ))}
               </Table.Body>
             </Table>
-            <Paginate handlePagination = {this.handlePagination} pageSet ={{ activePage, totalPages, per_page }}/>
+            {
+              totalPages>0?
+            <Paginate handlePagination = {this.handlePagination} pageSet ={{ activePage, totalPages, per_page }}/>:null
+            }
           </Grid.Column>
         </Grid>
       </div>

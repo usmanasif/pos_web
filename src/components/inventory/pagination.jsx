@@ -5,7 +5,7 @@ class Paginate extends Component {
     super(props);
     this.state = {
       activePage: this.props.pageSet.activePage,
-      totalPages: this.props.pageSet.totalPages,
+      totalPages: 0,
       per_page: this.props.pageSet.per_page
     };
   }
@@ -15,14 +15,13 @@ class Paginate extends Component {
     const { per_page} = this.state;
     this.props.handlePagination(activePage, per_page);
   }
+
   componentDidMount(){
-    const { activePage, per_page} = this.state;
+    const { per_page} = this.state;
     const { totalPages } = this.props.pageSet;
     this.setState({
       totalPages: totalPages/per_page
     });
-
-    this.props.handlePagination(activePage, per_page);
   }
 
   render(){
@@ -31,11 +30,9 @@ class Paginate extends Component {
     return(
       <Pagination
         boundaryRange={0}
-        defaultActivePage={activePage}
-        ellipsisItem={null}
+        activePage={activePage}
         firstItem={null}
         lastItem={null}
-        siblingRange={2}
         totalPages={totalPages}
         onPageChange={this.handleActivePage}
       />

@@ -5,15 +5,29 @@ export default class categorySideBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      activeIndex:0
     };
+  }
+
+  handleActiveIndex = (title) =>{
+    const { index } = title
+    const { activeIndex } = this.state
+    const newIndex = activeIndex === index ? -1 : index
+
+    this.setState({ activeIndex: newIndex })
+  }
+
+  handleClick = id => (event, itemProps) =>  {
+    this.handleActiveIndex(itemProps);   
+    this.props.filterItems(id);
   }
 
   generateAccordion = children => {
     return (
       <div>
         {children.length > 0 ? (
-          <Accordion.Accordion panels={this.createPanel(children)} />
+          <Accordion.Accordion panels={this.createPanel(children)}/>
         ) : null}
       </div>
     );
@@ -26,7 +40,8 @@ export default class categorySideBar extends Component {
         penalArray.push({
           key: data.id,
           title: data.name,
-          content: { content: this.generateAccordion(data.children) }
+          content: { content: this.generateAccordion(data.children) },
+          onTitleClick:this.handleClick(data.id)
         });
       });
     }
@@ -35,6 +50,7 @@ export default class categorySideBar extends Component {
    
   render() {
     this.state.data = this.props.data;
+    const { activeIndex } = this.state
 
     return (
       <div>
@@ -42,7 +58,7 @@ export default class categorySideBar extends Component {
           <strong>All Categories</strong>
         </label>
         <Accordion
-          defaultActiveIndex={0}
+          activeIndex={activeIndex}
           panels={this.createPanel(this.state.data)}
           styled
         />

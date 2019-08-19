@@ -12,6 +12,7 @@ import Home from "../company/home";
 import Navigation from "../company/navigation";
 import CreateCompany from "../company/createCompany";
 import AdminApp from "../admin/adminApp";
+import Reports from "../company/reports"
 import { apiSubDomain, pathName } from "../../utils/api-config";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -45,6 +46,11 @@ function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
               path="/inventory"
               exact
               component={isSignedIn ? Inventory : Auth}
+            />
+            <Route
+              path="/reports"
+              exact
+              component={isSignedIn ? Reports : Auth}
             />
             <Route path="/register" component={SignUp} />
             <Route path="/login" component={SignIn} />

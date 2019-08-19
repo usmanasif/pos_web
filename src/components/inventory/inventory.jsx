@@ -53,7 +53,7 @@ export default class Inventory extends Component {
       .catch(function(error) {});
   };
   
-  fetchItemsData = () => {    
+  fetchItemsData = () => {
     http
       .get(`${apiUrl}/api/v1/items`)
       .then(res => {
@@ -115,6 +115,18 @@ export default class Inventory extends Component {
 
   };
 
+  filterItems = (cat_id) =>{
+      http
+      .get(`${apiUrl}/api/v1/items`, {params:{category_id: cat_id}})
+      .then(res => {
+        const itemData = res.data[1];
+        this.setState({ 
+          data: itemData,
+        });
+      })
+      .catch(error => console.log("Error: ", error));
+  }
+
   editItem = () => this.fetchItemsData();
 
   addItem = () =>  this.fetchItemsData();
@@ -133,7 +145,7 @@ export default class Inventory extends Component {
       <div>
         <Grid>
           <Grid.Column width={4}>
-            <CategorySideBar data={apiResponse} />
+            <CategorySideBar filterItems={this.filterItems} data={apiResponse} />
           </Grid.Column>
           <Grid.Column width={12}>
             <Form>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import http from "../../services/httpService";
+import http from "../../services/httpService";  
 import { apiUrl } from "../../utils/api-config";
-import { Button, Modal, Form, Dropdown } from "semantic-ui-react";
+import { Button, Modal, Form, Dropdown, Message } from "semantic-ui-react";
 var categoryList = [];
 
 export default class AddCategory extends Component {
@@ -9,6 +9,7 @@ export default class AddCategory extends Component {
     super(props);
     this.state = {
       open: false,
+      display: false,
       categoryObjID: "",
       categoryName:"",
       categoryOptions: [],
@@ -19,6 +20,7 @@ export default class AddCategory extends Component {
   initialState = () => {
     this.setState({
       open: false,
+      display: false,
       categoryName:"",
       categoryOptions: [],
       dropDownList: []
@@ -43,20 +45,27 @@ export default class AddCategory extends Component {
   };
 
   addCategory = () => {
-    let categoryName = this.state.categoryName;
-    let id = this.state.categoryObjID;
+    const {categoryName, categoryObjID, display} = this.state;
     let handler = this;
-    http
-      .post(apiUrl + "/api/v1/categories", {
-        name: categoryName,
-        parent_id: id
-      })
-      .then(function(response) {
-        handler.props.addCategory();
-      })
-      .catch(function(error) {});
+    if(categoryName){
+      http
+        .post(apiUrl + "/api/v1/categories", {
+          name: categoryName,
+          parent_id: categoryObjID
+        })
+        .then(function(response) {
+          handler.props.addCategory();
+        })
+        .catch(function(error) {});
 
-    this.initialState();
+      this.initialState();
+    }
+    else{
+      this.setState({
+        display:true
+      });
+
+    }
   };
   updateCategoryOptions = value => {
     var matchingObj = categoryList.find(cat => cat.name === value);
@@ -68,7 +77,6 @@ export default class AddCategory extends Component {
       this.createOptions(categoryList);
     }
   };
-
 
   createOptions = options => {
     let penalArray = [];
@@ -98,7 +106,7 @@ export default class AddCategory extends Component {
   };
 
   render() {
-    const { open, dimmer } = this.state;
+    const { open, dimmer, categoryName, dropDownList, display } = this.state;
 
     return (
       <div className="category">
@@ -110,7 +118,7 @@ export default class AddCategory extends Component {
           <Form className="categoryForm">
             <Form.Field>
               <label>Category</label>
-              {this.state.dropDownList.map(data => data)}
+              {dropDownList.map(data => data)}
             </Form.Field>
             <Form.Group widths="three">
               <Form.Input
@@ -118,10 +126,16 @@ export default class AddCategory extends Component {
                 label="Category Name"
                 placeholder="Item name"
                 name="categoryName"
-                value={this.state.categoryName}
+                value={categoryName}
                 onChange={this.onChange}
-              />
+                required
+                />
             </Form.Group>
+            {display?
+                <Message negative>
+                  <Message.Header>field can not be empty</Message.Header>
+                </Message>
+              :null}
           </Form>
 
           <Modal.Actions>

@@ -1,28 +1,23 @@
 import React, { Component } from "react";
-import Select from "react-select";
 import http from "../../services/httpService";
 import {
-  Input,
-  Form,
   Button,
   Grid,
-  Message,
   Segment,
   Table,
   Icon,
   Modal,
-  Header,
-  Checkbox
+  Checkbox,
+  Pagination
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
-import { Pagination } from "semantic-ui-react";
 
 class Reports extends Component {
   constructor(props) {
     super(props);
     this.state = {
       invoices: [],
-      page: 1,
+      current_page: 1,
       total_pages: 1,
       params: { per_page: 5, page: 1 },
       invoiceModalOpen: false
@@ -64,9 +59,22 @@ class Reports extends Component {
     params.today ? delete params.today : (params.today = true);
     this.setState({ params });
   };
-
+  handlePaginationChange = (e, { activePage }) => {
+    const params = { ...this.state.params };
+    params.page = activePage;
+    this.setState({ current_page: activePage, params }, () => {
+      this.fetchData();
+    });
+  };
   render() {
-    const { invoices, total, total_count, modalInvoice } = this.state;
+    const {
+      invoices,
+      total,
+      total_count,
+      modalInvoice,
+      current_page,
+      total_pages
+    } = this.state;
     const dateOptions = {
       year: "numeric",
       month: "long",
@@ -102,7 +110,7 @@ class Reports extends Component {
 
           <Table.Body>
             {invoices.map(i => (
-              <Table.Row Key={i.id}>
+              <Table.Row key={i.id}>
                 <Table.Cell>Devsinc</Table.Cell>
                 <Table.Cell>{i.id}</Table.Cell>
                 <Table.Cell>{i.total}</Table.Cell>
@@ -133,6 +141,21 @@ class Reports extends Component {
             ))}
           </Table.Body>
         </Table>
+        <Pagination
+          boundaryRange={0}
+          activePage={current_page}
+          siblingRange={1}
+          onPageChange={this.handlePaginationChange}
+          totalPages={total_pages}
+          ellipsisItem={{
+            content: <Icon name="ellipsis horizontal" />,
+            icon: true
+          }}
+          firstItem={{ content: <Icon name="angle double left" />, icon: true }}
+          lastItem={{ content: <Icon name="angle double right" />, icon: true }}
+          prevItem={{ content: <Icon name="angle left" />, icon: true }}
+          nextItem={{ content: <Icon name="angle right" />, icon: true }}
+        />
         <Segment color="blue" textAlign="right">
           <Grid>
             <Grid.Row>

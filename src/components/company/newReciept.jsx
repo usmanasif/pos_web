@@ -139,9 +139,7 @@ class NewReciept extends Component {
     this.state.selected_items.map((data, index) => {
       let item_bill = this.itemTotal(data);
 
-      total_bill =
-        total_bill +
-        item_bill;
+      total_bill = total_bill + item_bill;
     });
 
     let discounted_bill = 0.0;
@@ -174,19 +172,20 @@ class NewReciept extends Component {
           <td>{value}</td>
           <td>{unit_price}</td>
           <td>{quantity}</td>
-          <td><Button
+          <td>
+            <Button
               icon="minus"
               className="decrease-discount-icon"
               onClick={() => {
                 this.decreaseDiscount(index);
               }}
             />
-            { discount }%
+            {discount}%
             <Button
               icon="plus"
               className="increase-discount-icon"
               onClick={() => {
-                this.increaseDiscount(index)
+                this.increaseDiscount(index);
               }}
             />
           </td>
@@ -207,37 +206,37 @@ class NewReciept extends Component {
   }
 
   itemTotal = item => {
-    let item_bill = parseFloat(Number(item.unit_price * item.quantity).toFixed(2));
+    let item_bill = parseFloat(
+      Number(item.unit_price * item.quantity).toFixed(2)
+    );
 
-    if(item.discount > 0){
-      let discounted_bill = item_bill * (item.discount/100)
-      item_bill = item_bill - discounted_bill
+    if (item.discount > 0) {
+      let discounted_bill = item_bill * (item.discount / 100);
+      item_bill = item_bill - discounted_bill;
     }
 
     return item_bill;
-  }
+  };
 
   increaseDiscount = index => {
     let new_selected = [...this.state.selected_items];
-    if(new_selected[index].discount < 100) {
+    if (new_selected[index].discount < 100) {
       new_selected[index].discount += 5;
-      this.setState({selected_items: new_selected}, 
-        function() {
-          this.setTotalBill();
-        })
-    };
-  }
+      this.setState({ selected_items: new_selected }, function() {
+        this.setTotalBill();
+      });
+    }
+  };
 
   decreaseDiscount = index => {
     let new_selected = [...this.state.selected_items];
-    if(new_selected[index].discount > 0) {
+    if (new_selected[index].discount > 0) {
       new_selected[index].discount -= 5;
-      this.setState({selected_items: new_selected}, 
-        function() {
-          this.setTotalBill();
-        });
+      this.setState({ selected_items: new_selected }, function() {
+        this.setTotalBill();
+      });
     }
-  }
+  };
 
   removeItem = index => {
     let new_selected = [...this.state.selected_items];

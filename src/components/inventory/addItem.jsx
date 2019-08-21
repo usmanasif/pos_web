@@ -180,6 +180,7 @@ export default class AddItem extends Component {
                   name="code"
                   onChange={this.onChange}
                   value={this.state.code}
+                  required
                 />
                 <Form.Input
                   fluid
@@ -188,6 +189,7 @@ export default class AddItem extends Component {
                   name="name"
                   onChange={this.onChange}
                   value={this.state.name}
+                  required
                 />
               </Form.Group>
               <Form.Group widths="2">
@@ -198,6 +200,7 @@ export default class AddItem extends Component {
                   name="quantity"
                   onChange={this.onChange}
                   value={this.state.quantity}
+                  required
                 />
                 <Form.Input
                   fluid
@@ -206,10 +209,11 @@ export default class AddItem extends Component {
                   name="price"
                   onChange={this.onChange}
                   value={this.state.price}
+                  required
                 />
               </Form.Group>
               <br />
-              <Form.Field>
+              <Form.Field required>
                 <label>Category</label>
                 {this.state.dropDownList.map(data => data)}
               </Form.Field>

@@ -20,7 +20,7 @@ class Paginate extends Component {
     const { per_page} = this.state;
     const { totalPages } = this.props.pageSet;
     this.setState({
-      totalPages: totalPages/per_page
+      totalPages: Math.round(totalPages/per_page)
     });
   }
 
@@ -31,6 +31,7 @@ class Paginate extends Component {
       <Pagination
         boundaryRange={0}
         activePage={activePage}
+        siblingRange={3}
         firstItem={null}
         lastItem={null}
         totalPages={totalPages}

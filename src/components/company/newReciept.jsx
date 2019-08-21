@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import http from "../../services/httpService";
-import { Input, Form, Button, Grid, Message } from "semantic-ui-react";
+import { Input, Form, Button, Grid, Message, Label } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 
 class NewReciept extends Component {
@@ -22,7 +22,9 @@ class NewReciept extends Component {
       total: 0,
       discounted_total: 0,
       discounts: [],
-      current_discount: ""
+      current_discount: "",
+      adjustment_amount: 0,
+      totalBelowZeroError: false
     };
   }
 
@@ -34,7 +36,7 @@ class NewReciept extends Component {
   getData = () => {
     http.get(apiUrl + "/api/v1/items").then(response => {
       this.setState({
-        data: response.data
+        data: response.data[1]
       });
     });
   };
@@ -149,6 +151,17 @@ class NewReciept extends Component {
       discounted_bill = total_bill;
     }
 
+    if(this.state.adjustment_amount){
+      discounted_bill += parseFloat(this.state.adjustment_amount);
+    }
+
+    if(discounted_bill < 0){
+      this.setState({totalBelowZeroError: true})
+    }
+    else{
+      this.setState({totalBelowZeroError: false})
+    }
+
     this.setState({ total: total_bill, discounted_total: discounted_bill });
   };
 
@@ -259,7 +272,10 @@ class NewReciept extends Component {
   };
 
   createReciept = e => {
-    debugger;
+    if(this.state.totalBelowZeroError){
+      return null;
+    }
+
     if (this.state.selected_items.length == 0) {
       this.setState({ invalidForm: true });
       return null;
@@ -271,7 +287,8 @@ class NewReciept extends Component {
       .post(apiUrl + "/api/v1/invoices", {
         total: this.state.discounted_total,
         sold_items_attributes: this.state.selected_items,
-        discount_id: this.state.current_discount.id
+        discount_id: this.state.current_discount.id,
+        adjustment: this.state.adjustment_amount
       })
       .then(response => {
         if (response.status === 201) {
@@ -285,7 +302,8 @@ class NewReciept extends Component {
           total: 0,
           item_count: 0,
           current_discount: "",
-          discounted_total: 0
+          discounted_total: 0,
+          adjustment_amount: 0
         });
       });
   };
@@ -309,6 +327,14 @@ class NewReciept extends Component {
     return total_bill - discount_amount;
   };
 
+  setAdjustment = event => {
+    this.setState({adjustment_amount: event.target.value}, function() {
+      if(this.state.selected_items.length > 0) {
+        this.setTotalBill();
+      }
+    })
+  }
+
   render() {
     const itemList = this.state.data.map(
       ({ name, id, sale_price, current_stock }) => {
@@ -321,15 +347,6 @@ class NewReciept extends Component {
         };
       }
     );
-
-    let discountsList = this.state.discounts.map(({ id, detail, rate }) => {
-      return {
-        value: detail,
-        label: detail,
-        rate: rate,
-        id: id
-      };
-    });
 
     return (
       <Grid centered>
@@ -424,28 +441,14 @@ class NewReciept extends Component {
                     <th />
                     <th />
                     <th className="width-32">
-                      <Select
-                        placeholder="Select a discount"
-                        value={this.state.current_discount}
-                        options={discountsList}
-                        onChange={this.setDiscount}
-                      />
+                      <Input type='number' 
+                             placeholder='Adjustment'
+                             value={this.state.adjustment_amount}
+                             onChange={this.setAdjustment}>
+                        <input />
+                      </Input>
                     </th>
-                    <th>
-                      <span>
-                        {this.state.current_discount
-                          ? Number(this.state.current_discount.rate).toFixed(
-                              1
-                            ) + " %"
-                          : "00.0 %"}
-                      </span>
-                      <span
-                        className="clear remove-discount-btn"
-                        onClick={this.clearDiscount}
-                      >
-                        &times;
-                      </span>
-                    </th>
+                    <th />
                   </tr>
                   <tr>
                     <th />
@@ -464,6 +467,13 @@ class NewReciept extends Component {
                   error
                   header="Invoice Empty"
                   content="Please add items to the invoice"
+                />
+              ) : null}
+              {this.state.totalBelowZeroError ? (
+                <Message
+                  error
+                  header="Total Below Zero"
+                  content="The total bill should be greater or equal to 0"
                 />
               ) : null}
               {this.state.invoiceCreated ? (

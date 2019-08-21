@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React, { Component } from "react";
-import { Table, Input, Form, Button, Grid } from "semantic-ui-react";
+import { Table, Input, Form, Button, Grid, Segment } from "semantic-ui-react";
 import AddItem from "./addItem";
 import http from "../../services/httpService";
 import { apiUrl } from "../../utils/api-config";
@@ -27,7 +27,8 @@ export default class Inventory extends Component {
     data: [],
     apiResponse: [],
     direction: null,
-    item: ""
+    item: "", 
+    newCategories:[]
   };
 
   nextCategoryChild = obj => {
@@ -46,7 +47,8 @@ export default class Inventory extends Component {
       .get(apiUrl + "/api/v1/categories")
       .then(function(response) {
         handler.setState({
-          apiResponse: response.data
+          apiResponse: response.data,
+          newCategories: response.data
         });
         handler.checkCategoryTree(handler.state.data);
       })
@@ -127,6 +129,12 @@ export default class Inventory extends Component {
       .catch(error => console.log("Error: ", error));
   }
 
+  filterCategory = (item) => {
+    this.setState({
+      newCategories: item.children
+    });
+  }
+
   editItem = () => this.fetchItemsData();
 
   addItem = () =>  this.fetchItemsData();
@@ -139,13 +147,13 @@ export default class Inventory extends Component {
   }
   
   render() {
-    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page } = this.state;
+    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories } = this.state;
     
     return (
       <div>
         <Grid>
           <Grid.Column width={4}>
-            <CategorySideBar filterItems={this.filterItems} data={apiResponse} />
+            <CategorySideBar filterItems={this.filterItems} filterCategory = {this.filterCategory} data={newCategories} />
           </Grid.Column>
           <Grid.Column width={12}>
             <Form>

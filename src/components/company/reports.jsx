@@ -7,10 +7,15 @@ import {
   Table,
   Icon,
   Modal,
-  Checkbox,
-  Pagination
+  Pagination,
+  Container,
+  Radio,
+  Form
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 class Reports extends Component {
   constructor(props) {
@@ -20,7 +25,10 @@ class Reports extends Component {
       current_page: 1,
       total_pages: 1,
       params: { per_page: 5, page: 1 },
-      invoiceModalOpen: false
+      invoiceModalOpen: false,
+      filterBy: "today",
+      startDate: Date(),
+      endDate: Date()
     };
   }
   openInvoiceModal = invoiceId => {
@@ -41,7 +49,6 @@ class Reports extends Component {
     http
       .get(apiUrl + "/api/v1/invoices", { params: this.state.params })
       .then(response => {
-        console.log(response.data);
         this.setState({
           invoices: response.data.invoices,
           total_count: response.data.total_count,
@@ -51,14 +58,21 @@ class Reports extends Component {
       });
   };
   applyFilter = () => {
-    this.fetchData();
+    const params = { ...this.state.params };
+    if (this.state.filterBy === "today") {
+      params.today = true;
+      delete params.from_date;
+      delete params.to_date;
+    }
+    if (this.state.filterBy === "byDate") {
+      delete params.today;
+      params["from_date"] = this.state.startDate;
+      params["to_date"] = this.state.endDate;
+    }
+    params.page = 1;
+    this.setState({ params, current_page: 1 }, () => this.fetchData());
   };
 
-  handleTodayFilter = () => {
-    const params = { ...this.state.params };
-    params.today ? delete params.today : (params.today = true);
-    this.setState({ params });
-  };
   handlePaginationChange = (e, { activePage }) => {
     const params = { ...this.state.params };
     params.page = activePage;
@@ -66,6 +80,15 @@ class Reports extends Component {
       this.fetchData();
     });
   };
+  handleChangeStart = e => {
+    this.setState({ startDate: e });
+  };
+  handleChangeEnd = e => {
+    this.setState({ endDate: e });
+  };
+
+  changeFilterOption = (e, { value }) => this.setState({ filterBy: value });
+
   render() {
     const {
       invoices,
@@ -87,15 +110,77 @@ class Reports extends Component {
     };
     return (
       <div>
-        <Segment
-          content={
-            <div>
-              <div>Select Filters:</div>
-              <Checkbox label="Today" onClick={this.handleTodayFilter} />
-              <Button onClick={this.applyFilter}>Apply</Button>
-            </div>
-          }
-        />
+        <Container>
+          <Form>
+            <Form.Group>
+              <Form.Field width="2">
+                <label>
+                  <h3>Select Filter:</h3>
+                </label>
+              </Form.Field>
+              <Form.Field width="2">
+                <Radio
+                  label="Today"
+                  name="radioGroup"
+                  value="today"
+                  checked={this.state.filterBy === "today"}
+                  onChange={this.changeFilterOption}
+                />
+              </Form.Field>
+              <Form.Field width="2">
+                <Radio
+                  label="By Date"
+                  name="radioGroup"
+                  value="byDate"
+                  checked={this.state.filterBy === "byDate"}
+                  onChange={this.changeFilterOption}
+                />
+              </Form.Field>
+              <Form.Field width="2">
+                <Radio
+                  label="By Product"
+                  name="radioGroup"
+                  value="byProduct"
+                  checked={this.state.filterBy === "byProduct"}
+                  onChange={this.changeFilterOption}
+                />
+              </Form.Field>
+              <Form.Field width="7">
+                {this.state.filterBy === "byDate" && (
+                  <React.Fragment>
+                    <DatePicker
+                      className="ui input date_picker_input"
+                      selected={Date.parse(this.state.startDate)}
+                      selectsStart
+                      startDate={Date.parse(this.state.startDate)}
+                      endDate={Date.parse(this.state.endDate)}
+                      onChange={this.handleChangeStart}
+                      isClearable={true}
+                      dateFormat=" dd MMMM yyyy"
+                    />
+
+                    <DatePicker
+                      className="ui input date_picker_input"
+                      selected={Date.parse(this.state.endDate)}
+                      selectsEnd
+                      startDate={Date.parse(this.state.startDate)}
+                      endDate={Date.parse(this.state.endDate)}
+                      onChange={this.handleChangeEnd}
+                      minDate={Date.parse(this.state.startDate)}
+                      isClearable={true}
+                      dateFormat=" dd MMMM yyyy"
+                    />
+                  </React.Fragment>
+                )}
+              </Form.Field>
+              <Form.Field width="1">
+                <Button floated="right" color="teal" onClick={this.applyFilter}>
+                  Apply
+                </Button>
+              </Form.Field>
+            </Form.Group>
+          </Form>
+        </Container>
         <Table celled>
           <Table.Header>
             <Table.Row>
@@ -141,25 +226,33 @@ class Reports extends Component {
             ))}
           </Table.Body>
         </Table>
-        <Pagination
-          boundaryRange={0}
-          activePage={current_page}
-          siblingRange={1}
-          onPageChange={this.handlePaginationChange}
-          totalPages={total_pages}
-          ellipsisItem={{
-            content: <Icon name="ellipsis horizontal" />,
-            icon: true
-          }}
-          firstItem={{ content: <Icon name="angle double left" />, icon: true }}
-          lastItem={{ content: <Icon name="angle double right" />, icon: true }}
-          prevItem={{ content: <Icon name="angle left" />, icon: true }}
-          nextItem={{ content: <Icon name="angle right" />, icon: true }}
-        />
+        <Container textAlign="right">
+          <Pagination
+            boundaryRange={0}
+            activePage={current_page}
+            siblingRange={1}
+            onPageChange={this.handlePaginationChange}
+            totalPages={total_pages}
+            ellipsisItem={{
+              content: <Icon name="ellipsis horizontal" />,
+              icon: true
+            }}
+            firstItem={{
+              content: <Icon name="angle double left" />,
+              icon: true
+            }}
+            lastItem={{
+              content: <Icon name="angle double right" />,
+              icon: true
+            }}
+            prevItem={{ content: <Icon name="angle left" />, icon: true }}
+            nextItem={{ content: <Icon name="angle right" />, icon: true }}
+          />
+        </Container>
         <Segment color="blue" textAlign="right">
           <Grid>
             <Grid.Row>
-              <Grid.Column width="8">
+              <Grid.Column width="8" textAlign="left">
                 <h3>Total Invoices: {total_count}</h3>
               </Grid.Column>
               <Grid.Column width="8">

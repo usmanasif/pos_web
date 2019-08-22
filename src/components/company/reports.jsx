@@ -10,7 +10,8 @@ import {
   Pagination,
   Container,
   Radio,
-  Form
+  Form,
+  Checkbox
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 import DatePicker from "react-datepicker";
@@ -21,12 +22,13 @@ class Reports extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      invoices: [],
+      data: false,
       current_page: 1,
       total_pages: 1,
       params: { per_page: 5, page: 1 },
       invoiceModalOpen: false,
       filterBy: "today",
+      by_product: false,
       startDate: Date(),
       endDate: Date()
     };
@@ -43,14 +45,17 @@ class Reports extends Component {
   handleClose = () => this.setState({ invoiceModalOpen: false });
 
   componentDidMount() {
-    this.fetchData();
+    // this.fetchData();
   }
   fetchData = () => {
     http
       .get(apiUrl + "/api/v1/invoices", { params: this.state.params })
       .then(response => {
+        const data = response.data.invoices
+          ? { invoices: response.data.invoices }
+          : { products: response.data.products };
         this.setState({
-          invoices: response.data.invoices,
+          data,
           total_count: response.data.total_count,
           total: response.data.total,
           total_pages: response.data.total_pages
@@ -69,7 +74,11 @@ class Reports extends Component {
       params["from_date"] = this.state.startDate;
       params["to_date"] = this.state.endDate;
     }
+    this.state.by_product
+      ? (params.by_product = true)
+      : delete params.by_product;
     params.page = 1;
+    params.per_page = this.state.by_product === true ? 8 : 5;
     this.setState({ params, current_page: 1 }, () => this.fetchData());
   };
 
@@ -88,15 +97,20 @@ class Reports extends Component {
   };
 
   changeFilterOption = (e, { value }) => this.setState({ filterBy: value });
-
+  handleByProductFilter = (e, { value }) => {
+    const by_product = this.state.by_product;
+    this.setState({ by_product: !by_product });
+  };
   render() {
     const {
-      invoices,
+      data,
       total,
       total_count,
       modalInvoice,
       current_page,
-      total_pages
+      total_pages,
+      startDate,
+      endDate
     } = this.state;
     const dateOptions = {
       year: "numeric",
@@ -137,12 +151,10 @@ class Reports extends Component {
                 />
               </Form.Field>
               <Form.Field width="2">
-                <Radio
+                <Checkbox
                   label="By Product"
-                  name="radioGroup"
-                  value="byProduct"
-                  checked={this.state.filterBy === "byProduct"}
-                  onChange={this.changeFilterOption}
+                  checked={this.state.by_product}
+                  onChange={this.handleByProductFilter}
                 />
               </Form.Field>
               <Form.Field width="7">
@@ -150,10 +162,10 @@ class Reports extends Component {
                   <React.Fragment>
                     <DatePicker
                       className="ui input date_picker_input"
-                      selected={Date.parse(this.state.startDate)}
+                      selected={Date.parse(startDate)}
                       selectsStart
-                      startDate={Date.parse(this.state.startDate)}
-                      endDate={Date.parse(this.state.endDate)}
+                      startDate={Date.parse(startDate)}
+                      endDate={Date.parse(endDate)}
                       onChange={this.handleChangeStart}
                       isClearable={true}
                       dateFormat=" dd MMMM yyyy"
@@ -161,12 +173,12 @@ class Reports extends Component {
 
                     <DatePicker
                       className="ui input date_picker_input"
-                      selected={Date.parse(this.state.endDate)}
+                      selected={Date.parse(endDate)}
                       selectsEnd
-                      startDate={Date.parse(this.state.startDate)}
-                      endDate={Date.parse(this.state.endDate)}
+                      startDate={Date.parse(startDate)}
+                      endDate={Date.parse(endDate)}
                       onChange={this.handleChangeEnd}
-                      minDate={Date.parse(this.state.startDate)}
+                      minDate={Date.parse(startDate)}
                       isClearable={true}
                       dateFormat=" dd MMMM yyyy"
                     />
@@ -181,86 +193,114 @@ class Reports extends Component {
             </Form.Group>
           </Form>
         </Container>
-        <Table celled>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Company</Table.HeaderCell>
-              <Table.HeaderCell>Invoice ID</Table.HeaderCell>
-              <Table.HeaderCell>Invoice Total</Table.HeaderCell>
-              <Table.HeaderCell>Date</Table.HeaderCell>
-              <Table.HeaderCell>Time</Table.HeaderCell>
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
+        {data && (
+          <Table celled>
+            <Table.Header>
+              {data.invoices && (
+                <Table.Row>
+                  <Table.HeaderCell>Company</Table.HeaderCell>
+                  <Table.HeaderCell>Invoice ID</Table.HeaderCell>
+                  <Table.HeaderCell>Invoice Total</Table.HeaderCell>
+                  <Table.HeaderCell>Date</Table.HeaderCell>
+                  <Table.HeaderCell>Time</Table.HeaderCell>
+                  <Table.HeaderCell />
+                </Table.Row>
+              )}
+              {data.products && (
+                <Table.Row>
+                  <Table.HeaderCell>Company</Table.HeaderCell>
+                  <Table.HeaderCell>Product ID</Table.HeaderCell>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Sold Quantity</Table.HeaderCell>
+                  <Table.HeaderCell>Total</Table.HeaderCell>
+                </Table.Row>
+              )}
+            </Table.Header>
 
-          <Table.Body>
-            {invoices.map(i => (
-              <Table.Row key={i.id}>
-                <Table.Cell>Devsinc</Table.Cell>
-                <Table.Cell>{i.id}</Table.Cell>
-                <Table.Cell>{i.total}</Table.Cell>
-                <Table.Cell>
-                  {new Intl.DateTimeFormat("en-PK", dateOptions).format(
-                    new Date(i.created_at)
-                  )}
-                </Table.Cell>
-                <Table.Cell>
-                  {new Intl.DateTimeFormat("en-PK", timeOptions).format(
-                    new Date(i.created_at)
-                  )}
-                </Table.Cell>
-                <Table.Cell textAlign="center">
-                  <Button
-                    animated
-                    basic
-                    color="blue"
-                    onClick={() => this.openInvoiceModal(i.id)}
-                  >
-                    <Button.Content hidden>Show</Button.Content>
-                    <Button.Content visible>
-                      <Icon name="file" />
-                    </Button.Content>
-                  </Button>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-        <Container textAlign="right">
-          <Pagination
-            boundaryRange={0}
-            activePage={current_page}
-            siblingRange={1}
-            onPageChange={this.handlePaginationChange}
-            totalPages={total_pages}
-            ellipsisItem={{
-              content: <Icon name="ellipsis horizontal" />,
-              icon: true
-            }}
-            firstItem={{
-              content: <Icon name="angle double left" />,
-              icon: true
-            }}
-            lastItem={{
-              content: <Icon name="angle double right" />,
-              icon: true
-            }}
-            prevItem={{ content: <Icon name="angle left" />, icon: true }}
-            nextItem={{ content: <Icon name="angle right" />, icon: true }}
-          />
-        </Container>
-        <Segment color="blue" textAlign="right">
-          <Grid>
-            <Grid.Row>
-              <Grid.Column width="8" textAlign="left">
-                <h3>Total Invoices: {total_count}</h3>
-              </Grid.Column>
-              <Grid.Column width="8">
-                <h3>Total Amount: {total}</h3>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
+            <Table.Body>
+              {data.invoices &&
+                data.invoices.map(i => (
+                  <Table.Row key={i.id}>
+                    <Table.Cell>Devsinc</Table.Cell>
+                    <Table.Cell>{i.id}</Table.Cell>
+                    <Table.Cell>{i.total}</Table.Cell>
+                    <Table.Cell>
+                      {new Intl.DateTimeFormat("en-PK", dateOptions).format(
+                        new Date(i.created_at)
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {new Intl.DateTimeFormat("en-PK", timeOptions).format(
+                        new Date(i.created_at)
+                      )}
+                    </Table.Cell>
+                    <Table.Cell textAlign="center">
+                      <Button
+                        animated
+                        basic
+                        color="blue"
+                        onClick={() => this.openInvoiceModal(i.id)}
+                      >
+                        <Button.Content hidden>Show</Button.Content>
+                        <Button.Content visible>
+                          <Icon name="file" />
+                        </Button.Content>
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              {data.products &&
+                data.products.map(p => (
+                  <Table.Row key={p.id}>
+                    <Table.Cell>Devsinc</Table.Cell>
+                    <Table.Cell>{p.id}</Table.Cell>
+                    <Table.Cell>{p.name}</Table.Cell>
+                    <Table.Cell>{p.sold_quantity}</Table.Cell>
+                    <Table.Cell>{p.total_sold_price}</Table.Cell>
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table>
+        )}
+        {data && (
+          <Container textAlign="right">
+            <Pagination
+              boundaryRange={0}
+              activePage={current_page}
+              siblingRange={1}
+              onPageChange={this.handlePaginationChange}
+              totalPages={total_pages}
+              ellipsisItem={{
+                content: <Icon name="ellipsis horizontal" />,
+                icon: true
+              }}
+              firstItem={{
+                content: <Icon name="angle double left" />,
+                icon: true
+              }}
+              lastItem={{
+                content: <Icon name="angle double right" />,
+                icon: true
+              }}
+              prevItem={{ content: <Icon name="angle left" />, icon: true }}
+              nextItem={{ content: <Icon name="angle right" />, icon: true }}
+            />
+          </Container>
+        )}
+        {data.invoices && (
+          <Segment color="blue" textAlign="right">
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width="8" textAlign="left">
+                  <h3>Total Invoices: {total_count}</h3>
+                </Grid.Column>
+                <Grid.Column width="8">
+                  <h3>Total Amount: {total}</h3>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+        )}
         <Modal
           open={this.state.invoiceModalOpen}
           onClose={this.handleClose}

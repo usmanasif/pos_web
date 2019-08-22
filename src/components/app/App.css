@@ -8,7 +8,7 @@
   pointer-events: none;
 }
 .marginTop {
-  margin-top: 6vh;
+  margin-top: 3vh;
 }
 .m-10 {
   margin: 10px;
@@ -51,6 +51,23 @@
 
 .Toastify__toast--default {
   color: black;
+}
+
+.react-datepicker-wrapper {
+  display: inline-block;
+  padding: 0px 20px;
+}
+
+.date_picker_input {
+  padding: 8px 10px;
+  border: #2185d0 1px solid;
+  border-radius: 2px;
+}
+
+.ui.pagination.menu .active.item {
+  background-color: rgb(33, 133, 208) !important;
+  color: rgb(255, 255, 255) !important;
+  outline-color: rgb(33, 133, 208) !important;
 }
 
 .nav_menu_item {

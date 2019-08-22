@@ -122,6 +122,7 @@ export default class AddCategory extends Component {
                         'if you want to add sub-category select the parent category from "Category" field.',
                       ]}
                       />
+
             </Form.Field>
             {dropDownList.length>0?
             <Form.Field>

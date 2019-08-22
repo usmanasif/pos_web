@@ -148,7 +148,7 @@ export default class Inventory extends Component {
   
   render() {
     const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories } = this.state;
-
+    
     return (
       <div>
         <Grid>

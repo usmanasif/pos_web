@@ -30,6 +30,7 @@ export default class AddItem extends Component {
   initialState = () => {
     this.setState({
       open: false,
+      display: false,
       code: "",
       name: "",
       quantity: "",

@@ -126,6 +126,8 @@ export default class Inventory extends Component {
       this.fetchItemsData();
     })
     .catch(error => console.log("Error: ", error));
+
+    this.close();
   };
 
   filterItems = (cat_id) =>{
@@ -148,7 +150,10 @@ export default class Inventory extends Component {
 
   editItem = () => this.fetchItemsData();
 
-  addItem = () => this.fetchItemsData();
+  addItem = () => {
+    this.fetchItemsData();
+    this.fetchCategoriesData();
+  }
 
   addCategory = () => this.fetchCategoriesData();
   

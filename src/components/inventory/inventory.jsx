@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React, { Component } from "react";
-import { Table, Input, Form, Button, Grid, Segment } from "semantic-ui-react";
+import { Table, Input, Form, Button, Grid, Modal, Header } from "semantic-ui-react";
 import AddItem from "./addItem";
 import http from "../../services/httpService";
 import { apiUrl } from "../../utils/api-config";
@@ -28,8 +28,20 @@ export default class Inventory extends Component {
     apiResponse: [],
     direction: null,
     item: "", 
-    newCategories:[]
+    newCategories:[],
+    open: false
   };
+
+  close =()=>{
+    this.setState({
+      open: false
+    });
+  }
+  show = () =>{
+    this.setState({
+      open: true
+    });
+  }
 
   nextCategoryChild = obj => {
     if (obj.children.length > 0) this.checkCategoryTree(obj.children);
@@ -114,7 +126,6 @@ export default class Inventory extends Component {
       this.fetchItemsData();
     })
     .catch(error => console.log("Error: ", error));
-
   };
 
   filterItems = (cat_id) =>{
@@ -137,9 +148,9 @@ export default class Inventory extends Component {
 
   editItem = () => this.fetchItemsData();
 
-  addItem = () =>  this.fetchItemsData();
+  addItem = () => this.fetchItemsData();
 
-  addCategory = () =>  this.fetchCategoriesData();
+  addCategory = () => this.fetchCategoriesData();
   
   componentDidMount() {
     this.fetchCategoriesData();
@@ -147,8 +158,8 @@ export default class Inventory extends Component {
   }
   
   render() {
-    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories } = this.state;
-    
+    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories, open } = this.state;
+
     return (
       <div>
         <Grid>
@@ -206,11 +217,25 @@ export default class Inventory extends Component {
                     <Table.Cell>{d.category.name}</Table.Cell>
                     <Table.Cell>{d.sale_price}</Table.Cell>
                     <Table.Cell>
-                      <Button
-                        color="red"
-                        icon="delete"
-                        onClick={() => this.deleteItem(index)}
-                      />
+                    <Modal open={open} trigger={
+                        <Button
+                          color="red"
+                          icon="trash alternate"
+                          onClick={this.show}
+                        />
+                      }>
+                        <Modal.Header>Are you sure to delete this item?</Modal.Header>
+                        <Modal.Actions>
+                        <Button color="black" content="Cancel" onClick={this.close}>
+                          Cancel
+                        </Button>
+                        <Button
+                          positive
+                          content="Confirm Delete"
+                          onClick={()=>this.deleteItem(index) }
+                        />
+                      </Modal.Actions>
+                    </Modal>
                       <AddItem itemData={d} editItem={this.editItem} data={apiResponse} />
                     </Table.Cell>
                   </Table.Row>

@@ -100,26 +100,33 @@ export default class AddItem extends Component {
     const {id} = this.props.itemData;
     const { code, name, quantity, price , categoryObjID} = this.state;
 
+    if(code && name && quantity && price){
     // api call to update item
-    http
-      .put(`${apiUrl}/api/v1/items/${id}`, {
-        code,
-        name,
-        current_stock: quantity,
-        sale_price: price,
-        category_id: categoryObjID
-      })
-      .then(res => {
-        this.props.editItem();
-      })
-      .catch(error => console.log(error));
+      http
+        .put(`${apiUrl}/api/v1/items/${id}`, {
+          code,
+          name,
+          current_stock: quantity,
+          sale_price: price,
+          category_id: categoryObjID
+        })
+        .then(res => {
+          this.props.editItem();
+        })
+        .catch(error => console.log(error));
 
-      this.setState({
-        open: false,
-        categoryOptions: [],
-        dropDownList: [],
-      });
-  };
+        this.setState({
+          open: false,
+          categoryOptions: [],
+          dropDownList: [],
+        });
+      }
+      else{
+        this.setState({
+          display:true
+        });
+      }
+    };
 
   updateCategoryOptions = value => {
     var matchingObj = itemList.find(cat => cat.name === value);
@@ -241,7 +248,7 @@ export default class AddItem extends Component {
 
             <Modal.Actions>
               <Button color="black" onClick={this.close}>
-                Nope
+                Cancel
               </Button>
               <Button
                 positive

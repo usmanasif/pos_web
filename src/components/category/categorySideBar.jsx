@@ -41,12 +41,17 @@ export default class categorySideBar extends Component {
    
   render() {
     this.state.data = this.props.data
-    const {data } = this.state
+    const { data } = this.state
 
     return (
-      <div style={{ marginTop:"16%"}}>  
-          <a href="" onClick={this.gotoHome}>Home</a>
-          <hr></hr>
+      <div style={data.length>0?{ marginTop:"4%"}:{ marginTop:"20%"}}>
+          {data.length>0?
+          <div>
+            <a href="" onClick={this.gotoHome}>Home</a>
+            <hr></hr>
+          </div>
+          :null
+          }
           <Table celled padded >
             <Table.Header>
               <Table.Row>

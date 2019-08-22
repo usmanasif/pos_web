@@ -64,7 +64,6 @@ export default class AddCategory extends Component {
       this.setState({
         display:true
       });
-
     }
   };
   updateCategoryOptions = value => {
@@ -107,7 +106,7 @@ export default class AddCategory extends Component {
 
   render() {
     const { open, dimmer, categoryName, dropDownList, display } = this.state;
-
+    
     return (
       <div className="category">
         <Button id="addcategory" onClick={this.show("blurring")} primary>
@@ -117,9 +116,19 @@ export default class AddCategory extends Component {
           <Modal.Header>Add Category</Modal.Header>
           <Form className="categoryForm">
             <Form.Field>
+              <Message info
+                list={[
+                        'if you want to add parent category leave the "Category" field as blank.',
+                        'if you want to add sub-category select the parent category from "Category" field.',
+                      ]}
+                      />
+            </Form.Field>
+            {dropDownList.length>0?
+            <Form.Field>
               <label>Category</label>
               {dropDownList.map(data => data)}
-            </Form.Field>
+            </Form.Field>:null
+            }
             <Form.Group widths="three">
               <Form.Input
                 fluid

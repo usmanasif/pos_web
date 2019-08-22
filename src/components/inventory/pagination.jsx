@@ -20,7 +20,7 @@ class Paginate extends Component {
     const { per_page} = this.state;
     const { totalPages } = this.props.pageSet;
     this.setState({
-      totalPages: Math.round(totalPages/per_page)
+      totalPages: Math.ceil(totalPages/per_page)
     });
   }
 

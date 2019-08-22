@@ -161,8 +161,10 @@ export default class Inventory extends Component {
                 icon="search"
                 placeholder="Search..."
                 onChange={this.searchHandler}
-              />
-              <AddItem addItem={this.addItem} data={apiResponse} />
+              /> 
+              {apiResponse.length>0?
+              <AddItem addItem={this.addItem} data={apiResponse} />:null
+              }
               <AddCategory addCategory = {this.addCategory}  data={apiResponse} />
             </Form>
             <Table sortable celled fixed>
@@ -196,8 +198,7 @@ export default class Inventory extends Component {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {
-                
+                {             
                 data.filter(searchingFor(item)).map((d, index) => (
                   <Table.Row key={d.id}>
                     <Table.Cell>{d.name}</Table.Cell>
@@ -217,7 +218,7 @@ export default class Inventory extends Component {
               </Table.Body>
             </Table>
             {
-              totalPages>0?
+              totalPages>0? 
             <Paginate handlePagination = {this.handlePagination} pageSet ={{ activePage, totalPages, per_page }}/>:null
             }
           </Grid.Column>

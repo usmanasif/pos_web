@@ -4,7 +4,8 @@ import {
   Modal,
   Form,
   TextArea,
-  Dropdown
+  Dropdown,
+  Message
 } from "semantic-ui-react";
 import http from "../../services/httpService.js";
 import { apiUrl } from "../../utils/api-config";
@@ -16,6 +17,7 @@ export default class AddItem extends Component {
     super(props);
     this.state = {
       open: false,
+      display: false,
       code: "",
       name: "",
       quantity: "",
@@ -28,6 +30,7 @@ export default class AddItem extends Component {
   initialState = () => {
     this.setState({
       open: false,
+      display: false,
       code: "",
       name: "",
       quantity: "",
@@ -70,20 +73,27 @@ export default class AddItem extends Component {
   addItem = () => {
     const { code, name, quantity, price, categoryObjID } = this.state;
 
-    http
-      .post(`${apiUrl}/api/v1/items`, {
-        code,
-        name,
-        current_stock: quantity,
-        sale_price: price,
-        category_id: categoryObjID
-      })
-      .then(res => {
-        this.props.addItem();
-      })
-      .catch(error => console.log(error));
-      
-    this.initialState();
+    if(code && name && quantity && price && categoryObjID){
+      http
+        .post(`${apiUrl}/api/v1/items`, {
+          code,
+          name,
+          current_stock: quantity,
+          sale_price: price,
+          category_id: categoryObjID
+        })
+        .then(res => {
+          this.props.addItem();
+        })
+        .catch(error => console.log(error));
+        
+      this.initialState();
+    }
+    else{
+      this.setState({
+        display:true
+      });
+    }
   };
 
   editItem = () => {
@@ -156,7 +166,7 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open } = this.state;
+    const { open, display, dropDownList } = this.state;
 
     return (
       <React.Fragment>
@@ -212,15 +222,21 @@ export default class AddItem extends Component {
                   required
                 />
               </Form.Group>
-              <br />
+              <Message info content="select the category in which you want to add item" />
               <Form.Field required>
                 <label>Category</label>
-                {this.state.dropDownList.map(data => data)}
+                {dropDownList.map(data => data)}
               </Form.Field>
               <Form.Field>
                 <label>Description</label>
                 <TextArea placeholder="Tell more about Item" rows={4} />
               </Form.Field>
+              {display?
+                <Message negative>
+                  <Message.Header>fields can not be empty</Message.Header>
+                  <p>check the fields with red-star, these should not be empty </p>
+                </Message>
+              :null}
             </Form>
 
             <Modal.Actions>

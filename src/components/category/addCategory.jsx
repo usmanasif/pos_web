@@ -45,7 +45,7 @@ export default class AddCategory extends Component {
   };
 
   addCategory = () => {
-    const {categoryName, categoryObjID, display} = this.state;
+    const {categoryName, categoryObjID} = this.state;
     let handler = this;
     if(categoryName){
       http

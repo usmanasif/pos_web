@@ -36,7 +36,6 @@ export default class categorySideBar extends Component {
     return arr;
   }
   gotoHome = () =>{
-    console.log("1");
     this.props.gotoHome();
   }
    

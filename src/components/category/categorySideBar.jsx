@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {List, Icon, Table, Header, Image } from "semantic-ui-react";
+import {List, Icon, Table, Header, Button } from "semantic-ui-react";
 
 
 export default class categorySideBar extends Component {
@@ -36,7 +36,8 @@ export default class categorySideBar extends Component {
     return arr;
   }
   gotoHome = () =>{
-    window.location.reload();
+    console.log("1");
+    this.props.gotoHome();
   }
    
   render() {
@@ -44,11 +45,13 @@ export default class categorySideBar extends Component {
     const { data } = this.state
 
     return (
-      <div style={data.length>0?{ marginTop:"4%"}:{ marginTop:"20%"}}>
+      <div style={data.length>0?{ marginTop:"6%"}:{ marginTop:"20%"}}>
           {data.length>0?
           <div>
-            <a href="" onClick={this.gotoHome}>Home</a>
-            <hr></hr>
+              <Button primary floated='left' onClick={this.gotoHome}>
+              <Icon name='left chevron' />
+                Home
+            </Button>
           </div>
           :null
           }

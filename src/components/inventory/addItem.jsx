@@ -173,7 +173,7 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open, display, dropDownList } = this.state;
+    const { open, display, dropDownList, dimmer } = this.state;
 
     return (
       <React.Fragment>
@@ -186,7 +186,7 @@ export default class AddItem extends Component {
               Add item
             </Button>
           )}
-          <Modal open={open} onClose={this.close}>
+          <Modal dimmer = {dimmer} open={open} onClose={this.close}>
             <Modal.Header>{this.props.itemData ? "Edit Item" : "Add Item"}</Modal.Header>
             <Form className="itemForm">
               <Form.Group widths="2">

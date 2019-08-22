@@ -156,7 +156,14 @@ export default class Inventory extends Component {
   }
 
   addCategory = () => this.fetchCategoriesData();
-  
+
+  gotoHome = () => {
+    // this.setState({state:this.state});
+    this.componentDidMount();
+    console.log("2");
+
+  }
+
   componentDidMount() {
     this.fetchCategoriesData();
     this.fetchItemsData();
@@ -169,7 +176,7 @@ export default class Inventory extends Component {
       <div>
         <Grid>
           <Grid.Column width={4}>
-            <CategorySideBar filterItems={this.filterItems} filterCategory = {this.filterCategory} data={newCategories} />
+            <CategorySideBar gotoHome={this.gotoHome} filterItems={this.filterItems} filterCategory = {this.filterCategory} data={newCategories} />
           </Grid.Column>
           <Grid.Column width={12}>
             <Form>

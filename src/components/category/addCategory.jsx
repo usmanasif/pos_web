@@ -106,7 +106,7 @@ export default class AddCategory extends Component {
 
   render() {
     const { open, dimmer, categoryName, dropDownList, display } = this.state;
-    
+
     return (
       <div className="category">
         <Button id="addcategory" onClick={this.show("blurring")} primary>
@@ -150,7 +150,7 @@ export default class AddCategory extends Component {
 
           <Modal.Actions>
             <Button color="black" onClick={this.close}>
-              Nope
+              Cancel
             </Button>
             <Button
               positive

@@ -11,7 +11,8 @@ import {
   Container,
   Radio,
   Form,
-  Checkbox
+  Checkbox,
+  Dropdown
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 import DatePicker from "react-datepicker";
@@ -29,6 +30,7 @@ class Reports extends Component {
       invoiceModalOpen: false,
       filterBy: "today",
       by_product: false,
+      by_selected_products: false,
       startDate: Date(),
       endDate: Date()
     };
@@ -46,6 +48,7 @@ class Reports extends Component {
 
   componentDidMount() {
     // this.fetchData();
+    // this.applyFilter();
   }
   fetchData = () => {
     http
@@ -74,6 +77,9 @@ class Reports extends Component {
       params["from_date"] = this.state.startDate;
       params["to_date"] = this.state.endDate;
     }
+    if (this.state.by_selected_products === true) {
+      params["by_selected_products"] = this.state.seletedItems.toString();
+    }
     this.state.by_product
       ? (params.by_product = true)
       : delete params.by_product;
@@ -97,13 +103,38 @@ class Reports extends Component {
   };
 
   changeFilterOption = (e, { value }) => this.setState({ filterBy: value });
-  handleByProductFilter = (e, { value }) => {
+  handleByProductFilter = () => {
     const by_product = this.state.by_product;
-    this.setState({ by_product: !by_product });
+    this.setState({ by_product: !by_product, by_selected_products: false });
+  };
+  handleBySelectedProducts = () => {
+    const by_selected_products = this.state.by_selected_products;
+    if (by_selected_products === false) {
+      http
+        .get(`${apiUrl}/api/v1/items`)
+        .then(({ data }) => {
+          const items = [];
+          data[1].forEach(i =>
+            items.push({ key: i.id, value: i.id, text: i.name })
+          );
+          this.setState({ items });
+        })
+        .catch(error => console.log(error));
+    }
+    this.setState({
+      by_product: false,
+      by_selected_products: !by_selected_products
+    });
+  };
+  handleBySelectedProductsFilter = (e, { value }) => {
+    console.log(value);
+
+    this.setState({ seletedItems: value });
   };
   render() {
     const {
       data,
+      items,
       total,
       total_count,
       modalInvoice,
@@ -126,7 +157,7 @@ class Reports extends Component {
       <div>
         <Container>
           <Form>
-            <Form.Group>
+            <Form.Group className="filter_form_fields">
               <Form.Field width="2">
                 <label>
                   <h3>Select Filter:</h3>
@@ -141,7 +172,7 @@ class Reports extends Component {
                   onChange={this.changeFilterOption}
                 />
               </Form.Field>
-              <Form.Field width="2">
+              <Form.Field width="3">
                 <Radio
                   label="By Date"
                   name="radioGroup"
@@ -150,14 +181,7 @@ class Reports extends Component {
                   onChange={this.changeFilterOption}
                 />
               </Form.Field>
-              <Form.Field width="2">
-                <Checkbox
-                  label="By Product"
-                  checked={this.state.by_product}
-                  onChange={this.handleByProductFilter}
-                />
-              </Form.Field>
-              <Form.Field width="7">
+              <Form.Field width="8">
                 {this.state.filterBy === "byDate" && (
                   <React.Fragment>
                     <DatePicker
@@ -191,10 +215,41 @@ class Reports extends Component {
                 </Button>
               </Form.Field>
             </Form.Group>
+            <Form.Group className="filter_form_fields">
+              <Form.Field width="2" />
+              <Form.Field width="2">
+                <Checkbox
+                  label="By Product"
+                  checked={this.state.by_product}
+                  onChange={this.handleByProductFilter}
+                />
+              </Form.Field>
+              <Form.Field width="3">
+                <Checkbox
+                  label="By Selected Products"
+                  checked={this.state.by_selected_products}
+                  onChange={this.handleBySelectedProducts}
+                />
+              </Form.Field>
+              <Form.Field width="9">
+                {items && this.state.by_selected_products && (
+                  <Dropdown
+                    clearable
+                    placeholder="Select Products"
+                    fluid
+                    multiple
+                    search
+                    selection
+                    options={items}
+                    onChange={this.handleBySelectedProductsFilter}
+                  />
+                )}
+              </Form.Field>
+            </Form.Group>
           </Form>
         </Container>
         {data && (
-          <Table celled>
+          <Table className="filter_table" celled>
             <Table.Header>
               {data.invoices && (
                 <Table.Row>

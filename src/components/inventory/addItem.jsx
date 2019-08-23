@@ -24,7 +24,7 @@ export default class AddItem extends Component {
       price: "",
       category: "",
       categoryOptions: [],
-      dropDownList: [],
+      dropDownList: []
     };
   }
   initialState = () => {
@@ -38,7 +38,7 @@ export default class AddItem extends Component {
       category: "",
       categoryObjID: "",
       categoryOptions: [],
-      dropDownList: [],
+      dropDownList: []
     });
   };
 
@@ -53,8 +53,8 @@ export default class AddItem extends Component {
     });
   };
 
-  show = dimmer => () => {
-    this.setState({ dimmer, open: true });
+  show  = () => {
+    this.setState({ open: true });
     itemList = this.props.data;
     this.createOptions(this.props.data);
   };
@@ -160,7 +160,7 @@ export default class AddItem extends Component {
   createOptions = options => {
     let penalArray = [];
     if (options && options.length > 0) {
-      options.map(data => {
+      options.forEach(data => {
         penalArray.push({ key: data.id, text: data.name, value: data.name });
       });
     }
@@ -175,6 +175,7 @@ export default class AddItem extends Component {
           placeholder="category"
           fluid
           selection
+          key={Math.random()}
           options={opt}
           onChange={this.handleChange}
         />
@@ -191,21 +192,21 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open, display, dropDownList, dimmer, code, name, quantity, price } = this.state;
+    const { open, display, dropDownList, code, name, quantity, price } = this.state;
     const { itemData } = this.props;
 
     return (
       <React.Fragment>
         {itemData && (
-          <Button color="green" icon="edit" onClick={this.show("edit")} />
+          <Button color="green" icon="edit" onClick={()=>this.show("edit")} />
         )}
         <div className="item">
           {!itemData && (
-            <Button id="addItem" onClick={this.show("add")} primary>
+            <Button id="addItem" onClick={()=>this.show("add")} primary>
               Add item
             </Button>
           )}
-          <Modal dimmer = {dimmer} open={open} onClose={this.close}>
+          <Modal dimmer = "blurring" open={open} onClose={this.close}>
             <Modal.Header>{itemData ? "Edit Item" : "Add Item"}</Modal.Header>
             <Form className="itemForm">
               <Form.Group widths="2">

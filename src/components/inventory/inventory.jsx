@@ -48,7 +48,7 @@ export default class Inventory extends Component {
   };
 
   checkCategoryTree = arrayOfObj => {
-    arrayOfObj.map(obj => {
+    arrayOfObj.forEach(obj => {
       this.nextCategoryChild(obj);
     });
   };
@@ -169,7 +169,7 @@ export default class Inventory extends Component {
   }
   
   render() {
-    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories, open } = this.state;
+    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories } = this.state;
 
     return (
       <div>

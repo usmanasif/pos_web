@@ -80,8 +80,9 @@ export default class AddCategory extends Component {
 
   createOptions = options => {
     let penalArray = [];
+    
     if (options.length > 0) {
-      options.map(data => {
+      options.forEach(data => {
         penalArray.push({ key: data.id, text: data.name, value: data.name });
       });
     }
@@ -96,6 +97,7 @@ export default class AddCategory extends Component {
           placeholder="category"
           fluid
           selection
+          key={Math.random()}
           options={opt}
           onChange={this.handleChange}
         />

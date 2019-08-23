@@ -61,6 +61,24 @@ export default class AddItem extends Component {
   
   close = () => this.initialState();
 
+  cancel = key => {
+    if(key === "add")
+      this.initialState()
+    else{
+      const {code, current_stock, sale_price, name} = this.props.itemData;
+      this.setState({
+        open: false,
+        display: false,
+        code: code,
+        name: name,
+        quantity: current_stock,
+        price: sale_price,
+        dropDownList: [],
+      });
+    }
+  }
+
+
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -173,21 +191,22 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open, display, dropDownList, dimmer } = this.state;
+    const { open, display, dropDownList, dimmer, code, name, quantity, price } = this.state;
+    const { itemData } = this.props;
 
     return (
       <React.Fragment>
-        {this.props.itemData && (
+        {itemData && (
           <Button color="green" icon="edit" onClick={this.show("edit")} />
         )}
         <div className="item">
-          {!this.props.itemData && (
+          {!itemData && (
             <Button id="addItem" onClick={this.show("add")} primary>
               Add item
             </Button>
           )}
           <Modal dimmer = {dimmer} open={open} onClose={this.close}>
-            <Modal.Header>{this.props.itemData ? "Edit Item" : "Add Item"}</Modal.Header>
+            <Modal.Header>{itemData ? "Edit Item" : "Add Item"}</Modal.Header>
             <Form className="itemForm">
               <Form.Group widths="2">
                 <Form.Input
@@ -196,7 +215,7 @@ export default class AddItem extends Component {
                   placeholder="Item code"
                   name="code"
                   onChange={this.onChange}
-                  value={this.state.code}
+                  value={code}
                   required
                 />
                 <Form.Input
@@ -205,7 +224,7 @@ export default class AddItem extends Component {
                   placeholder="Item name"
                   name="name"
                   onChange={this.onChange}
-                  value={this.state.name}
+                  value={name}
                   required
                 />
               </Form.Group>
@@ -216,7 +235,7 @@ export default class AddItem extends Component {
                   placeholder="Item quantity"
                   name="quantity"
                   onChange={this.onChange}
-                  value={this.state.quantity}
+                  value={quantity}
                   required
                 />
                 <Form.Input
@@ -225,7 +244,7 @@ export default class AddItem extends Component {
                   placeholder="Item price"
                   name="price"
                   onChange={this.onChange}
-                  value={this.state.price}
+                  value={price}
                   required
                 />
               </Form.Group>
@@ -247,15 +266,15 @@ export default class AddItem extends Component {
             </Form>
 
             <Modal.Actions>
-              <Button color="black" onClick={this.close}>
+              <Button color="black" onClick={itemData? ()=>this.cancel("edit"): ()=>this.cancel("add")}>
                 Cancel
               </Button>
               <Button
                 positive
                 icon="checkmark"
                 labelPosition="right"
-                content={this.props.itemData ? "Update" : "Add"}
-                onClick={this.props.itemData ? this.editItem : this.addItem}
+                content={itemData ? "Update" : "Add"}
+                onClick={itemData ? this.editItem : this.addItem}
               />
             </Modal.Actions>
           </Modal>

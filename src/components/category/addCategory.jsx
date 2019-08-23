@@ -13,7 +13,7 @@ export default class AddCategory extends Component {
       categoryObjID: "",
       categoryName:"",
       categoryOptions: [],
-      dropDownList: []
+      dropDownList: [],
     };
   }
 
@@ -21,9 +21,10 @@ export default class AddCategory extends Component {
     this.setState({
       open: false,
       display: false,
+      categoryObjID: "",
       categoryName:"",
       categoryOptions: [],
-      dropDownList: []
+      dropDownList: [],
     });
   };
 

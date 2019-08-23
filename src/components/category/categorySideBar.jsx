@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {List, Icon, Table, Header, Button } from "semantic-ui-react";
+import {Icon, Table, Header, Button } from "semantic-ui-react";
 
 
 export default class categorySideBar extends Component {
@@ -21,9 +21,9 @@ export default class categorySideBar extends Component {
 
   generateCategoryList = (data) =>{
     let arr =[];
-    data.map((item)=>{
+    data.forEach((item)=>{
       arr.push(
-       <Table.Row onClick={this.itemClicked(item)} style={{cursor:'pointer'}}>
+       <Table.Row key={item.id} onClick={this.itemClicked(item)} style={{cursor:'pointer'}}>
           <Table.Cell>
             <Header as='h4'>
               <Header.Content as="a" > <Icon name="angle right"></Icon> {item.name}  </Header.Content>
@@ -40,7 +40,8 @@ export default class categorySideBar extends Component {
   }
    
   render() {
-    this.state.data = this.props.data
+    
+    this.state.data = this.props.data;
     const { data } = this.state
 
     return (

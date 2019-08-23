@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import http from "../../services/httpService";
-import { Input, Form, Button, Grid, Message, Label } from "semantic-ui-react";
+import { Input, Form, Button, Grid, Message } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 
 class NewReciept extends Component {
@@ -58,14 +58,14 @@ class NewReciept extends Component {
     let quantity = this.state.current_quantity;
     let current_item = this.state.current_item;
 
-    if (this.state.current_item.length == 0) {
+    if (this.state.current_item.length === 0) {
       this.setState({ itemEmptyError: true });
       return false;
     } else {
       this.setState({ itemEmptyError: false });
     }
 
-    if (this.state.current_quantity == "") {
+    if (this.state.current_quantity === "") {
       this.setState({ quantityEmptyError: true });
       return false;
     } else {
@@ -98,7 +98,7 @@ class NewReciept extends Component {
     this.setState({ current_item });
 
     let new_data = [...this.state.data];
-    new_data.map((data, index) => {
+    new_data.forEach(data => {
       if (data.id === current_item["item_id"]) {
         data.current_stock -= quantity;
       }
@@ -106,7 +106,7 @@ class NewReciept extends Component {
 
     let isSameItem = false;
 
-    updated.map((data, index) => {
+    updated.forEach(data => {
       if (data.item_id === current_item["item_id"]) {
         data.quantity += Number(quantity);
         isSameItem = true;
@@ -136,7 +136,7 @@ class NewReciept extends Component {
 
   setTotalBill = () => {
     let total_bill = 0.0;
-    this.state.selected_items.map((data, index) => {
+    this.state.selected_items.forEach((data, index) => {
       let item_bill = this.itemTotal(data);
 
       total_bill = total_bill + item_bill;
@@ -245,13 +245,13 @@ class NewReciept extends Component {
     let count = 0;
 
     //assign new indexes
-    new_selected.map((data, index) => {
+    new_selected.forEach(data => {
       count++;
       data.item_count = count;
     });
 
     //reset quantity
-    new_data.map((data, index) => {
+    new_data.forEach(data => {
       if (data.id === item[0].item_id) {
         data.current_stock = item[0].original_quantity;
       }
@@ -275,7 +275,7 @@ class NewReciept extends Component {
       return null;
     }
 
-    if (this.state.selected_items.length == 0) {
+    if (this.state.selected_items.length === 0) {
       this.setState({ invalidForm: true });
       return null;
     } else {

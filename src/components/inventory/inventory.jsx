@@ -114,14 +114,16 @@ export default class Inventory extends Component {
         });
       });
   }
+
+  confirmDelete =( item ) =>{
+    this.deleteItem(item.id);
+  }
   
-  deleteItem = index => {
-    const copyData = Object.assign([], this.state.data);
-    var objToDelete = copyData[index];
+  deleteItem = id => {
 
     //delete request
     http
-    .delete(`${apiUrl}/api/v1/items/${objToDelete.id}`)
+    .delete(`${apiUrl}/api/v1/items/${id}`)
     .then(res => {
       this.fetchItemsData();
     })
@@ -158,10 +160,7 @@ export default class Inventory extends Component {
   addCategory = () => this.fetchCategoriesData();
 
   gotoHome = () => {
-    // this.setState({state:this.state});
     this.componentDidMount();
-    console.log("2");
-
   }
 
   componentDidMount() {
@@ -222,32 +221,35 @@ export default class Inventory extends Component {
               </Table.Header>
               <Table.Body>
                 {             
-                data.filter(searchingFor(item)).map((d, index) => (
+                data.filter(searchingFor(item)).map( d => (
                   <Table.Row key={d.id}>
                     <Table.Cell>{d.name}</Table.Cell>
                     <Table.Cell>{d.current_stock}</Table.Cell>
                     <Table.Cell>{d.category.name}</Table.Cell>
                     <Table.Cell>{d.sale_price}</Table.Cell>
                     <Table.Cell>
-                    <Modal open={open} trigger={
-                        <Button
-                          color="red"
-                          icon="trash alternate"
-                          onClick={this.show}
-                        />
-                      }>
-                        <Modal.Header>Are you sure to delete this item?</Modal.Header>
-                        <Modal.Actions>
-                        <Button color="black" content="Cancel" onClick={this.close}>
-                          Cancel
-                        </Button>
-                        <Button
-                          positive
-                          content="Confirm Delete"
-                          onClick={()=>this.deleteItem(index) }
-                        />
-                      </Modal.Actions>
-                    </Modal>
+                    <Modal
+                        dimmer="inverted"
+                        trigger={
+                          <Button
+                            basic
+                            color="red"
+                            icon="trash alternate outline"
+                          />
+                        }
+                        basic
+                        size="tiny"
+                        header={
+                          <Header
+                            icon="trash alternate outline"
+                            content="Are you Sure"
+                          />
+                        }
+                        actions={[
+                          { key: "ok", content: "Ok", positive: true }
+                        ]}
+                        onClose={() => this.confirmDelete(d)}
+                      />                  
                       <AddItem itemData={d} editItem={this.editItem} data={apiResponse} />
                     </Table.Cell>
                   </Table.Row>

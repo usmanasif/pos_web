@@ -11,7 +11,9 @@ import {
   Container,
   Radio,
   Form,
-  Checkbox
+  Checkbox,
+  Dropdown,
+  Label
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 import DatePicker from "react-datepicker";
@@ -29,6 +31,7 @@ class Reports extends Component {
       invoiceModalOpen: false,
       filterBy: "today",
       by_product: false,
+      by_selected_products: false,
       startDate: Date(),
       endDate: Date()
     };
@@ -46,6 +49,7 @@ class Reports extends Component {
 
   componentDidMount() {
     // this.fetchData();
+    this.applyFilter();
   }
   fetchData = () => {
     http
@@ -53,7 +57,9 @@ class Reports extends Component {
       .then(response => {
         const data = response.data.invoices
           ? { invoices: response.data.invoices }
-          : { products: response.data.products };
+          : response.data.products
+          ? { products: response.data.products }
+          : { selected_products: response.data.selected_products };
         this.setState({
           data,
           total_count: response.data.total_count,
@@ -74,6 +80,10 @@ class Reports extends Component {
       params["from_date"] = this.state.startDate;
       params["to_date"] = this.state.endDate;
     }
+    this.state.by_selected_products === true
+      ? (params["by_selected_products"] = this.state.seletedItems.toString())
+      : delete params["by_selected_products"];
+
     this.state.by_product
       ? (params.by_product = true)
       : delete params.by_product;
@@ -97,13 +107,36 @@ class Reports extends Component {
   };
 
   changeFilterOption = (e, { value }) => this.setState({ filterBy: value });
-  handleByProductFilter = (e, { value }) => {
+  handleByProductFilter = () => {
     const by_product = this.state.by_product;
-    this.setState({ by_product: !by_product });
+    this.setState({ by_product: !by_product, by_selected_products: false });
+  };
+  handleBySelectedProducts = () => {
+    const by_selected_products = this.state.by_selected_products;
+    if (by_selected_products === false) {
+      http
+        .get(`${apiUrl}/api/v1/items`)
+        .then(({ data }) => {
+          const items = [];
+          data[1].forEach(i =>
+            items.push({ key: i.id, value: i.id, text: i.name })
+          );
+          this.setState({ items });
+        })
+        .catch(error => console.log(error));
+    }
+    this.setState({
+      by_product: false,
+      by_selected_products: !by_selected_products
+    });
+  };
+  handleBySelectedProductsFilter = (e, { value }) => {
+    this.setState({ seletedItems: value });
   };
   render() {
     const {
       data,
+      items,
       total,
       total_count,
       modalInvoice,
@@ -126,7 +159,7 @@ class Reports extends Component {
       <div>
         <Container>
           <Form>
-            <Form.Group>
+            <Form.Group className="filter_form_fields">
               <Form.Field width="2">
                 <label>
                   <h3>Select Filter:</h3>
@@ -141,7 +174,7 @@ class Reports extends Component {
                   onChange={this.changeFilterOption}
                 />
               </Form.Field>
-              <Form.Field width="2">
+              <Form.Field width="3">
                 <Radio
                   label="By Date"
                   name="radioGroup"
@@ -150,14 +183,7 @@ class Reports extends Component {
                   onChange={this.changeFilterOption}
                 />
               </Form.Field>
-              <Form.Field width="2">
-                <Checkbox
-                  label="By Product"
-                  checked={this.state.by_product}
-                  onChange={this.handleByProductFilter}
-                />
-              </Form.Field>
-              <Form.Field width="7">
+              <Form.Field width="8">
                 {this.state.filterBy === "byDate" && (
                   <React.Fragment>
                     <DatePicker
@@ -191,10 +217,41 @@ class Reports extends Component {
                 </Button>
               </Form.Field>
             </Form.Group>
+            <Form.Group className="filter_form_fields">
+              <Form.Field width="2" />
+              <Form.Field width="2">
+                <Checkbox
+                  label="By Product"
+                  checked={this.state.by_product}
+                  onChange={this.handleByProductFilter}
+                />
+              </Form.Field>
+              <Form.Field width="3">
+                <Checkbox
+                  label="By Selected Products"
+                  checked={this.state.by_selected_products}
+                  onChange={this.handleBySelectedProducts}
+                />
+              </Form.Field>
+              <Form.Field width="9">
+                {items && this.state.by_selected_products && (
+                  <Dropdown
+                    clearable
+                    placeholder="Select Products"
+                    fluid
+                    multiple
+                    search
+                    selection
+                    options={items}
+                    onChange={this.handleBySelectedProductsFilter}
+                  />
+                )}
+              </Form.Field>
+            </Form.Group>
           </Form>
         </Container>
         {data && (
-          <Table celled>
+          <Table className="filter_table" celled>
             <Table.Header>
               {data.invoices && (
                 <Table.Row>
@@ -215,10 +272,30 @@ class Reports extends Component {
                   <Table.HeaderCell>Total</Table.HeaderCell>
                 </Table.Row>
               )}
+              {data.selected_products && (
+                <Table.Row>
+                  <Table.HeaderCell>Company</Table.HeaderCell>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Date</Table.HeaderCell>
+                  <Table.HeaderCell>Time</Table.HeaderCell>
+                  <Table.HeaderCell>Quantity</Table.HeaderCell>
+                  <Table.HeaderCell>Total</Table.HeaderCell>
+                  <Table.HeaderCell textAlign="center">
+                    Invoice
+                  </Table.HeaderCell>
+                </Table.Row>
+              )}
             </Table.Header>
 
             <Table.Body>
-              {data.invoices &&
+              {data.invoices && data.invoices.length === 0 ? (
+                <Table.Row error>
+                  <Table.Cell colSpan="6">
+                    <h3>No Recoard Found</h3>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                data.invoices &&
                 data.invoices.map(i => (
                   <Table.Row key={i.id}>
                     <Table.Cell>Devsinc</Table.Cell>
@@ -248,17 +325,64 @@ class Reports extends Component {
                       </Button>
                     </Table.Cell>
                   </Table.Row>
-                ))}
-              {data.products &&
+                ))
+              )}
+              {data.products && data.products.length === 0 ? (
+                <Table.Row error>
+                  <Table.Cell colSpan="5">
+                    <h3>No Recoard Found</h3>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                data.products &&
                 data.products.map(p => (
                   <Table.Row key={p.id}>
                     <Table.Cell>Devsinc</Table.Cell>
                     <Table.Cell>{p.id}</Table.Cell>
                     <Table.Cell>{p.name}</Table.Cell>
-                    <Table.Cell>{p.sold_quantity}</Table.Cell>
+                    <Table.Cell>{p.quantity}</Table.Cell>
                     <Table.Cell>{p.total_sold_price}</Table.Cell>
                   </Table.Row>
-                ))}
+                ))
+              )}
+              {data.selected_products && data.selected_products.length === 0 ? (
+                <Table.Row error>
+                  <Table.Cell colSpan="7">
+                    <h3>No Recoard Found</h3>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                data.selected_products &&
+                data.selected_products.map(p => (
+                  <Table.Row key={p.id}>
+                    <Table.Cell>Devsinc</Table.Cell>
+                    <Table.Cell>{p.name}</Table.Cell>
+                    <Table.Cell>
+                      {new Intl.DateTimeFormat("en-PK", dateOptions).format(
+                        new Date(p.created_at)
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {new Intl.DateTimeFormat("en-PK", timeOptions).format(
+                        new Date(p.created_at)
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>{p.quantity}</Table.Cell>
+                    <Table.Cell>{p.quantity * p.unit_price}</Table.Cell>
+                    <Table.Cell textAlign="center">
+                      <Button
+                        animated
+                        basic
+                        color="blue"
+                        onClick={() => this.openInvoiceModal(p.invoice_id)}
+                      >
+                        <Button.Content hidden>Show</Button.Content>
+                        <Button.Content visible>{p.invoice_id}</Button.Content>
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                ))
+              )}
             </Table.Body>
           </Table>
         )}
@@ -293,6 +417,20 @@ class Reports extends Component {
               <Grid.Row>
                 <Grid.Column width="8" textAlign="left">
                   <h3>Total Invoices: {total_count}</h3>
+                </Grid.Column>
+                <Grid.Column width="8">
+                  <h3>Total Amount: {total}</h3>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+        )}
+        {data.selected_products && (
+          <Segment color="blue" textAlign="right">
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width="8" textAlign="left">
+                  <h3>Total Quantity: {total_count}</h3>
                 </Grid.Column>
                 <Grid.Column width="8">
                   <h3>Total Amount: {total}</h3>

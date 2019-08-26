@@ -24,7 +24,8 @@ export default class AddItem extends Component {
       price: "",
       category: "",
       categoryOptions: [],
-      dropDownList: []
+      dropDownList: [],
+      ancestorOptions:[]
     };
   }
   initialState = () => {
@@ -38,7 +39,8 @@ export default class AddItem extends Component {
       category: "",
       categoryObjID: "",
       categoryOptions: [],
-      dropDownList: []
+      dropDownList: [],
+      ancestorOptions:[]
     });
   };
 
@@ -56,6 +58,7 @@ export default class AddItem extends Component {
   show  = () => {
     this.setState({ open: true });
     itemList = this.props.data;
+    this.state.ancestorOptions.push(itemList);
     this.createOptions(this.props.data);
   };
   
@@ -74,6 +77,7 @@ export default class AddItem extends Component {
         quantity: current_stock,
         price: sale_price,
         dropDownList: [],
+        ancestorOptions:[]
       });
     }
   }
@@ -144,32 +148,54 @@ export default class AddItem extends Component {
           display:true
         });
       }
-    };
-
+    };  
+  
   updateCategoryOptions = value => {
-    var matchingObj = itemList.find(cat => cat.name === value);
-    if (matchingObj) {
-      itemList = matchingObj.children;
-      this.setState({
-        categoryObjID: matchingObj.id
-      });
-      this.createOptions(itemList);
-    }
-  };  
-
-  createOptions = options => {
-    let penalArray = [];
-    if (options && options.length > 0) {
-      options.forEach(data => {
-        penalArray.push({ key: data.id, text: data.name, value: data.name });
-      });
-    }
-    this.setState({ categoryOptions: penalArray });
-    this.createDropDown(penalArray);
-  };
-
-  createDropDown = opt => {
-    if (opt.length > 0) {
+    var matchingObj;
+    var objCategory;
+    var index = 0 ;
+    const {ancestorOptions, dropDownList} = this.state;
+    ancestorOptions.forEach((categoryOptions, i)=>{
+      matchingObj = categoryOptions.find(cat => cat.name === value);
+         if(matchingObj){
+           objCategory=matchingObj;
+           index = i;
+          }
+        });
+        
+        if (objCategory) {
+          for(let i=0;i<dropDownList.length; i++){
+            if(i>index){
+              dropDownList[i]=null;
+            }
+          }
+          
+          this.setState({ state: this.state });
+          
+          itemList = objCategory.children;
+          ancestorOptions.push(itemList);
+          this.setState({
+            categoryObjID: objCategory.id
+          });
+          this.createOptions(itemList);
+        }
+      };
+      
+      
+      createOptions = options => {
+        let penalArray = [];
+        if (options && options.length > 0) {
+          options.forEach(data => {
+            penalArray.push({ key: data.id, text: data.name, value: data.name });
+          });
+        }
+        this.setState({ categoryOptions: penalArray });
+        this.createDropDown(penalArray);
+      };
+      
+      
+      createDropDown = opt => {
+        if (opt.length > 0) {
       let dropdown = (
         <Dropdown
           placeholder="category"

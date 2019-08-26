@@ -12,7 +12,8 @@ import {
   Radio,
   Form,
   Checkbox,
-  Dropdown
+  Dropdown,
+  Label
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 import DatePicker from "react-datepicker";
@@ -48,7 +49,7 @@ class Reports extends Component {
 
   componentDidMount() {
     // this.fetchData();
-    // this.applyFilter();
+    this.applyFilter();
   }
   fetchData = () => {
     http
@@ -56,7 +57,9 @@ class Reports extends Component {
       .then(response => {
         const data = response.data.invoices
           ? { invoices: response.data.invoices }
-          : { products: response.data.products };
+          : response.data.products
+          ? { products: response.data.products }
+          : { selected_products: response.data.selected_products };
         this.setState({
           data,
           total_count: response.data.total_count,
@@ -77,9 +80,10 @@ class Reports extends Component {
       params["from_date"] = this.state.startDate;
       params["to_date"] = this.state.endDate;
     }
-    if (this.state.by_selected_products === true) {
-      params["by_selected_products"] = this.state.seletedItems.toString();
-    }
+    this.state.by_selected_products === true
+      ? (params["by_selected_products"] = this.state.seletedItems.toString())
+      : delete params["by_selected_products"];
+
     this.state.by_product
       ? (params.by_product = true)
       : delete params.by_product;
@@ -127,8 +131,6 @@ class Reports extends Component {
     });
   };
   handleBySelectedProductsFilter = (e, { value }) => {
-    console.log(value);
-
     this.setState({ seletedItems: value });
   };
   render() {
@@ -270,10 +272,30 @@ class Reports extends Component {
                   <Table.HeaderCell>Total</Table.HeaderCell>
                 </Table.Row>
               )}
+              {data.selected_products && (
+                <Table.Row>
+                  <Table.HeaderCell>Company</Table.HeaderCell>
+                  <Table.HeaderCell>Name</Table.HeaderCell>
+                  <Table.HeaderCell>Date</Table.HeaderCell>
+                  <Table.HeaderCell>Time</Table.HeaderCell>
+                  <Table.HeaderCell>Quantity</Table.HeaderCell>
+                  <Table.HeaderCell>Total</Table.HeaderCell>
+                  <Table.HeaderCell textAlign="center">
+                    Invoice
+                  </Table.HeaderCell>
+                </Table.Row>
+              )}
             </Table.Header>
 
             <Table.Body>
-              {data.invoices &&
+              {data.invoices && data.invoices.length === 0 ? (
+                <Table.Row error>
+                  <Table.Cell colSpan="6">
+                    <h3>No Recoard Found</h3>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                data.invoices &&
                 data.invoices.map(i => (
                   <Table.Row key={i.id}>
                     <Table.Cell>Devsinc</Table.Cell>
@@ -303,17 +325,64 @@ class Reports extends Component {
                       </Button>
                     </Table.Cell>
                   </Table.Row>
-                ))}
-              {data.products &&
+                ))
+              )}
+              {data.products && data.products.length === 0 ? (
+                <Table.Row error>
+                  <Table.Cell colSpan="5">
+                    <h3>No Recoard Found</h3>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                data.products &&
                 data.products.map(p => (
                   <Table.Row key={p.id}>
                     <Table.Cell>Devsinc</Table.Cell>
                     <Table.Cell>{p.id}</Table.Cell>
                     <Table.Cell>{p.name}</Table.Cell>
-                    <Table.Cell>{p.sold_quantity}</Table.Cell>
+                    <Table.Cell>{p.quantity}</Table.Cell>
                     <Table.Cell>{p.total_sold_price}</Table.Cell>
                   </Table.Row>
-                ))}
+                ))
+              )}
+              {data.selected_products && data.selected_products.length === 0 ? (
+                <Table.Row error>
+                  <Table.Cell colSpan="7">
+                    <h3>No Recoard Found</h3>
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                data.selected_products &&
+                data.selected_products.map(p => (
+                  <Table.Row key={p.id}>
+                    <Table.Cell>Devsinc</Table.Cell>
+                    <Table.Cell>{p.name}</Table.Cell>
+                    <Table.Cell>
+                      {new Intl.DateTimeFormat("en-PK", dateOptions).format(
+                        new Date(p.created_at)
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {new Intl.DateTimeFormat("en-PK", timeOptions).format(
+                        new Date(p.created_at)
+                      )}
+                    </Table.Cell>
+                    <Table.Cell>{p.quantity}</Table.Cell>
+                    <Table.Cell>{p.quantity * p.unit_price}</Table.Cell>
+                    <Table.Cell textAlign="center">
+                      <Button
+                        animated
+                        basic
+                        color="blue"
+                        onClick={() => this.openInvoiceModal(p.invoice_id)}
+                      >
+                        <Button.Content hidden>Show</Button.Content>
+                        <Button.Content visible>{p.invoice_id}</Button.Content>
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
+                ))
+              )}
             </Table.Body>
           </Table>
         )}
@@ -348,6 +417,20 @@ class Reports extends Component {
               <Grid.Row>
                 <Grid.Column width="8" textAlign="left">
                   <h3>Total Invoices: {total_count}</h3>
+                </Grid.Column>
+                <Grid.Column width="8">
+                  <h3>Total Amount: {total}</h3>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+        )}
+        {data.selected_products && (
+          <Segment color="blue" textAlign="right">
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width="8" textAlign="left">
+                  <h3>Total Quantity: {total_count}</h3>
                 </Grid.Column>
                 <Grid.Column width="8">
                   <h3>Total Amount: {total}</h3>

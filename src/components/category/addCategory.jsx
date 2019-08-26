@@ -14,6 +14,7 @@ export default class AddCategory extends Component {
       categoryName:"",
       categoryOptions: [],
       dropDownList: [],
+      ancestorOptions:[]
     };
   }
 
@@ -25,12 +26,14 @@ export default class AddCategory extends Component {
       categoryName:"",
       categoryOptions: [],
       dropDownList: [],
+      ancestorOptions:[]
     });
   };
 
   show = dimmer => () => {
     this.setState({ dimmer, open: true });
     categoryList = this.props.data;
+    this.state.ancestorOptions.push(categoryList);
     this.createOptions(this.props.data);
   };
 
@@ -67,12 +70,33 @@ export default class AddCategory extends Component {
       });
     }
   };
+
   updateCategoryOptions = value => {
-    var matchingObj = categoryList.find(cat => cat.name === value);
-    if (matchingObj) {
-      categoryList = matchingObj.children;
+    var matchingObj;
+    var objCategory;
+    var index = 0 ;
+    const {ancestorOptions, dropDownList} = this.state;
+    ancestorOptions.forEach((categoryOptions, i)=>{
+      matchingObj = categoryOptions.find(cat => cat.name === value);
+         if(matchingObj){
+            objCategory=matchingObj;
+            index = i;
+         }
+    });
+  
+    if (objCategory) {
+      for(let i=0;i<dropDownList.length; i++){
+          if(i>index){
+            dropDownList[i]=null;
+          }
+      }
+
+      this.setState({ state: this.state });
+
+      categoryList = objCategory.children;
+      ancestorOptions.push(categoryList);
       this.setState({
-        categoryObjID: matchingObj.id
+        categoryObjID: objCategory.id
       });
       this.createOptions(categoryList);
     }
@@ -128,10 +152,10 @@ export default class AddCategory extends Component {
 
             </Form.Field>
             {dropDownList.length>0?
-            <Form.Field>
-              <label>Category</label>
-              {dropDownList.map(data => data)}
-            </Form.Field>:null
+              <Form.Field>
+                <label>Category</label>
+                {dropDownList.map(data => data)}
+              </Form.Field>:null
             }
             <Form.Group widths="three">
               <Form.Input
@@ -148,7 +172,7 @@ export default class AddCategory extends Component {
                 <Message negative>
                   <Message.Header>field can not be empty</Message.Header>
                 </Message>
-              :null}
+            :null}
           </Form>
 
           <Modal.Actions>

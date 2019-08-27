@@ -17,7 +17,7 @@ function searchingFor(item) {
 const initialPagination = {
   activePage: 1,
   totalPages: 0,
-  per_page:10
+  per_page: 10
 }
 
 export default class Inventory extends Component {
@@ -103,6 +103,7 @@ export default class Inventory extends Component {
 
 
   handlePagination = (page, per_page) => {
+
     this.setState({activePage: page, per_page:per_page });
 
     http
@@ -113,6 +114,8 @@ export default class Inventory extends Component {
           totalPages: res.data[0].total
         });
       });
+
+      this.setState({state: this.state});
   }
 
   confirmDelete =( item ) =>{
@@ -181,7 +184,7 @@ export default class Inventory extends Component {
             <Form>
               <Input
                 icon="search"
-                placeholder="Search..."
+                placeholder="Search by name ..."
                 onChange={this.searchHandler}
               /> 
               {apiResponse.length>0?

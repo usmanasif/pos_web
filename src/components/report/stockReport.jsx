@@ -35,8 +35,8 @@ class StockReport extends Component{
     
         const title = "Items Stock Report";
         const headers = [["NAME","CATEGORY", "STOCK", "UNIT PRICE"]];
-    
         const data = this.state.allItems.map(elt=> [elt.name, elt.category.name, elt.current_stock, elt.sale_price]);
+
     
         let content = {
           startY: 50,
@@ -47,6 +47,7 @@ class StockReport extends Component{
         doc.text(title, marginLeft, 40);
         doc.autoTable(content);
         doc.save("stock_report.pdf")
+
       }
 
       handlePagination = (page, per_page) => {
@@ -73,17 +74,17 @@ class StockReport extends Component{
             });
           });
       }
-    
 
       componentDidMount(){
           const {activePage, per_page} = this.state;
-
           this.handlePagination(activePage, per_page);
           this.getItems();
+
       }
 
     render(){
         const {itemsData, activePage, per_page, totalPages} = this.state;
+
         return(
             <div>
                 <div>

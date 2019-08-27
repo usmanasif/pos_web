@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Bar, Pie, Doughnut, Line } from "react-chartjs-2";
 import http from "../../services/httpService";
 import { apiUrl } from "../../utils/api-config";
+import { Grid } from "semantic-ui-react";
 
 class Chart extends Component {
   state = {
@@ -47,67 +48,80 @@ class Chart extends Component {
   render() {
     return (
       <div>
-        <h1>Last Week Sales</h1>
-        <Bar
-          data={this.state.chartData}
-          options={{
-            title: {
-              display: this.state.displayTitle,
-              text: "Largest Cities In " + this.props.location,
-              fontSize: 25
-            },
-            legend: {
-              display: this.state.displayLegend,
-              position: this.state.legendPosition
-            }
-          }}
-        />
-
-        <Pie
-          data={this.state.chartData}
-          options={{
-            title: {
-              display: this.state.displayTitle,
-              text: "Largest Cities In " + this.props.location,
-              fontSize: 25
-            },
-            legend: {
-              display: this.state.displayLegend,
-              position: this.state.legendPosition
-            }
-          }}
-        />
-
-        <Doughnut
-          data={this.state.chartData}
-          options={{
-            title: {
-              display: this.state.displayTitle,
-              text: "Largest Cities In " + this.props.location,
-              fontSize: 25
-            },
-            legend: {
-              display: this.state.displayLegend,
-              position: this.state.legendPosition
-            }
-          }}
-        />
-
-        <Line
-          data={this.state.chartData}
-          options={{
-            title: {
-              display: this.state.displayTitle,
-              text: "Largest Cities In " + this.props.location,
-              fontSize: 25
-            },
-            legend: {
-              display: this.state.displayLegend,
-              position: this.state.legendPosition
-            },
-            fill: false
-          }}
-        />
+        <Grid>
+          <Grid.Row>
+            <Grid.Column width="10">
+              <h1>Last Week Sales</h1>
+              <Bar
+                data={this.state.chartData}
+                options={{
+                  title: {
+                    display: this.state.displayTitle,
+                    text: "Largest Cities In " + this.props.location,
+                    fontSize: 25
+                  },
+                  legend: {
+                    display: this.state.displayLegend,
+                    position: this.state.legendPosition
+                  }
+                }}
+              />
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column width="8">
+              <Pie
+                data={this.state.chartData}
+                options={{
+                  title: {
+                    display: this.state.displayTitle,
+                    text: "Largest Cities In " + this.props.location,
+                    fontSize: 25
+                  },
+                  legend: {
+                    display: this.state.displayLegend,
+                    position: this.state.legendPosition
+                  }
+                }}
+              />
+            </Grid.Column>
+            <Grid.Column width="8">
+              <Doughnut
+                data={this.state.chartData}
+                options={{
+                  title: {
+                    display: this.state.displayTitle,
+                    text: "Largest Cities In " + this.props.location,
+                    fontSize: 25
+                  },
+                  legend: {
+                    display: this.state.displayLegend,
+                    position: this.state.legendPosition
+                  }
+                }}
+              />
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column width="8">
+              <Line
+                data={this.state.chartData}
+                options={{
+                  title: {
+                    display: this.state.displayTitle,
+                    text: "Largest Cities In " + this.props.location,
+                    fontSize: 25
+                  },
+                  legend: {
+                    display: this.state.displayLegend,
+                    position: this.state.legendPosition
+                  },
+                  fill: false
+                }}
+              />
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     );
   }

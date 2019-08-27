@@ -12,13 +12,25 @@ import {
   Radio,
   Form,
   Checkbox,
-  Dropdown,
-  Label
+  Dropdown
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 import DatePicker from "react-datepicker";
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import "react-datepicker/dist/react-datepicker.css";
+
+
+const dateOptions = {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+};
+const timeOptions = {
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric"
+};
 
 class Reports extends Component {
   constructor(props) {
@@ -27,6 +39,7 @@ class Reports extends Component {
       data: false,
       current_page: 1,
       total_pages: 1,
+      seletedItems: "",
       params: { per_page: 5, page: 1 },
       invoiceModalOpen: false,
       filterBy: "today",
@@ -56,10 +69,10 @@ class Reports extends Component {
       .get(apiUrl + "/api/v1/invoices", { params: this.state.params })
       .then(response => {
         const data = response.data.invoices
-          ? { invoices: response.data.invoices }
-          : response.data.products
-          ? { products: response.data.products }
-          : { selected_products: response.data.selected_products };
+        ? { invoices: response.data.invoices }
+        : response.data.products
+        ? { products: response.data.products }
+        : { selected_products: response.data.selected_products };
         this.setState({
           data,
           total_count: response.data.total_count,
@@ -67,41 +80,95 @@ class Reports extends Component {
           total_pages: response.data.total_pages
         });
       });
-  };
-  applyFilter = () => {
-    const params = { ...this.state.params };
-    if (this.state.filterBy === "today") {
-      params.today = true;
-      delete params.from_date;
-      delete params.to_date;
-    }
-    if (this.state.filterBy === "byDate") {
-      delete params.today;
-      params["from_date"] = this.state.startDate;
-      params["to_date"] = this.state.endDate;
-    }
-    this.state.by_selected_products === true
+    };
+    applyFilter = () => {
+      const params = { ...this.state.params };
+      if (this.state.filterBy === "today") {
+        params.today = true;
+        delete params.from_date;
+        delete params.to_date;
+      }
+      if (this.state.filterBy === "byDate") {
+        delete params.today;
+        params["from_date"] = this.state.startDate;
+        params["to_date"] = this.state.endDate;
+      }
+      this.state.by_selected_products === true
       ? (params["by_selected_products"] = this.state.seletedItems.toString())
       : delete params["by_selected_products"];
-
-    this.state.by_product
+      
+      this.state.by_product
       ? (params.by_product = true)
       : delete params.by_product;
-    params.page = 1;
-    params.per_page = this.state.by_product === true ? 8 : 5;
-    this.setState({ params, current_page: 1 }, () => this.fetchData());
-  };
+      params.page = 1;
+      params.per_page = this.state.by_product === true ? 8 : 5;
+      this.setState({ params, current_page: 1 }, () => this.fetchData());
+    };
+    
+    exportSalesReport = () => {
+      const unit = "pt";
+      const size = "A4"; // Use A1, A2, A3 or A4
+      const orientation = "portrait"; // portrait or landscape
+      let title = "";
+      let headers = "";
+      let salesContent = [];
+      const {filterBy, by_product, by_selected_products, seletedItems } = this.state;
+      
+      
+      const marginLeft = 40;
+      const doc = new jsPDF(orientation, unit, size); 
+      
+      doc.setFontSize(15);
+      
+      if ((filterBy === "today" || filterBy === "byDate") && !by_product && !by_selected_products) {
+        title = "Sales Report By Date";
+        headers = [["INVOICE ID","INVOICE TOTAL", "DATE", "TIME"]];   
+        this.state.data.invoices.forEach(elt=>{
+          const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
+          const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));
+          salesContent.push ([elt.id, elt.total, date, time])
+        });
+      }
 
-  handlePaginationChange = (e, { activePage }) => {
-    const params = { ...this.state.params };
-    params.page = activePage;
-    this.setState({ current_page: activePage, params }, () => {
-      this.fetchData();
-    });
-  };
-  handleChangeStart = e => {
-    this.setState({ startDate: e });
-  };
+      if(this.state.by_product){
+        title = "Sales Report By Product";
+        headers = [["PRODUCT ID","PRODUCT NAME", "SOLD QUANTITY", "TOTAL"]];   
+        this.state.data.products.forEach(elt=>{
+          salesContent.push ([elt.id, elt.name, elt.quantity, elt.total_sold_price])
+        });
+      }
+
+      if(this.state.by_selected_products){
+        title = "Sales Report By Selected Product";
+        headers = [["INVOICE ID", "PRODUCT ID","NAME", "QUANTITY", "UNIT PRICE", "DATE", "TIME"]];   
+        this.state.data.selected_products.forEach(elt=>{
+          const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
+          const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));
+          salesContent.push ([elt.invoice_id, elt.item_id, elt.name, elt.quantity, elt.unit_price, date, time])
+        });
+      }
+      
+      let content = {
+        startY: 50,
+        head: headers,
+        body: salesContent
+      };
+  
+      doc.text(title, marginLeft, 40);
+      doc.autoTable(content);
+      doc.save("sales_report.pdf")
+    }
+    
+    handlePaginationChange = (e, { activePage }) => {
+      const params = { ...this.state.params };
+      params.page = activePage;
+      this.setState({ current_page: activePage, params }, () => {
+        this.fetchData();
+      });
+    };
+    handleChangeStart = e => {
+      this.setState({ startDate: e });
+    };
   handleChangeEnd = e => {
     this.setState({ endDate: e });
   };
@@ -115,24 +182,25 @@ class Reports extends Component {
     const by_selected_products = this.state.by_selected_products;
     if (by_selected_products === false) {
       http
-        .get(`${apiUrl}/api/v1/items`)
-        .then(({ data }) => {
-          const items = [];
-          data[1].forEach(i =>
-            items.push({ key: i.id, value: i.id, text: i.name })
+      .get(`${apiUrl}/api/v1/items`)
+      .then(({ data }) => {
+        const items = [];
+        data[1].forEach(i =>
+          items.push({ key: i.id, value: i.id, text: i.name })
           );
           this.setState({ items });
         })
         .catch(error => console.log(error));
-    }
-    this.setState({
-      by_product: false,
-      by_selected_products: !by_selected_products
+      }
+      this.setState({
+        by_product: false,
+        by_selected_products: !by_selected_products
     });
   };
   handleBySelectedProductsFilter = (e, { value }) => {
     this.setState({ seletedItems: value });
   };
+
   render() {
     const {
       data,
@@ -145,16 +213,7 @@ class Reports extends Component {
       startDate,
       endDate
     } = this.state;
-    const dateOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    };
-    const timeOptions = {
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric"
-    };
+    
     return (
       <div>
         <Container>
@@ -251,7 +310,8 @@ class Reports extends Component {
           </Form>
         </Container>
         {data && (
-          <Table className="filter_table" celled>
+          <div>
+            <Table className="filter_table" celled>
             <Table.Header>
               {data.invoices && (
                 <Table.Row>
@@ -385,13 +445,14 @@ class Reports extends Component {
               )}
             </Table.Body>
           </Table>
+          </div>        
         )}
         {data && (
-          <Container textAlign="right">
+          <Container>
             <Pagination
               boundaryRange={0}
               activePage={current_page}
-              siblingRange={1}
+          siblingRange={1}
               onPageChange={this.handlePaginationChange}
               totalPages={total_pages}
               ellipsisItem={{
@@ -409,6 +470,7 @@ class Reports extends Component {
               prevItem={{ content: <Icon name="angle left" />, icon: true }}
               nextItem={{ content: <Icon name="angle right" />, icon: true }}
             />
+            <Button  floated='right' icon="download" content='Download Report' color="blue" onClick={() => this.exportSalesReport()} style={{marginBottom: "10px"}} />
           </Container>
         )}
         {data.invoices && (

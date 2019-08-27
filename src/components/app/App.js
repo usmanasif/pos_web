@@ -14,9 +14,12 @@ import CreateCompany from "../company/createCompany";
 import AdminApp from "../admin/adminApp";
 import Reports from "../company/reports"
 import { apiSubDomain, pathName } from "../../utils/api-config";
+import Inventory from "../inventory/inventory";
+import StockReport from "../report/stockReport"
+
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import Inventory from "../inventory/inventory";
+
 
 function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
   if (isLoading) {
@@ -51,6 +54,11 @@ function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
               path="/reports"
               exact
               component={isSignedIn ? Reports : Auth}
+            />
+            <Route
+              path="/stock_report"
+              exact
+              component={isSignedIn ? StockReport : Auth}
             />
             <Route path="/register" component={SignUp} />
             <Route path="/login" component={SignIn} />

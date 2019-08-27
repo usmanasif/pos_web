@@ -12,11 +12,12 @@ import Home from "../company/home";
 import Navigation from "../company/navigation";
 import CreateCompany from "../company/createCompany";
 import AdminApp from "../admin/adminApp";
-import Reports from "../company/reports"
+import Reports from "../company/reports";
 import { apiSubDomain, pathName } from "../../utils/api-config";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import Inventory from "../inventory/inventory";
+import Chart from "../charts/chart";
 
 function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
   if (isLoading) {
@@ -55,6 +56,7 @@ function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
             <Route path="/register" component={SignUp} />
             <Route path="/login" component={SignIn} />
             <Route path="/logout" component={SignOut} />
+            <Route path="/charts" component={Chart} />
             <Route path="/" exact component={isSignedIn ? Home : Auth} />
           </Switch>
         </Container>

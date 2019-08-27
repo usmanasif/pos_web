@@ -28,6 +28,13 @@ class Navigation extends Component {
             content="Reports"
           />
         </Link>
+        <Link to="/stock_report">
+          <Menu.Item
+            className="nav_menu_item"
+            name="Stock Report"
+            content="Stock Report"
+          />
+        </Link>
 
         <Menu.Menu position="right">
           <Menu.Item name="logout" className="nav_menu_menu_item">

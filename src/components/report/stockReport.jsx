@@ -32,7 +32,7 @@ class StockReport extends Component{
     
         doc.setFontSize(15);
     
-        const title = "Item Stock Report";
+        const title = "Items Stock Report";
         const headers = [["NAME","CATEGORY", "STOCK", "UNIT PRICE"]];
     
         const data = this.state.itemsData.map(elt=> [elt.name, elt.category.name, elt.current_stock, elt.sale_price]);
@@ -71,7 +71,7 @@ class StockReport extends Component{
 
     render(){
         const {itemsData, activePage, per_page, totalPages} = this.state;
-        console.log(itemsData);
+        
         return(
             <div>
                 <div>

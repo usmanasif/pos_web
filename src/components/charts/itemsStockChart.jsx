@@ -24,7 +24,6 @@ class ItemsStockChart extends Component {
     http
       .get(`${apiUrl}/api/v1/items`)
       .then(({ data }) => {
-        debugger;
         const options = { ...this.state.options };
         const series = [...this.state.series];
         series[0].data = data[1].map(({ current_stock }) =>

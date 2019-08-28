@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import http from "../../services/httpService";
-import { Input, Form, Button, Grid, Message } from "semantic-ui-react";
+import { Input, Form, Button, Grid, Message, Container, Image, Header } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 
 class NewReciept extends Component {
@@ -348,147 +348,159 @@ class NewReciept extends Component {
     );
 
     return (
-      <Grid centered>
-        <Grid.Row>
-          <Grid.Column width={6}>
-            <Form error success>
-              <Form.Field
-                type="text"
-                control={Select}
-                search
-                selection
-                value={this.state.current_item}
-                label={{ children: "Select or Search Item" }}
-                options={itemList}
-                onChange={this.handleInputChange}
-                placeholder="Search..."
-              />
-              {this.state.itemEmptyError ? (
-                <Message
-                  error
-                  header="Item not selected"
-                  content="Please select an item to purchase"
+      <React.Fragment>
+        <Container className="page-header">
+          <Header as='h2' className="second-header" floated='right'>
+              Devsinc
+          </Header>
+          <Header as='h2' floated='left'>
+              <Image className="logo" src={require('../../images/logo.png')} />
+              <span className="header-text">New Invoice</span>
+          </Header>
+        </Container>
+        <div className="ui divider"></div>   
+        <Grid centered>
+          <Grid.Row>
+            <Grid.Column width={6}>
+              <Form error success>
+                <Form.Field
+                  type="text"
+                  control={Select}
+                  search
+                  selection
+                  value={this.state.current_item}
+                  label={{ children: "Select or Search Item" }}
+                  options={itemList}
+                  onChange={this.handleInputChange}
+                  placeholder="Search..."
                 />
-              ) : null}
-              <Form.Field
-                control={Input}
-                type="number"
-                value={this.state.current_quantity}
-                onChange={this.updateQuantity}
-                label={{
-                  children: "Select Quantity",
-                  htmlFor: "form-select-control-gender"
-                }}
-                placeholder="Quantity"
-                min="1"
-              />
-              {this.state.quantityEmptyError ? (
-                <Message
-                  error
-                  header="Quantity Empty"
-                  content="Please provide item quantity"
+                {this.state.itemEmptyError ? (
+                  <Message
+                    error
+                    header="Item not selected"
+                    content="Please select an item to purchase"
+                  />
+                ) : null}
+                <Form.Field
+                  control={Input}
+                  type="number"
+                  value={this.state.current_quantity}
+                  onChange={this.updateQuantity}
+                  label={{
+                    children: "Select Quantity",
+                    htmlFor: "form-select-control-gender"
+                  }}
+                  placeholder="Quantity"
+                  min="1"
                 />
-              ) : null}
-              {this.state.quantityExceededError ? (
-                <Message
-                  error
-                  header="Item quantity limit reached!"
-                  content={
-                    "Current stock only contains " +
-                    this.state.current_item["current_stock"] +
-                    " units"
-                  }
+                {this.state.quantityEmptyError ? (
+                  <Message
+                    error
+                    header="Quantity Empty"
+                    content="Please provide item quantity"
+                  />
+                ) : null}
+                {this.state.quantityExceededError ? (
+                  <Message
+                    error
+                    header="Item quantity limit reached!"
+                    content={
+                      "Current stock only contains " +
+                      this.state.current_item["current_stock"] +
+                      " units"
+                    }
+                  />
+                ) : null}
+                <Form.Field
+                  id="form-button-control-secondary"
+                  control={Button}
+                  content="Add to Invoice"
+                  label=""
+                  onClick={this.populateSelectedItems}
                 />
-              ) : null}
-              <Form.Field
-                id="form-button-control-secondary"
-                control={Button}
-                content="Add to Invoice"
-                label=""
-                onClick={this.populateSelectedItems}
-              />
-            </Form>
-          </Grid.Column>
-          <Grid.Column width={10}>
-            <div>
-              <table className="ui compact table">
-                <thead>
-                  <tr>
-                    <th>Item No.</th>
-                    <th>Name</th>
-                    <th>Sale Price</th>
-                    <th>Quantity</th>
-                    <th>Discount</th>
-                    <th>Total($)</th>
-                  </tr>
-                </thead>
-                <tbody>{this.renderTableData()}</tbody>
-                <tfoot>
-                  <tr>
-                    <th />
-                    <th />
-                    <th />
-                    <th />
-                    <th>
-                      <b>Total Bill:</b>
-                    </th>
-                    <th>{Number(this.state.total).toFixed(2)}</th>
-                  </tr>
-                  <tr>
-                    <th />
-                    <th />
-                    <th />
-                    <th />
-                    <th className="width-32">
-                      <Input type='number' 
-                             placeholder='Adjustment'
-                             value={this.state.adjustment_amount}
-                             onChange={this.setAdjustment}>
-                        <input />
-                      </Input>
-                    </th>
-                    <th />
-                  </tr>
-                  <tr>
-                    <th />
-                    <th />
-                    <th />
-                    <th />
-                    <th>
-                      <b>Final Amount:</b>
-                    </th>
-                    <th>{Number(this.state.discounted_total).toFixed(2)}</th>
-                  </tr>
-                </tfoot>
-              </table>
-              {this.state.invalidForm ? (
-                <Message
-                  error
-                  header="Invoice Empty"
-                  content="Please add items to the invoice"
-                />
-              ) : null}
-              {this.state.totalBelowZeroError ? (
-                <Message
-                  error
-                  header="Total Below Zero"
-                  content="The total bill should be greater or equal to 0"
-                />
-              ) : null}
-              {this.state.invoiceCreated ? (
-                <Message
-                  success
-                  header="Invoice Created"
-                  content="Your invoice has been processed successfully!"
-                />
-              ) : null}
-              <Button primary onClick={this.createReciept}>
-                Pay Bill
-              </Button>
-            </div>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+              </Form>
+            </Grid.Column>
+            <Grid.Column width={10}>
+              <div>
+                <table className="ui compact table">
+                  <thead>
+                    <tr>
+                      <th>Item No.</th>
+                      <th>Name</th>
+                      <th>Sale Price</th>
+                      <th>Quantity</th>
+                      <th>Discount</th>
+                      <th>Total($)</th>
+                    </tr>
+                  </thead>
+                  <tbody>{this.renderTableData()}</tbody>
+                  <tfoot>
+                    <tr>
+                      <th />
+                      <th />
+                      <th />
+                      <th />
+                      <th>
+                        <b>Total Bill:</b>
+                      </th>
+                      <th>{Number(this.state.total).toFixed(2)}</th>
+                    </tr>
+                    <tr>
+                      <th />
+                      <th />
+                      <th />
+                      <th />
+                      <th className="width-32">
+                        <Input type='number' 
+                              placeholder='Adjustment'
+                              value={this.state.adjustment_amount}
+                              onChange={this.setAdjustment}>
+                          <input />
+                        </Input>
+                      </th>
+                      <th />
+                    </tr>
+                    <tr>
+                      <th />
+                      <th />
+                      <th />
+                      <th />
+                      <th>
+                        <b>Final Amount:</b>
+                      </th>
+                      <th>{Number(this.state.discounted_total).toFixed(2)}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+                {this.state.invalidForm ? (
+                  <Message
+                    error
+                    header="Invoice Empty"
+                    content="Please add items to the invoice"
+                  />
+                ) : null}
+                {this.state.totalBelowZeroError ? (
+                  <Message
+                    error
+                    header="Total Below Zero"
+                    content="The total bill should be greater or equal to 0"
+                  />
+                ) : null}
+                {this.state.invoiceCreated ? (
+                  <Message
+                    success
+                    header="Invoice Created"
+                    content="Your invoice has been processed successfully!"
+                  />
+                ) : null}
+                <Button primary onClick={this.createReciept}>
+                  Pay Bill
+                </Button>
+              </div>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </React.Fragment>
     );
   }
 }

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React, { Component } from "react";
-import { Table, Input, Form, Button, Grid, Modal, Header } from "semantic-ui-react";
+import { Table, Input, Form, Button, Grid, Modal, Header, Container, Image } from "semantic-ui-react";
 import AddItem from "./addItem";
 import http from "../../services/httpService";
 import { apiUrl } from "../../utils/api-config";
@@ -183,6 +183,16 @@ export default class Inventory extends Component {
     
     return (
       <div>
+        <Container className="page-header">
+          <Header as='h2' className="second-header" floated='right'>
+              Devsinc
+          </Header>
+          <Header as='h2' floated='left'>
+              <Image className="logo" src={require('../../images/logo.png')} />
+              <span className="header-text">Item Inventory</span>
+          </Header>
+        </Container>
+        <div className="ui divider"></div> 
         <Grid>
           <Grid.Column width={4}>
             <CategorySideBar gotoHome={this.gotoHome} filterItems={this.filterItems} filterCategory = {this.filterCategory} data={newCategories} />

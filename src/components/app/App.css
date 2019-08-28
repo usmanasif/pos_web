@@ -1,14 +1,15 @@
-.App {
-  text-align: center;
-}
-
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
   pointer-events: none;
 }
+
+body, html {
+  height: initial !important ; 
+}
 .marginTop {
-  margin-top: 3vh;
+  margin-top: 4vh;
+  padding-left: 20px;
 }
 .m-10 {
   margin: 10px;
@@ -157,6 +158,10 @@
   cursor: pointer;
 }
 
+.nav-text{
+  text-align: left;
+}
+
 #addItem,
 #addcategory {
   float: right;
@@ -174,4 +179,44 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.ui.card>.image>img, .ui.cards>.card>.image>img {
+  height: 120px !important;
+}
+
+.card-heading {
+  font-size: medium !important;
+  text-align: center;
+}
+
+.logo {
+  width: 85px !important;
+  height: 55px !important;
+  padding-bottom: 6px;
+  margin-top: 0px !important;
+  position: absolute !important;
+  z-index: -1;
+}
+
+.page-header {
+  padding-bottom: 30px;
+}
+
+.divider {
+  margin-bottom: 50px !important;
+  border-color: darkred !important;
+  border-radius: 100%;
+}
+
+.header-text {
+  color: darkred;
+  position: absolute;
+  margin-left: 75px;
+  padding-top: 10px;
+}
+
+.second-header{
+  padding-top: 10px !important;
+  color: darkred !important;
 }

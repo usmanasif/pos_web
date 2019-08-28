@@ -12,7 +12,9 @@ import {
   Radio,
   Form,
   Checkbox,
-  Dropdown
+  Dropdown,
+  Header,
+  Image
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 import DatePicker from "react-datepicker";
@@ -216,6 +218,16 @@ class Reports extends Component {
     
     return (
       <div>
+        <Container className="page-header">
+          <Header as='h2' className="second-header" floated='right'>
+              Devsinc
+          </Header>
+          <Header as='h2' floated='left'>
+              <Image className="logo" src={require('../../images/logo.png')} />
+              <span className="header-text">Sale Report</span>
+          </Header>
+        </Container>
+        <div className="ui divider"></div> 
         <Container>
           <Form>
             <Form.Group className="filter_form_fields">

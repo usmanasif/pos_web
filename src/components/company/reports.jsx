@@ -112,7 +112,7 @@ class Reports extends Component {
       let title = "";
       let headers = "";
       let salesContent = [];
-      const {filterBy, by_product, by_selected_products, seletedItems } = this.state;
+      const {filterBy, by_product, by_selected_products } = this.state;
       
       
       const marginLeft = 40;

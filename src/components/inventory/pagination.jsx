@@ -25,16 +25,17 @@ class Paginate extends Component {
   }
 
   render(){
-    const {activePage,totalPages} = this.state;
-    
+    this.state.activePage = this.props.pageSet.activePage;
+    this.state.totalPages =  Math.ceil(this.props.pageSet.totalPages/ this.state.per_page);
+
     return(
       <Pagination
         boundaryRange={0}
-        activePage={activePage}
+        activePage={this.state.activePage}
         siblingRange={3}
         firstItem={null}
         lastItem={null}
-        totalPages={totalPages}
+        totalPages={this.state.totalPages}
         onPageChange={this.handleActivePage}
       />
     )

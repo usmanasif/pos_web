@@ -17,19 +17,20 @@ function searchingFor(item) {
 const initialPagination = {
   activePage: 1,
   totalPages: 0,
-  per_page: 10
+  per_page: 4
 }
 
 export default class Inventory extends Component {
   state = {
     ...initialPagination,
+    open: false,
     column: null,
-    data: [],
-    apiResponse: [],
+    categoryID:null,
     direction: null,
     item: "", 
-    newCategories:[],
-    open: false
+    data: [],
+    apiResponse: [],
+    newCategories:[]
   };
 
   close =()=>{
@@ -37,6 +38,7 @@ export default class Inventory extends Component {
       open: false
     });
   }
+
   show = () =>{
     this.setState({
       open: true
@@ -66,25 +68,11 @@ export default class Inventory extends Component {
       })
       .catch(function(error) {});
   };
-  
-  fetchItemsData = () => {
-    http
-      .get(`${apiUrl}/api/v1/items`)
-      .then(res => {
-        const { activePage, per_page} = this.state;
-        const itemData = res.data[1];
-        this.setState({ 
-          data: itemData,
-        });
-        this.handlePagination(activePage, per_page);
-      })
-      .catch(error => console.log("Error: ", error));
-  };
 
   searchHandler = e => {
     this.setState({ item: e.target.value });
   };
-
+    
   handleSort = clickedColumn => () => {
     const { column, data, direction } = this.state;
     if (column !== clickedColumn) {
@@ -101,23 +89,33 @@ export default class Inventory extends Component {
     });
   };
 
-
+  pageHandler = () =>{
+    const { activePage, per_page} = this.state;
+    this.handlePagination(activePage, per_page);
+  }
+  
+  
   handlePagination = (page, per_page) => {
-
     this.setState({activePage: page, per_page:per_page });
 
-    http
+    if(this.state.categoryID){
+      this.filterItems(this.state.categoryID);
+    }
+    else{
+      http
       .get(`${apiUrl}/api/v1/items`,{params:{page, per_page}})
       .then(res => {
         this.setState({
           data:res.data[1],
           totalPages: res.data[0].total
         });
-      });
-
+      })
+      .catch(error => console.log("Error : ", error));
+      
       this.setState({state: this.state});
+    }
   }
-
+  
   confirmDelete =( item ) =>{
     this.deleteItem(item.id);
   }
@@ -128,52 +126,61 @@ export default class Inventory extends Component {
     http
     .delete(`${apiUrl}/api/v1/items/${id}`)
     .then(res => {
-      this.fetchItemsData();
+      this.pageHandler();
     })
     .catch(error => console.log("Error: ", error));
-
+    
     this.close();
   };
-
+  
   filterItems = (cat_id) =>{
-      http
-      .get(`${apiUrl}/api/v1/items`, {params:{category_id: cat_id}})
-      .then(res => {
-        const itemData = res.data[1];
-        this.setState({ 
-          data: itemData,
-        });
-      })
-      .catch(error => console.log("Error: ", error));
+    this.setState({categoryID: cat_id});
+    http
+    .get(`${apiUrl}/api/v1/items`, {params:{category_id: cat_id}})
+    .then(res => {
+      const itemData = res.data[1];
+      const count = res.data[0].total;
+      this.setState({ 
+        data: itemData,
+        totalPages: count
+      });
+    })
+    .catch(error => console.log("Error: ", error));
   }
-
+  
   filterCategory = (item) => {
     this.setState({
       newCategories: item.children
     });
   }
-
-  editItem = () => this.fetchItemsData();
-
-  addItem = () => {
-    this.fetchItemsData();
-    this.fetchCategoriesData();
+  
+  editItem = () => {
+    this.pageHandler();
   }
-
+  addItem = () => {
+    this.pageHandler();
+  }
+  
   addCategory = () => this.fetchCategoriesData();
-
+  
   gotoHome = () => {
     this.componentDidMount();
   }
-
+  
   componentDidMount() {
     this.fetchCategoriesData();
-    this.fetchItemsData();
+    this.state.categoryID = null;
+    this.setState({
+      activePage:1
+    });
+
+    const { per_page} = this.state;
+    this.handlePagination(1, per_page);
   }
   
   render() {
     const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories } = this.state;
-
+    
     return (
       <div>
         <Grid>
@@ -261,7 +268,7 @@ export default class Inventory extends Component {
             </Table>
             {
               totalPages>0? 
-            <Paginate handlePagination = {this.handlePagination} pageSet ={{ activePage, totalPages, per_page }}/>:null
+            <Paginate handlePagination = {this.handlePagination} pageSet ={{activePage, totalPages, per_page, data }}/>:null
             }
           </Grid.Column>
         </Grid>

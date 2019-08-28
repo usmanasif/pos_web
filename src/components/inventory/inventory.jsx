@@ -17,7 +17,7 @@ function searchingFor(item) {
 const initialPagination = {
   activePage: 1,
   totalPages: 0,
-  per_page: 4
+  per_page: 10
 }
 
 export default class Inventory extends Component {

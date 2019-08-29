@@ -16,7 +16,8 @@ import Inventory from "../inventory/inventory";
 import CreateCompany from "../company/createCompany";
 import Reports from "../company/reports"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import StockReport from "../report/stockReport"
+import StockReport from "../report/stockReport";
+import NoRouteFound from "../app/404PageNotFound";
 
 const NavHeader = styled.div`
       display: ${props => (props.expanded ? 'block' : 'none')};
@@ -156,6 +157,7 @@ class Navigation extends Component {
                 <Route path="/register" component={SignUp} />
                 <Route path="/login" component={SignIn} />
                 <Route path="/" exact component={isSignedIn ? Home : Auth} />
+                <Route component={NoRouteFound}></Route>
               </Switch>
             </Container>
             </div>

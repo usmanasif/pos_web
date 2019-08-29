@@ -9,8 +9,6 @@ import Auth from "../authentication/auth";
 import Navigation from "../company/navigation";
 import AdminApp from "../admin/adminApp";
 import { apiSubDomain, pathName } from "../../utils/api-config";
-import Inventory from "../inventory/inventory";
-import StockReport from "../report/stockReport"
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";

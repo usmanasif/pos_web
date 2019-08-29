@@ -4,11 +4,12 @@
   pointer-events: none;
 }
 
-body, html {
-  height: initial !important ; 
+body,
+html {
+  height: initial !important ;
 }
 .marginTop {
-  margin-top: 4vh;
+  margin-top: 2vh;
   padding-left: 20px;
 }
 .m-10 {
@@ -134,7 +135,31 @@ body, html {
 .filter_table {
   margin: 0.8em 0 !important;
 }
-
+.sidenav---sidenav---_2tBP {
+  position: fixed;
+  background: #2185d0;
+}
+.sidenav---sidenav-nav---3tvij
+  > .sidenav---sidenav-navitem---uwIJ-
+  > .sidenav---navitem---9uL5T
+  .sidenav---navicon---3gCRo
+  > *,
+.sidenav---sidenav-nav---3tvij
+  > .sidenav---sidenav-navitem---uwIJ-
+  > .sidenav---navitem---9uL5T
+  .sidenav---navtext---1AE_f
+  > * {
+  color: #ffffff;
+}
+.hPgCYk {
+  background-color: #2185d0;
+}
+.sidenav---sidenav-nav---3tvij
+  > .sidenav---sidenav-navitem---uwIJ-
+  > .sidenav---navitem---9uL5T
+  .sidenav---navtext---1AE_f {
+  color: #ffffff;
+}
 .remove-discount-btn {
   padding-left: 4px;
   position: absolute;
@@ -164,7 +189,7 @@ body, html {
   cursor: pointer;
 }
 
-.nav-text{
+.nav-text {
   text-align: left;
 }
 
@@ -187,7 +212,8 @@ body, html {
   }
 }
 
-.ui.card>.image>img, .ui.cards>.card>.image>img {
+.ui.card > .image > img,
+.ui.cards > .card > .image > img {
   height: 120px !important;
 }
 
@@ -210,7 +236,7 @@ body, html {
 }
 
 .divider {
-  margin-bottom: 50px !important;
+  margin-bottom: 22px !important;
   border-color: darkred !important;
   border-radius: 100%;
 }
@@ -222,7 +248,7 @@ body, html {
   padding-top: 10px;
 }
 
-.second-header{
+.second-header {
   padding-top: 10px !important;
   color: darkred !important;
 }

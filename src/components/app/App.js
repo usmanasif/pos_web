@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { connect } from "react-redux";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import { signOutUser } from "../../redux/redux-token-auth-config";
@@ -30,7 +30,7 @@ function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
         <ToastContainer />
         <div>{isSignedIn && <Navigation />}</div>
         <Container className="marginTop" textAlign="justified">
-        <div>{!isSignedIn && <Auth />}</div>
+          <div>{!isSignedIn && <Auth />}</div>
         </Container>
       </div>
     </Router>

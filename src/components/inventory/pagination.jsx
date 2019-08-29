@@ -1,5 +1,5 @@
 import React, { Component }from 'react'
-import { Pagination } from 'semantic-ui-react'
+import { Pagination, Icon } from 'semantic-ui-react'
 class Paginate extends Component {
   constructor(props) {
     super(props);
@@ -33,8 +33,10 @@ class Paginate extends Component {
         boundaryRange={0}
         activePage={this.state.activePage}
         siblingRange={3}
-        firstItem={null}
-        lastItem={null}
+        firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+        lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+        prevItem={{ content: <Icon name='angle left' />, icon: true }}
+        nextItem={{ content: <Icon name='angle right' />, icon: true }}
         totalPages={this.state.totalPages}
         onPageChange={this.handleActivePage}
       />

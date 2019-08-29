@@ -64,6 +64,12 @@ body, html {
   border: #2185d0 1px solid;
   border-radius: 2px;
 }
+.not-found{
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .ui.pagination.menu .active.item {
   background-color: rgb(33, 133, 208) !important;

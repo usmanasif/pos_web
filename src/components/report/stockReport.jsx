@@ -10,7 +10,7 @@ import { Button, Table, Container, Header, Image } from 'semantic-ui-react'
 const initialPagination = {
     activePage: 1,
     totalPages: 0,
-    per_page: 10
+    per_page: 6
   }
 
 class StockReport extends Component{

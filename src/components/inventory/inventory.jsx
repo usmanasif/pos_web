@@ -1,6 +1,16 @@
 import _ from "lodash";
 import React, { Component } from "react";
-import { Table, Input, Form, Button, Grid, Modal, Header, Container, Image } from "semantic-ui-react";
+import {
+  Table,
+  Input,
+  Form,
+  Button,
+  Grid,
+  Modal,
+  Header,
+  Container,
+  Image
+} from "semantic-ui-react";
 import AddItem from "./addItem";
 import http from "../../services/httpService";
 import { apiUrl } from "../../utils/api-config";
@@ -18,32 +28,32 @@ const initialPagination = {
   activePage: 1,
   totalPages: 0,
   per_page: 6
-}
+};
 
 export default class Inventory extends Component {
   state = {
     ...initialPagination,
     open: false,
     column: null,
-    categoryID:null,
+    categoryID: null,
     direction: null,
-    item: "", 
+    item: "",
     data: [],
     apiResponse: [],
-    newCategories:[]
+    newCategories: []
   };
 
-  close =()=>{
+  close = () => {
     this.setState({
       open: false
     });
-  }
+  };
 
-  show = () =>{
+  show = () => {
     this.setState({
       open: true
     });
-  }
+  };
 
   nextCategoryChild = obj => {
     if (obj.children.length > 0) this.checkCategoryTree(obj.children);
@@ -54,7 +64,7 @@ export default class Inventory extends Component {
       this.nextCategoryChild(obj);
     });
   };
-  
+
   fetchCategoriesData = () => {
     let handler = this;
     http
@@ -72,7 +82,7 @@ export default class Inventory extends Component {
   searchHandler = e => {
     this.setState({ item: e.target.value });
   };
-    
+
   handleSort = clickedColumn => () => {
     const { column, data, direction } = this.state;
     if (column !== clickedColumn) {
@@ -89,113 +99,125 @@ export default class Inventory extends Component {
     });
   };
 
-  pageHandler = () =>{
-    const { activePage, per_page} = this.state;
+  pageHandler = () => {
+    const { activePage, per_page } = this.state;
     this.handlePagination(activePage, per_page);
-  }
-  
-  
+  };
+
   handlePagination = (page, per_page) => {
-    this.setState({activePage: page, per_page:per_page });
+    this.setState({ activePage: page, per_page: per_page });
 
-    if(this.state.categoryID){
+    if (this.state.categoryID) {
       this.filterItems(this.state.categoryID);
-    }
-    else{
+    } else {
       http
-      .get(`${apiUrl}/api/v1/items`,{params:{page, per_page}})
-      .then(res => {
-        this.setState({
-          data:res.data[1],
-          totalPages: res.data[0].total
-        });
-      })
-      .catch(error => console.log("Error : ", error));
-      
-      this.setState({state: this.state});
-    }
-  }
-  
-  confirmDelete =( item ) =>{
-    this.deleteItem(item.id);
-  }
-  
-  deleteItem = id => {
+        .get(`${apiUrl}/api/v1/items`, { params: { page, per_page } })
+        .then(res => {
+          this.setState({
+            data: res.data[1],
+            totalPages: res.data[0].total
+          });
+        })
+        .catch(error => console.log("Error : ", error));
 
+      this.setState({ state: this.state });
+    }
+  };
+
+  confirmDelete = item => {
+    this.deleteItem(item.id);
+  };
+
+  deleteItem = id => {
     //delete request
     http
-    .delete(`${apiUrl}/api/v1/items/${id}`)
-    .then(res => {
-      this.pageHandler();
-    })
-    .catch(error => console.log("Error: ", error));
-    
+      .delete(`${apiUrl}/api/v1/items/${id}`)
+      .then(res => {
+        this.pageHandler();
+      })
+      .catch(error => console.log("Error: ", error));
+
     this.close();
   };
-  
-  filterItems = (cat_id) =>{
-    this.setState({categoryID: cat_id});
+
+  filterItems = cat_id => {
+    this.setState({ categoryID: cat_id });
     http
-    .get(`${apiUrl}/api/v1/items`, {params:{category_id: cat_id}})
-    .then(res => {
-      const itemData = res.data[1];
-      const count = res.data[0].total;
-      this.setState({ 
-        data: itemData,
-        totalPages: count
-      });
-    })
-    .catch(error => console.log("Error: ", error));
-  }
-  
-  filterCategory = (item) => {
+      .get(`${apiUrl}/api/v1/items`, { params: { category_id: cat_id } })
+      .then(res => {
+        const itemData = res.data[1];
+        const count = res.data[0].total;
+        this.setState({
+          data: itemData,
+          totalPages: count
+        });
+      })
+      .catch(error => console.log("Error: ", error));
+  };
+
+  filterCategory = item => {
     this.setState({
       newCategories: item.children
     });
-  }
-  
+  };
+
   editItem = () => {
     this.pageHandler();
-  }
+  };
   addItem = () => {
     this.pageHandler();
-  }
-  
+  };
+
   addCategory = () => this.fetchCategoriesData();
-  
+
   gotoHome = () => {
     this.componentDidMount();
-  }
-  
+  };
+
   componentDidMount() {
     this.fetchCategoriesData();
     this.state.categoryID = null;
     this.setState({
-      activePage:1
+      activePage: 1
     });
 
-    const { per_page} = this.state;
+    const { per_page } = this.state;
     this.handlePagination(1, per_page);
   }
-  
+
   render() {
-    const { column, data, direction, apiResponse, item, activePage, totalPages, per_page, newCategories } = this.state;
-    
+    const {
+      column,
+      data,
+      direction,
+      apiResponse,
+      item,
+      activePage,
+      totalPages,
+      per_page,
+      newCategories
+    } = this.state;
+
     return (
       <div>
         <Container className="page-header">
-          <Header as='h2' className="second-header" floated='right'>
-              Devsinc
+          <Header as="h2" className="second-header" floated="right">
+            Devsinc
           </Header>
-          <Header as='h2' floated='left'>
-              <Image className="logo" src={require('../../images/logo.png')} />
-              <span className="header-text">Item Inventory</span>
+          <Header as="h2" floated="left">
+            <Image className="logo" src={require("../../images/logo.png")} />
+            <span className="header-text">Item Inventory</span>
           </Header>
         </Container>
-        <div className="ui divider"></div> 
+        <div className="ui divider"></div>
         <Grid>
           <Grid.Column width={4}>
-            <CategorySideBar gotoHome={this.gotoHome} filterItems={this.filterItems} filterCategory = {this.filterCategory} data={newCategories} />
+            <CategorySideBar
+              gotoHome={this.gotoHome}
+              filterItems={this.filterItems}
+              filterCategory={this.filterCategory}
+              data={newCategories}
+            />
           </Grid.Column>
           <Grid.Column width={12}>
             <Form>
@@ -203,11 +225,11 @@ export default class Inventory extends Component {
                 icon="search"
                 placeholder="Search by name ..."
                 onChange={this.searchHandler}
-              /> 
-              {apiResponse.length>0?
-              <AddItem addItem={this.addItem} data={apiResponse} />:null
-              }
-              <AddCategory addCategory = {this.addCategory}  data={apiResponse} />
+              />
+              {apiResponse.length > 0 ? (
+                <AddItem addItem={this.addItem} data={apiResponse} />
+              ) : null}
+              <AddCategory addCategory={this.addCategory} data={apiResponse} />
             </Form>
             <Table sortable celled fixed>
               <Table.Header>
@@ -240,15 +262,14 @@ export default class Inventory extends Component {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {             
-                data.filter(searchingFor(item)).map( d => (
+                {data.filter(searchingFor(item)).map(d => (
                   <Table.Row key={d.id}>
                     <Table.Cell>{d.name}</Table.Cell>
                     <Table.Cell>{d.current_stock}</Table.Cell>
                     <Table.Cell>{d.category.name}</Table.Cell>
                     <Table.Cell>{d.sale_price}</Table.Cell>
                     <Table.Cell>
-                    <Modal
+                      <Modal
                         dimmer="inverted"
                         trigger={
                           <Button
@@ -265,21 +286,25 @@ export default class Inventory extends Component {
                             content="Are you Sure"
                           />
                         }
-                        actions={[
-                          { key: "ok", content: "Ok", positive: true }
-                        ]}
+                        actions={[{ key: "ok", content: "Ok", positive: true }]}
                         onClose={() => this.confirmDelete(d)}
-                      />                  
-                      <AddItem itemData={d} editItem={this.editItem} data={apiResponse} />
+                      />
+                      <AddItem
+                        itemData={d}
+                        editItem={this.editItem}
+                        data={apiResponse}
+                      />
                     </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
             </Table>
-            {
-              totalPages>0? 
-            <Paginate handlePagination = {this.handlePagination} pageSet ={{activePage, totalPages, per_page, data }}/>:null
-            }
+            {totalPages > 0 ? (
+              <Paginate
+                handlePagination={this.handlePagination}
+                pageSet={{ activePage, totalPages, per_page, data }}
+              />
+            ) : null}
           </Grid.Column>
         </Grid>
       </div>

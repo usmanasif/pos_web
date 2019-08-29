@@ -112,7 +112,7 @@ class Home extends Component {
           <Grid.Row>
             <Grid.Column width="8">
               <Segment raised>
-                <Label ribbon size="big" color="teal">
+                <Label ribbon size="big" color="blue">
                   Stock By Category
                 </Label>
                 <StockByCategoryChart />
@@ -120,7 +120,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column width="8">
               <Segment raised>
-                <Label ribbon size="big" color="teal">
+                <Label ribbon size="big" color="blue">
                   Sales By Category
                 </Label>
                 <SalesByCategoryChart />

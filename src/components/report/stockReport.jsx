@@ -4,7 +4,7 @@ import "jspdf-autotable";
 import { apiUrl } from "../../utils/api-config";
 import http from "../../services/httpService";
 import Paginate from "../inventory/pagination";
-import { Button, Table } from 'semantic-ui-react'
+import { Button, Table, Container, Header, Image } from 'semantic-ui-react'
 
 
 const initialPagination = {
@@ -87,6 +87,16 @@ class StockReport extends Component{
 
         return(
             <div>
+                <Container className="page-header">
+                    <Header as='h2' className="second-header" floated='right'>
+                        Devsinc
+                    </Header>
+                    <Header as='h2' floated='left'>
+                        <Image className="logo" src={require('../../images/logo.png')} />
+                        <span className="header-text">Stock Report</span>
+                    </Header>
+                </Container>
+                <div className="ui divider"></div>
                 <div>
                     <Button icon="download" content='Download' color="green" onClick={() => this.exportPDF()} />
                 </div>

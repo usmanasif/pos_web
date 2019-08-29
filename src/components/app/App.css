@@ -64,6 +64,14 @@
   border-radius: 2px;
 }
 
+.not-found{
+  width: 33vw;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25vh;
+}
+
 .ui.pagination.menu .active.item {
   background-color: rgb(33, 133, 208) !important;
   color: rgb(255, 255, 255) !important;

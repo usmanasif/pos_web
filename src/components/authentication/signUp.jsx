@@ -30,7 +30,6 @@ class SignUp extends Component {
       })
       .catch(error => {
         toast(`Error : ${error.response.statusText}`);
-        console.log("error is", error.response.data.errors);
         const { errors } = error.response.data;
         Object.keys(errors).map(
           e =>
@@ -42,7 +41,6 @@ class SignUp extends Component {
 
   render() {
     const { submitForm } = this;
-    console.log("props: ", this.props);
     return (
       <React.Fragment>
         <Form onSubmit={submitForm}>

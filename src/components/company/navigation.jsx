@@ -71,61 +71,63 @@ class Navigation extends Component {
           <Route
             render={({ location, history }) => (
               <div className="ui-container">
-                <SideNav
-                  expanded={this.state.expanded}
-                  onToggle={expanded => {
-                    this.setState({ expanded });
-                  }}
-                  onSelect={selected => {
-                    const to = "/" + selected;
-                    if (location.pathname !== to) {
-                      history.push(to);
-                    }
-                  }}
-                >
-                  <SideNav.Toggle />
-                  <NavHeader expanded={this.state.expanded}>
-                    <NavTitle>Devsinc</NavTitle>
-                  </NavHeader>
-                  <SideNav.Nav>
-                    <NavItem eventKey="home">
-                      <NavIcon>
-                        <FontAwesomeIcon icon={faHome} />
-                      </NavIcon>
-                      <NavText>Dashboard</NavText>
-                    </NavItem>
-                    <NavItem eventKey="reciept">
-                      <NavIcon>
-                        <FontAwesomeIcon icon={faReceipt} />
-                      </NavIcon>
-                      <NavText>New Invoice</NavText>
-                    </NavItem>
-                    <NavItem eventKey="inventory">
-                      <NavIcon>
-                        <FontAwesomeIcon icon={faDolly} />
-                      </NavIcon>
-                      <NavText>Inventory</NavText>
-                    </NavItem>
-                    <NavItem eventKey="reports">
-                      <NavIcon>
-                        <FontAwesomeIcon icon={faChartPie} />
-                      </NavIcon>
-                      <NavText>Sale Report</NavText>
-                    </NavItem>
-                    <NavItem eventKey="stock_report">
-                      <NavIcon>
-                        <FontAwesomeIcon icon={faChartLine} />
-                      </NavIcon>
-                      <NavText>Stock Report</NavText>
-                    </NavItem>
-                    <NavItem eventKey="" onClick={this.signOut}>
-                      <NavIcon>
-                        <FontAwesomeIcon icon={faSignOutAlt} />
-                      </NavIcon>
-                      <NavText className="nav-text">Sign Out</NavText>
-                    </NavItem>
-                  </SideNav.Nav>
-                </SideNav>
+                {isSignedIn && (
+                  <SideNav
+                    expanded={this.state.expanded}
+                    onToggle={expanded => {
+                      this.setState({ expanded });
+                    }}
+                    onSelect={selected => {
+                      const to = "/" + selected;
+                      if (location.pathname !== to) {
+                        history.push(to);
+                      }
+                    }}
+                  >
+                    <SideNav.Toggle />
+                    <NavHeader expanded={this.state.expanded}>
+                      <NavTitle>Devsinc</NavTitle>
+                    </NavHeader>
+                    <SideNav.Nav>
+                      <NavItem eventKey="home">
+                        <NavIcon>
+                          <FontAwesomeIcon icon={faHome} />
+                        </NavIcon>
+                        <NavText>Dashboard</NavText>
+                      </NavItem>
+                      <NavItem eventKey="reciept">
+                        <NavIcon>
+                          <FontAwesomeIcon icon={faReceipt} />
+                        </NavIcon>
+                        <NavText>New Invoice</NavText>
+                      </NavItem>
+                      <NavItem eventKey="inventory">
+                        <NavIcon>
+                          <FontAwesomeIcon icon={faDolly} />
+                        </NavIcon>
+                        <NavText>Inventory</NavText>
+                      </NavItem>
+                      <NavItem eventKey="reports">
+                        <NavIcon>
+                          <FontAwesomeIcon icon={faChartPie} />
+                        </NavIcon>
+                        <NavText>Sale Report</NavText>
+                      </NavItem>
+                      <NavItem eventKey="stock_report">
+                        <NavIcon>
+                          <FontAwesomeIcon icon={faChartLine} />
+                        </NavIcon>
+                        <NavText>Stock Report</NavText>
+                      </NavItem>
+                      <NavItem eventKey="" onClick={this.signOut}>
+                        <NavIcon>
+                          <FontAwesomeIcon icon={faSignOutAlt} />
+                        </NavIcon>
+                        <NavText className="nav-text">Sign Out</NavText>
+                      </NavItem>
+                    </SideNav.Nav>
+                  </SideNav>
+                )}
                 <Container className="marginTop" textAlign="justified">
                   <Switch>
                     <Route

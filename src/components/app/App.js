@@ -28,10 +28,7 @@ function App({ isSignedIn, isLoading, signOutUser, isSuperAdmin }) {
     <Router>
       <div className="App">
         <ToastContainer />
-        <div>{isSignedIn && <Navigation />}</div>
-        <Container className="marginTop" textAlign="justified">
-          <div>{!isSignedIn && <Auth />}</div>
-        </Container>
+        <Navigation />
       </div>
     </Router>
   );

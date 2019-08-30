@@ -3,7 +3,9 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+body {
+  background-color: #80808014 !important;
+}
 body,
 html {
   height: initial !important ;
@@ -65,14 +67,14 @@ html {
   border: #2185d0 1px solid;
   border-radius: 2px;
 }
-.not-found{
+.not-found {
   width: 80%;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-.not-found{
+.not-found {
   width: 33vw;
   display: block;
   margin-left: auto;
@@ -145,7 +147,7 @@ html {
 }
 .sidenav---sidenav---_2tBP {
   position: fixed;
-  background: #2185d0;
+  background: #1969a4;
 }
 .sidenav---sidenav-nav---3tvij
   > .sidenav---sidenav-navitem---uwIJ-
@@ -231,10 +233,11 @@ html {
 }
 
 .logo {
-  width: 85px !important;
-  height: 55px !important;
-  padding-bottom: 6px;
-  margin-top: 0px !important;
+  width: 50px !important;
+  height: 63px !important;
+  padding-bottom: 15px;
+  margin-top: -6px !important;
+  margin-left: 12px !important;
   position: absolute !important;
   z-index: -1;
 }
@@ -245,12 +248,12 @@ html {
 
 .divider {
   margin-bottom: 22px !important;
-  border-color: darkred !important;
+  border-color: #1969a4 !important;
   border-radius: 100%;
 }
 
 .header-text {
-  color: darkred;
+  color: #1969a4;
   position: absolute;
   margin-left: 75px;
   padding-top: 10px;
@@ -258,5 +261,5 @@ html {
 
 .second-header {
   padding-top: 10px !important;
-  color: darkred !important;
+  color: #1969a4 !important;
 }

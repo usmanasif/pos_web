@@ -49,7 +49,7 @@ class LastWeekSalesChart extends Component {
         series={[{ name: "Daily Sales", data: [...this.state.series] }]}
         type="bar"
         width="100%"
-        height="300px%"
+        height="300px"
       />
     );
   }

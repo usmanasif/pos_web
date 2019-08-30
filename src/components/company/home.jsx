@@ -23,7 +23,10 @@ class Home extends Component {
             Devsinc
           </Header>
           <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
+            <Image
+              className="logo"
+              src={require("../../images/company_icon.jpeg")}
+            />
             <span className="header-text">Dashboard</span>
           </Header>
         </Container>
@@ -32,7 +35,7 @@ class Home extends Component {
           <Grid.Row>
             <Grid.Column>
               <Link to="/reciept">
-                <Card>
+                <Card raised>
                   <Image
                     src={require("../../images/invoice.jpg")}
                     wrapped
@@ -48,7 +51,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column>
               <Link to="/inventory">
-                <Card>
+                <Card raised>
                   <Image
                     src={require("../../images/inventory.jpg")}
                     wrapped
@@ -64,7 +67,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column>
               <Link to="/reports">
-                <Card>
+                <Card raised>
                   <Image
                     src={require("../../images/reports.jpeg")}
                     wrapped
@@ -80,7 +83,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column>
               <Link to="/stock_report">
-                <Card>
+                <Card raised>
                   <Image
                     src={require("../../images/stock_report.jpg")}
                     wrapped
@@ -95,7 +98,7 @@ class Home extends Component {
               </Link>
             </Grid.Column>
             <Grid.Column>
-              <Card>
+              <Card raised>
                 <Image
                   src={require("../../images/returns.jpg")}
                   wrapped
@@ -112,7 +115,7 @@ class Home extends Component {
           <Grid.Row>
             <Grid.Column width="8">
               <Segment raised>
-                <Label ribbon size="big" color="teal">
+                <Label ribbon size="big" color="blue">
                   Stock By Category
                 </Label>
                 <StockByCategoryChart />
@@ -120,7 +123,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column width="8">
               <Segment raised>
-                <Label ribbon size="big" color="teal">
+                <Label ribbon size="big" color="blue">
                   Sales By Category
                 </Label>
                 <SalesByCategoryChart />

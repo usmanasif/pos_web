@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
 import { signOutUser } from "../../redux/redux-token-auth-config";
 import { ToastContainer } from "react-toastify";
-import { Container } from "semantic-ui-react";
-import Auth from "../authentication/auth";
 import Navigation from "../company/navigation";
 import AdminApp from "../admin/adminApp";
 import { apiSubDomain, pathName } from "../../utils/api-config";

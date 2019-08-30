@@ -39,6 +39,7 @@ class Reports extends Component {
     super(props);
     this.state = {
       data: false,
+      printData:[],
       current_page: 1,
       total_pages: 1,
       seletedItems: "",
@@ -106,8 +107,26 @@ class Reports extends Component {
       params.per_page = this.state.by_product === true ? 8 : 5;
       this.setState({ params, current_page: 1 }, () => this.fetchData());
     };
+
+    fetchDataToPrint(){
+      const params = this.state.params
+      delete params.per_page;
+      delete params.page;
+
+      http
+      .get(apiUrl + "/api/v1/invoices", {params:params})
+      .then(response =>{
+        const printData = response.data.invoices
+        ? { invoices: response.data.invoices }
+        : response.data.products
+        ? { products: response.data.products }
+        : { selected_products: response.data.selected_products };
+        this.setState({ printData }, ()=>this.exportSalesReport());
+      });
+    }
     
     exportSalesReport = () => {
+      console.log(this.state.printData);
       const unit = "pt";
       const size = "A4"; // Use A1, A2, A3 or A4
       const orientation = "portrait"; // portrait or landscape
@@ -115,17 +134,14 @@ class Reports extends Component {
       let headers = "";
       let salesContent = [];
       const {filterBy, by_product, by_selected_products } = this.state;
-      
-      
       const marginLeft = 40;
-      const doc = new jsPDF(orientation, unit, size); 
-      
+      const doc = new jsPDF(orientation, unit, size);      
       doc.setFontSize(15);
-      
+
       if ((filterBy === "today" || filterBy === "byDate") && !by_product && !by_selected_products) {
         title = "Sales Report By Date";
-        headers = [["INVOICE ID","INVOICE TOTAL", "DATE", "TIME"]];   
-        this.state.data.invoices.forEach(elt=>{
+        headers = [["INVOICE ID","INVOICE TOTAL", "DATE", "TIME"]];
+        this.state.printData.invoices.forEach(elt=>{
           const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
           const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));
           salesContent.push ([elt.id, elt.total, date, time])
@@ -135,15 +151,16 @@ class Reports extends Component {
       if(this.state.by_product){
         title = "Sales Report By Product";
         headers = [["PRODUCT ID","PRODUCT NAME", "SOLD QUANTITY", "TOTAL"]];   
-        this.state.data.products.forEach(elt=>{
+        this.state.printData.products.forEach(elt=>{
           salesContent.push ([elt.id, elt.name, elt.quantity, elt.total_sold_price])
         });
       }
 
       if(this.state.by_selected_products){
         title = "Sales Report By Selected Product";
-        headers = [["INVOICE ID", "PRODUCT ID","NAME", "QUANTITY", "UNIT PRICE", "DATE", "TIME"]];   
-        this.state.data.selected_products.forEach(elt=>{
+        headers = [["INVOICE ID", "PRODUCT ID","NAME", "QUANTITY", "UNIT PRICE", "DATE", "TIME"]];
+        if(this.state.printData.selected_products) 
+        this.state.printData.selected_products.forEach(elt=>{
           const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
           const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));
           salesContent.push ([elt.invoice_id, elt.item_id, elt.name, elt.quantity, elt.unit_price, date, time])
@@ -186,6 +203,7 @@ class Reports extends Component {
       http
       .get(`${apiUrl}/api/v1/items`)
       .then(({ data }) => {
+        console.log(data);
         const items = [];
         data[1].forEach(i =>
           items.push({ key: i.id, value: i.id, text: i.name })
@@ -482,7 +500,7 @@ class Reports extends Component {
               prevItem={{ content: <Icon name="angle left" />, icon: true }}
               nextItem={{ content: <Icon name="angle right" />, icon: true }}
             />
-            <Button  floated='right' icon="download" content='Download Report' color="blue" onClick={() => this.exportSalesReport()} style={{marginBottom: "10px"}} />
+            <Button  floated='right' icon="download" content='Download Report' color="blue" onClick={() => this.fetchDataToPrint()} style={{marginBottom: "10px"}} />
           </Container>
         )}
         {data.invoices && (

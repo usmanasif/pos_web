@@ -68,6 +68,10 @@ html {
   border-radius: 2px;
 }
 
+.raised:hover {
+  box-shadow: 0 0 0 1px #63b3ef, 0 2px 4px 0 rgb(99, 179, 239),
+    0 2px 10px 0 rgb(99, 179, 239) !important;
+}
 
 .not-found {
   width: 33vw;

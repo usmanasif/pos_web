@@ -233,10 +233,11 @@ html {
 }
 
 .logo {
-  width: 85px !important;
-  height: 55px !important;
-  padding-bottom: 6px;
-  margin-top: 0px !important;
+  width: 50px !important;
+  height: 63px !important;
+  padding-bottom: 15px;
+  margin-top: -6px !important;
+  margin-left: 12px !important;
   position: absolute !important;
   z-index: -1;
 }

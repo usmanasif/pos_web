@@ -23,7 +23,10 @@ class Home extends Component {
             Devsinc
           </Header>
           <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
+            <Image
+              className="logo"
+              src={require("../../images/company_icon.jpeg")}
+            />
             <span className="header-text">Dashboard</span>
           </Header>
         </Container>

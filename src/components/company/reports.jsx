@@ -126,7 +126,6 @@ class Reports extends Component {
     }
     
     exportSalesReport = () => {
-      console.log(this.state.printData);
       const unit = "pt";
       const size = "A4"; // Use A1, A2, A3 or A4
       const orientation = "portrait"; // portrait or landscape
@@ -203,7 +202,6 @@ class Reports extends Component {
       http
       .get(`${apiUrl}/api/v1/items`)
       .then(({ data }) => {
-        console.log(data);
         const items = [];
         data[1].forEach(i =>
           items.push({ key: i.id, value: i.id, text: i.name })

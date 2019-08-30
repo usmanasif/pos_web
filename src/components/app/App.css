@@ -67,19 +67,14 @@ html {
   border: #2185d0 1px solid;
   border-radius: 2px;
 }
-.not-found {
-  width: 80%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
+
 
 .not-found {
   width: 33vw;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 25vh;
+  margin-top: 20vh;
 }
 
 .ui.pagination.menu .active.item {

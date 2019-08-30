@@ -55,7 +55,7 @@ class Navigation extends Component {
     e.preventDefault();
     const { signOutUser } = this.props;
     signOutUser()
-      .then(res => console.log("user Logged out.....  ", res))
+      .then(res =>{})
       .catch(err => console.log(err));
   };
 

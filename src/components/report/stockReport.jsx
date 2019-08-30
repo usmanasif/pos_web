@@ -6,7 +6,6 @@ import http from "../../services/httpService";
 import Paginate from "../inventory/pagination";
 import { Button, Table, Container, Header, Image } from 'semantic-ui-react'
 
-
 const initialPagination = {
     activePage: 1,
     totalPages: 0,

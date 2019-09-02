@@ -268,7 +268,7 @@ class Reports extends Component {
                   onChange={this.changeFilterOption}
                 />
               </Form.Field>
-              <Form.Field width="8">
+              <Form.Field width="7">
                 {this.state.filterBy === "byDate" && (
                   <React.Fragment>
                     <DatePicker
@@ -296,7 +296,7 @@ class Reports extends Component {
                   </React.Fragment>
                 )}
               </Form.Field>
-              <Form.Field width="1">
+              <Form.Field width="2">
                 <Button floated="right" color="teal" onClick={this.applyFilter}>
                   Apply
                 </Button>

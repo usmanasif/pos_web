@@ -132,12 +132,11 @@ class Reports extends Component {
       let title = "";
       let headers = "";
       let salesContent = [];
-      const {filterBy, by_product, by_selected_products } = this.state;
       const marginLeft = 40;
       const doc = new jsPDF(orientation, unit, size);      
       doc.setFontSize(15);
 
-      if ((filterBy === "today" || filterBy === "byDate") && !by_product && !by_selected_products) {
+      if (this.state.printData.invoices) {
         title = "Sales Report By Date";
         headers = [["INVOICE ID","INVOICE TOTAL", "DATE", "TIME"]];
         this.state.printData.invoices.forEach(elt=>{
@@ -147,18 +146,17 @@ class Reports extends Component {
         });
       }
 
-      if(this.state.by_product){
+      if(this.state.printData.products){
         title = "Sales Report By Product";
         headers = [["PRODUCT ID","PRODUCT NAME", "SOLD QUANTITY", "TOTAL"]];   
         this.state.printData.products.forEach(elt=>{
           salesContent.push ([elt.id, elt.name, elt.quantity, elt.total_sold_price])
         });
       }
-
-      if(this.state.by_selected_products){
+      
+      if(this.state.printData.selected_products){
         title = "Sales Report By Selected Product";
         headers = [["INVOICE ID", "PRODUCT ID","NAME", "QUANTITY", "UNIT PRICE", "DATE", "TIME"]];
-        if(this.state.printData.selected_products) 
         this.state.printData.selected_products.forEach(elt=>{
           const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
           const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));

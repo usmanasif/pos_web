@@ -25,6 +25,8 @@ import Reports from "../company/reports";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import StockReport from "../report/stockReport";
 import NoRouteFound from "../app/404PageNotFound";
+import Tooltip from 'react-tooltip-lite';
+
 
 const NavHeader = styled.div`
   display: ${props => (props.expanded ? "block" : "none")};
@@ -55,7 +57,7 @@ class Navigation extends Component {
     e.preventDefault();
     const { signOutUser } = this.props;
     signOutUser()
-      .then(res =>{})
+      .then(res => console.log(res))
       .catch(err => console.log(err));
   };
 
@@ -71,63 +73,73 @@ class Navigation extends Component {
           <Route
             render={({ location, history }) => (
               <div className="ui-container">
-                {isSignedIn && (
-                  <SideNav
-                    expanded={this.state.expanded}
-                    onToggle={expanded => {
-                      this.setState({ expanded });
-                    }}
-                    onSelect={selected => {
-                      const to = "/" + selected;
-                      if (location.pathname !== to) {
-                        history.push(to);
-                      }
-                    }}
-                  >
-                    <SideNav.Toggle />
-                    <NavHeader expanded={this.state.expanded}>
-                      <NavTitle>Devsinc</NavTitle>
-                    </NavHeader>
-                    <SideNav.Nav>
-                      <NavItem eventKey="home">
-                        <NavIcon>
+                <SideNav
+                  expanded={this.state.expanded}
+                  onToggle={expanded => {
+                    this.setState({ expanded });
+                  }}
+                  onSelect={selected => {
+                    const to = "/" + selected;
+                    if (location.pathname !== to) {
+                      history.push(to);
+                    }
+                  }}
+                >
+                  <SideNav.Toggle />
+                  <NavHeader expanded={this.state.expanded}>
+                    <NavTitle>Devsinc</NavTitle>
+                  </NavHeader>
+                  <SideNav.Nav>
+                    <NavItem eventKey="home" on={['hover', 'click']} content='Multiple events can trigger a popup'>
+                      <NavIcon>
+                        <Tooltip content="Dashboard" direction="right">
                           <FontAwesomeIcon icon={faHome} />
-                        </NavIcon>
-                        <NavText>Dashboard</NavText>
-                      </NavItem>
-                      <NavItem eventKey="reciept">
-                        <NavIcon>
-                          <FontAwesomeIcon icon={faReceipt} />
-                        </NavIcon>
-                        <NavText>New Invoice</NavText>
-                      </NavItem>
-                      <NavItem eventKey="inventory">
-                        <NavIcon>
+                        </Tooltip>
+                      </NavIcon>
+                      <NavText>Dashboard</NavText>
+                    </NavItem>
+                    <NavItem eventKey="reciept">
+                      <NavIcon>
+                    <Tooltip content="New Invoice" direction="right">
+                        <FontAwesomeIcon icon={faReceipt} />
+                    </Tooltip>
+                      </NavIcon>
+                      <NavText>New Invoice</NavText>
+                    </NavItem>
+                    <NavItem eventKey="inventory">
+                      <NavIcon>
+                        <Tooltip content="Inventory" direction="right">
                           <FontAwesomeIcon icon={faDolly} />
-                        </NavIcon>
-                        <NavText>Inventory</NavText>
-                      </NavItem>
-                      <NavItem eventKey="reports">
-                        <NavIcon>
-                          <FontAwesomeIcon icon={faChartPie} />
-                        </NavIcon>
-                        <NavText>Sale Report</NavText>
-                      </NavItem>
-                      <NavItem eventKey="stock_report">
-                        <NavIcon>
+                        </Tooltip>
+                      </NavIcon>
+                      <NavText>Inventory</NavText>
+                    </NavItem>
+                    <NavItem eventKey="reports">
+                      <NavIcon>
+                          <Tooltip content="Sale Report" direction="right">
+                             <FontAwesomeIcon icon={faChartPie} />
+                          </Tooltip>
+                      </NavIcon>
+                      <NavText>Sale Report</NavText>
+                    </NavItem>
+                    <NavItem eventKey="stock_report">
+                      <NavIcon>
+                        <Tooltip content="Stock Report" direction="right">
                           <FontAwesomeIcon icon={faChartLine} />
-                        </NavIcon>
-                        <NavText>Stock Report</NavText>
-                      </NavItem>
-                      <NavItem eventKey="" onClick={this.signOut}>
-                        <NavIcon>
+                        </Tooltip>
+                      </NavIcon>
+                      <NavText>Stock Report</NavText>
+                    </NavItem>
+                    <NavItem eventKey="" onClick={this.signOut}>
+                      <NavIcon>
+                        <Tooltip content="Sign Out" direction="right">
                           <FontAwesomeIcon icon={faSignOutAlt} />
-                        </NavIcon>
-                        <NavText className="nav-text">Sign Out</NavText>
-                      </NavItem>
-                    </SideNav.Nav>
-                  </SideNav>
-                )}
+                        </Tooltip>
+                      </NavIcon>
+                      <NavText className="nav-text">Sign Out</NavText>
+                    </NavItem>
+                  </SideNav.Nav>
+                </SideNav>
                 <Container className="marginTop" textAlign="justified">
                   <Switch>
                     <Route

@@ -414,6 +414,7 @@ class NewReciept extends Component {
                 <Form.Field
                   id="form-button-control-secondary"
                   control={Button}
+                  color = "blue"
                   content="Add to Invoice"
                   label=""
                   onClick={this.populateSelectedItems}

@@ -232,12 +232,9 @@ html {
 }
 
 .logo {
-  width: 50px !important;
-  height: 63px !important;
-  padding-bottom: 15px;
-  margin-top: -6px !important;
-  margin-left: 12px !important;
-  position: absolute !important;
+  width: 44px !important;
+  height: 47px !important;
+  margin-top: -4px !important;
   z-index: -1;
 }
 
@@ -253,12 +250,19 @@ html {
 
 .header-text {
   color: #1969a4;
-  position: absolute;
-  margin-left: 75px;
-  padding-top: 10px;
+  margin-left: 5px;
 }
 
 .second-header {
   padding-top: 10px !important;
   color: #1969a4 !important;
+}
+
+.card-contatiner {
+  margin-top: 40px !important;
+  margin-bottom: 50px !important;
+}
+
+.card-divider{
+  margin-bottom: 40px !important;
 }

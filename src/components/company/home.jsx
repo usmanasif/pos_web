@@ -6,7 +6,8 @@ import {
   Container,
   Header,
   Segment,
-  Label
+  Label,
+  Divider
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import StockByCategoryChart from "../charts/stockByCategoryChart";
@@ -31,7 +32,7 @@ class Home extends Component {
           </Header>
         </Container>
         <div className="ui divider"></div>
-        <Grid columns={5}>
+        <Grid columns={5} className="card-contatiner">
           <Grid.Row>
             <Grid.Column>
               <Link to="/reciept">
@@ -111,6 +112,7 @@ class Home extends Component {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+        <Divider horizontal className="card-divider">Sale Statistics</Divider>
         <Grid>
           <Grid.Row>
             <Grid.Column width="8">

@@ -33,7 +33,7 @@ class LastWeekSalesChart extends Component {
         options.labels = data.results.map(({ created_at }) => {
           let label = new Intl.DateTimeFormat("en-PK", {
             year: "numeric",
-            month: "long",
+            month: "short",
             day: "numeric"
           }).format(new Date(created_at));
           return label;

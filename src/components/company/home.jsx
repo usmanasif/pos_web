@@ -130,8 +130,8 @@ class Home extends Component {
               </Segment>
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width="16">
+            <Grid.Row>
+            <Grid.Column width="10" style={{margin: "auto"}}>
               <Segment raised>
                 <Label size="big" color="blue" ribbon>
                   Last Week Sales
@@ -140,8 +140,8 @@ class Home extends Component {
               </Segment>
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width="16">
+          <Grid.Row>            
+            <Grid.Column width="12" style={{margin: "auto"}}>
               <Segment raised>
                 <Label size="big" color="blue" ribbon>
                   Products Available Stock
@@ -149,7 +149,7 @@ class Home extends Component {
                 <ItemsStockChart />
               </Segment>
             </Grid.Column>
-          </Grid.Row>
+            </Grid.Row>
         </Grid>
       </React.Fragment>
     );

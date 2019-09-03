@@ -10,6 +10,22 @@ body,
 html {
   height: initial !important ;
 }
+
+.react-tooltip-lite{
+  left: 74px;
+  top: 119px;
+  max-width: 1325px;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 1000;
+  position: absolute;
+  display: inline-block;
+  width: 100px;
+  background: rgb(32, 32, 32);
+  color: white;
+  border-radius: 5%;
+}
+
 .marginTop {
   margin-top: 2vh;
   padding-left: 20px;

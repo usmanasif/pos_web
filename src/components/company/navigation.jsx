@@ -73,6 +73,7 @@ class Navigation extends Component {
           <Route
             render={({ location, history }) => (
               <div className="ui-container">
+                {isSignedIn &&
                 <SideNav
                   expanded={this.state.expanded}
                   onToggle={expanded => {
@@ -140,6 +141,7 @@ class Navigation extends Component {
                     </NavItem>
                   </SideNav.Nav>
                 </SideNav>
+                }
                 <Container className="marginTop" textAlign="justified">
                   <Switch>
                     <Route

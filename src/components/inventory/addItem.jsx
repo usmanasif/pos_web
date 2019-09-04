@@ -22,6 +22,7 @@ export default class AddItem extends Component {
       name: "",
       quantity: "",
       price: "",
+      discount:0,
       category: "",
       categoryOptions: [],
       dropDownList: [],
@@ -34,6 +35,7 @@ export default class AddItem extends Component {
       display: false,
       code: "",
       name: "",
+      discount:0,
       quantity: "",
       price: "",
       category: "",
@@ -45,10 +47,11 @@ export default class AddItem extends Component {
   };
 
   setDefaultState = props => {
-    const { name, code, current_stock, sale_price, category } = props;
+    const { name, code, current_stock, sale_price, category, discount } = props;
     this.setState({ 
       name, 
       code,
+      discount,
       quantity: current_stock, 
       price: sale_price, 
       category 
@@ -68,12 +71,13 @@ export default class AddItem extends Component {
     if(key === "add")
       this.initialState()
     else{
-      const {code, current_stock, sale_price, name} = this.props.itemData;
+      const {code, current_stock, sale_price, name, discount} = this.props.itemData;
       this.setState({
         open: false,
         display: false,
         code: code,
         name: name,
+        discount:discount,
         quantity: current_stock,
         price: sale_price,
         dropDownList: [],
@@ -81,7 +85,6 @@ export default class AddItem extends Component {
       });
     }
   }
-
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -93,7 +96,7 @@ export default class AddItem extends Component {
   };
 
   addItem = () => {
-    const { code, name, quantity, price, categoryObjID } = this.state;
+    const { code, name, quantity, price, categoryObjID, discount } = this.state;
 
     if(code && name && quantity && price && categoryObjID){
       http
@@ -102,7 +105,8 @@ export default class AddItem extends Component {
           name,
           current_stock: quantity,
           sale_price: price,
-          category_id: categoryObjID
+          category_id: categoryObjID,
+          discount
         })
         .then(res => {
           this.props.addItem();
@@ -120,7 +124,7 @@ export default class AddItem extends Component {
 
   editItem = () => {
     const {id} = this.props.itemData;
-    const { code, name, quantity, price , categoryObjID} = this.state;
+    const { code, name, quantity, price , categoryObjID, discount} = this.state;
 
     if(code && name && quantity && price){
     // api call to update item
@@ -130,7 +134,8 @@ export default class AddItem extends Component {
           name,
           current_stock: quantity,
           sale_price: price,
-          category_id: categoryObjID
+          category_id: categoryObjID,
+          discount
         })
         .then(res => {
           this.props.editItem();
@@ -148,7 +153,7 @@ export default class AddItem extends Component {
           display:true
         });
       }
-    };  
+  };  
   
   updateCategoryOptions = value => {
     var matchingObj;
@@ -179,23 +184,23 @@ export default class AddItem extends Component {
           });
           this.createOptions(itemList);
         }
-      };
+  };
       
       
-      createOptions = options => {
-        let penalArray = [];
-        if (options && options.length > 0) {
-          options.forEach(data => {
-            penalArray.push({ key: data.id, text: data.name, value: data.name });
-          });
-        }
-        this.setState({ categoryOptions: penalArray });
-        this.createDropDown(penalArray);
-      };
+  createOptions = options => {
+    let penalArray = [];
+    if (options && options.length > 0) {
+      options.forEach(data => {
+        penalArray.push({ key: data.id, text: data.name, value: data.name });
+      });
+    }
+    this.setState({ categoryOptions: penalArray });
+    this.createDropDown(penalArray);
+  };
       
       
-      createDropDown = opt => {
-        if (opt.length > 0) {
+  createDropDown = opt => {
+    if (opt.length > 0) {
       let dropdown = (
         <Dropdown
           placeholder="category"
@@ -218,7 +223,7 @@ export default class AddItem extends Component {
   }
 
   render() {
-    const { open, display, dropDownList, code, name, quantity, price } = this.state;
+    const { open, display, dropDownList, code, name, quantity, price, discount } = this.state;
     const { itemData } = this.props;
 
     return (
@@ -232,7 +237,7 @@ export default class AddItem extends Component {
               Add item
             </Button>
           )}
-          <Modal dimmer = "blurring" open={open} onClose={this.close}>
+          <Modal dimmer = "blurring" open={open} onClose={itemData?this.cancel: this.close}>
             <Modal.Header>{itemData ? "Edit Item" : "Add Item"}</Modal.Header>
             <Form className="itemForm">
               <Form.Group widths="2">
@@ -275,11 +280,26 @@ export default class AddItem extends Component {
                   required
                 />
               </Form.Group>
-              <Message info content="select the category in which you want to add item" />
-              <Form.Field required>
-                <label>Category</label>
-                {dropDownList.map(data => data)}
-              </Form.Field>
+              <Form.Group widths="2">
+                <Form.Field required>
+                  <label>Category</label>
+                  {dropDownList.map(data => data)}
+                </Form.Field>
+                <Form.Field>
+                  <Form.Input
+                  fluid
+                  type="number"
+                  label="Discount( % )"
+                  placeholder="Discount"
+                  name="discount"
+                  min="0"
+                  max="100"
+                  onChange={this.onChange}
+                  value={discount}
+                  >
+                  </Form.Input>
+                </Form.Field>
+              </Form.Group>
               <Form.Field>
                 <label>Description</label>
                 <TextArea placeholder="Tell more about Item" rows={4} />

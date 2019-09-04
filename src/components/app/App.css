@@ -55,8 +55,10 @@ html {
   background-color: #e1524e24;
 }
 .loading_img {
-  margin-top: 18vh;
-  margin-left: 35vw;
+    width: 8%;
+    display: block;
+    margin: auto;
+    padding-top: 16%;
 }
 .active_page {
   color: white !important;

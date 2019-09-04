@@ -17,6 +17,7 @@ import { apiUrl } from "../../utils/api-config";
 import AddCategory from "../category/addCategory";
 import Paginate from "./pagination";
 import CategorySideBar from "../category/categorySideBar";
+import Barcode from 'react-barcode';
 
 function searchingFor(item) {
   return function(x) {
@@ -247,6 +248,12 @@ export default class Inventory extends Component {
                     Quantity
                   </Table.HeaderCell>
                   <Table.HeaderCell
+                    sorted={column === "code" ? direction : null}
+                    onClick={this.handleSort("code")}
+                  >
+                    QR Code
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
                     sorted={column === "category" ? direction : null}
                     onClick={this.handleSort("category")}
                   >
@@ -266,6 +273,7 @@ export default class Inventory extends Component {
                   <Table.Row key={d.id}>
                     <Table.Cell>{d.name}</Table.Cell>
                     <Table.Cell>{d.current_stock}</Table.Cell>
+                    <Table.Cell className='barcode'><Barcode value={d.code} /></Table.Cell>
                     <Table.Cell>{d.category.name}</Table.Cell>
                     <Table.Cell>{d.sale_price}</Table.Cell>
                     <Table.Cell>

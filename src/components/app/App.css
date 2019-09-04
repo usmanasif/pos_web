@@ -282,3 +282,7 @@ html {
 .card-divider{
   margin-bottom: 40px !important;
 }
+
+.barcode svg {
+  width: 100%;
+}

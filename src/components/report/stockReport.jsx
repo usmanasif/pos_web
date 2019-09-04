@@ -4,23 +4,32 @@ import "jspdf-autotable";
 import { apiUrl } from "../../utils/api-config";
 import http from "../../services/httpService";
 import Paginate from "../inventory/pagination";
-import { Button, Table, Container, Header, Image } from 'semantic-ui-react'
+
+import { Button, Table, Container, Header, Image, Grid, Input } from "semantic-ui-react";
+
+function searchingFor(item) {
+  return function(x) {
+    return x.name.toLowerCase().includes(item.toLowerCase());
+  };
+}
 
 const initialPagination = {
-    activePage: 1,
-    totalPages: 0,
-    per_page: 6
+  activePage: 1,
+  totalPages: 0,
+  per_page: 6
+};
+
+class StockReport extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...initialPagination,
+      itemsData: [],
+      allItems: [],
+      item: ""
+    };
   }
 
-class StockReport extends Component{
-    constructor(props){
-        super(props);
-        this.state={
-            ...initialPagination,
-            itemsData: [ ],
-            allItems:[]
-        }
-    }
 
     exportPDF = () => {
         const unit = "pt";
@@ -61,74 +70,92 @@ class StockReport extends Component{
             });
           });
     
-          this.setState({state: this.state});
-      }
+    this.setState({ state: this.state });
+  };
 
-      getItems = () =>{
-        http
-          .get(`${apiUrl}/api/v1/items`)
-          .then(res => {
-            this.setState({
-              allItems:res.data[1],
-            });
-          });
-      }
+  getItems = () => {
+    http.get(`${apiUrl}/api/v1/items`).then(res => {
+      this.setState({
+        allItems: res.data[1]
+      });
+    });
+  };
 
-      componentDidMount(){
-          const {activePage, per_page} = this.state;
-          this.handlePagination(activePage, per_page);
-          this.getItems();
+  searchHandler = e => {
+    this.setState({ item: e.target.value });
+  };
 
-      }
+  componentDidMount() {
+    const { activePage, per_page } = this.state;
+    this.handlePagination(activePage, per_page);
+    this.getItems();
+  }
 
-    render(){
-        const {itemsData, activePage, per_page, totalPages} = this.state;
+  render() {
+    const { itemsData, activePage, per_page, totalPages,item } = this.state;
 
-        return(
-            <div>
-                <Container className="page-header">
-                    <Header as='h2' className="second-header" floated='right'>
-                        Devsinc
-                    </Header>
-                    <Header as='h2' floated='left'>
-                        <Image className="logo" src={require('../../images/logo.png')} />
-                        <span className="header-text">Stock Report</span>
-                    </Header>
-                </Container>
-                <div className="ui divider"></div>
-                <div>
-                    <Button icon="download" content='Download' color="green" onClick={() => this.exportPDF()} />
-                </div>
-                <Table >
-                    <Table.Header called>
-                        <Table.Row>
-                            <Table.HeaderCell>Name</Table.HeaderCell>
-                            <Table.HeaderCell>category</Table.HeaderCell>
-                            <Table.HeaderCell>Current Stock</Table.HeaderCell>
-                            <Table.HeaderCell>Unit Price</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
+    return (
+      <div>
+        <Container className="page-header">
+          <Header as="h2" className="second-header" floated="right">
+            Devsinc
+          </Header>
+          <Header as="h2" floated="left">
+            <Image className="logo" src={require("../../images/logo.png")} />
+            <span className="header-text">Stock Report</span>
+          </Header>
+        </Container>
+        <div className="ui divider"></div>
+        <Grid columns={3}>
+          <Grid.Row>
+            <Grid.Column>
+                <Input
+                  icon="search"
+                  placeholder="Search by name ..."
+                  onChange={this.searchHandler}
+                />
+            </Grid.Column>
+            <Grid.Column floated="right">
+              <Button
+              icon="download"
+              content="Download"
+              color="green"
+              onClick={() => this.exportPDF()}
+              style={{float:"right"}}
+            />
+            </Grid.Column>
+          </Grid.Row>
 
-                    <Table.Body>
-                    {             
-                        itemsData.map( item => (
-                        <Table.Row key={item.id}>
-                            <Table.Cell>{item.name}</Table.Cell>
-                            <Table.Cell>{item.category.name}</Table.Cell>
-                            <Table.Cell>{item.current_stock}</Table.Cell>
-                            <Table.Cell>{item.sale_price}</Table.Cell>
-                        </Table.Row>
-                        ))
-                    }
-                    </Table.Body>
-                </Table>
-                {
-                    totalPages>0? 
-                    <Paginate handlePagination = {this.handlePagination} pageSet ={{ activePage, totalPages, per_page }}/>:null
-                }
-            </div>
-        )
-    }
+        </Grid>
+        <Table celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>category</Table.HeaderCell>
+              <Table.HeaderCell>Current Stock</Table.HeaderCell>
+              <Table.HeaderCell>Unit Price</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
 
+          <Table.Body>
+            {itemsData.filter(searchingFor(item)).map(item => (
+              <Table.Row key={item.id}>
+                <Table.Cell>{item.name}</Table.Cell>
+                <Table.Cell>{item.category.name}</Table.Cell>
+                <Table.Cell>{item.current_stock}</Table.Cell>
+                <Table.Cell>{item.sale_price}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+        {totalPages > 0 ? (
+          <Paginate
+            handlePagination={this.handlePagination}
+            pageSet={{ activePage, totalPages, per_page }}
+          />
+        ) : null}
+      </div>
+    );
+  }
 }
 export default StockReport

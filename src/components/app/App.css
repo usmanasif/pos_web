@@ -10,6 +10,22 @@ body,
 html {
   height: initial !important ;
 }
+
+.react-tooltip-lite{
+  left: 74px;
+  top: 119px;
+  max-width: 1325px;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 1000;
+  position: absolute;
+  display: inline-block;
+  width: 100px;
+  background: rgb(32, 32, 32);
+  color: white;
+  border-radius: 5%;
+}
+
 .marginTop {
   margin-top: 2vh;
   padding-left: 20px;
@@ -39,8 +55,10 @@ html {
   background-color: #e1524e24;
 }
 .loading_img {
-  margin-top: 18vh;
-  margin-left: 35vw;
+    width: 8%;
+    display: block;
+    margin: auto;
+    padding-top: 16%;
 }
 .active_page {
   color: white !important;
@@ -67,11 +85,10 @@ html {
   border: #2185d0 1px solid;
   border-radius: 2px;
 }
-.not-found {
-  width: 80%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+
+.card:hover {
+  box-shadow: 0 0 0 1px #63b3ef, 0 2px 4px 0 rgb(99, 179, 239),
+    0 2px 10px 0 rgb(99, 179, 239) !important;
 }
 
 .not-found {
@@ -79,7 +96,7 @@ html {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 25vh;
+  margin-top: 20vh;
 }
 
 .ui.pagination.menu .active.item {
@@ -109,7 +126,11 @@ html {
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
+.discount-align{
+  width: 15%;
+  border: none;
+  text-align: center;
+}
 .App-link {
   color: #61dafb;
 }
@@ -233,12 +254,9 @@ html {
 }
 
 .logo {
-  width: 50px !important;
-  height: 63px !important;
-  padding-bottom: 15px;
-  margin-top: -6px !important;
-  margin-left: 12px !important;
-  position: absolute !important;
+  width: 44px !important;
+  height: 47px !important;
+  margin-top: -4px !important;
   z-index: -1;
 }
 
@@ -254,12 +272,23 @@ html {
 
 .header-text {
   color: #1969a4;
-  position: absolute;
-  margin-left: 75px;
-  padding-top: 10px;
+  margin-left: 5px;
 }
 
 .second-header {
   padding-top: 10px !important;
   color: #1969a4 !important;
+}
+
+.card-contatiner {
+  margin-top: 40px !important;
+  margin-bottom: 50px !important;
+}
+
+.card-divider{
+  margin-bottom: 40px !important;
+}
+
+.barcode svg {
+  width: 100%;
 }

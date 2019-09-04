@@ -6,7 +6,7 @@ class NoRouteFound extends Component {
   render() {
     return (
       <div>
-          <img className="not-found"  src="./images/notfound.gif" alt="notfound" />
+          <img className="not-found"  src="./images/notfound.png" alt="notfound" />
       </div>
     );
   }

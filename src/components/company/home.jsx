@@ -6,7 +6,8 @@ import {
   Container,
   Header,
   Segment,
-  Label
+  Label,
+  Divider
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import StockByCategoryChart from "../charts/stockByCategoryChart";
@@ -31,7 +32,7 @@ class Home extends Component {
           </Header>
         </Container>
         <div className="ui divider"></div>
-        <Grid columns={5}>
+        <Grid columns={5} className="card-contatiner">
           <Grid.Row>
             <Grid.Column>
               <Link to="/reciept">
@@ -111,6 +112,7 @@ class Home extends Component {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+        <Divider horizontal className="card-divider">Sale Statistics</Divider>
         <Grid>
           <Grid.Row>
             <Grid.Column width="8">
@@ -130,8 +132,8 @@ class Home extends Component {
               </Segment>
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width="16">
+            <Grid.Row>
+            <Grid.Column width="10" style={{margin: "auto"}}>
               <Segment raised>
                 <Label size="big" color="blue" ribbon>
                   Last Week Sales
@@ -140,8 +142,8 @@ class Home extends Component {
               </Segment>
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width="16">
+          <Grid.Row>            
+            <Grid.Column width="12" style={{margin: "auto"}}>
               <Segment raised>
                 <Label size="big" color="blue" ribbon>
                   Products Available Stock
@@ -149,7 +151,7 @@ class Home extends Component {
                 <ItemsStockChart />
               </Segment>
             </Grid.Column>
-          </Grid.Row>
+            </Grid.Row>
         </Grid>
       </React.Fragment>
     );

@@ -124,7 +124,11 @@ html {
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
+.discount-align{
+  width: 15%;
+  border: none;
+  text-align: center;
+}
 .App-link {
   color: #61dafb;
 }

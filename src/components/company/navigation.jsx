@@ -85,12 +85,13 @@ class Navigation extends Component {
                       history.push(to);
                     }
                   }}
+                  className={this.state.expanded?"sidebar-width":null}
                 >
-                  <SideNav.Toggle />
+                  <SideNav.Toggle/>
                   <NavHeader expanded={this.state.expanded}>
                     <NavTitle>Devsinc</NavTitle>
                   </NavHeader>
-                  <SideNav.Nav>
+                  <SideNav.Nav >
                     <NavItem eventKey="home" on={['hover', 'click']} content='Multiple events can trigger a popup'>
                       <NavIcon>
                         <Tooltip content="Dashboard" direction="right">
@@ -142,7 +143,7 @@ class Navigation extends Component {
                   </SideNav.Nav>
                 </SideNav>
                 }
-                <Container className="marginTop" textAlign="justified">
+                <Container className="marginTop" textAlign="justified" className={this.state.expanded?"dashboardExpanded": "dashboardNotExpanded"}>
                   <Switch>
                     <Route
                       path="/home"

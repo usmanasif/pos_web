@@ -294,8 +294,8 @@ export default class Inventory extends Component {
                             content="Are you Sure"
                           />
                         }
-                        actions={[{ key: "ok", content: "Ok", positive: true }]}
-                        onClose={() => this.confirmDelete(d)}
+                        actions={[{ key: "ok", content: "Ok", positive: true, onClick:() => this.confirmDelete(d) }]}
+                        onClose={this.close}
                       />
                       <AddItem
                         itemData={d}

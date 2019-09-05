@@ -60,6 +60,19 @@ html {
     margin: auto;
     padding-top: 16%;
 }
+.sidebar-width{
+  min-width: 190px !important;
+}
+.dashboardExpanded{
+  position: absolute !important;
+  left: 14pc !important;
+  padding-top: 1pc !important;
+  padding-right: 2pc !important;
+}
+.dashboardNotExpanded{
+  padding-top: 1pc !important;
+  padding-left: 2pc !important;
+}
 .active_page {
   color: white !important;
   background-color: #2185d0 !important;

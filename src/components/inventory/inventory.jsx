@@ -225,7 +225,7 @@ export default class Inventory extends Component {
             <Form>
               <Input
                 icon="search"
-                placeholder="By Item and Category ..."
+                placeholder="By Item Or Category ..."
                 onChange={this.searchHandler}
               />
               {apiResponse.length > 0 ? (

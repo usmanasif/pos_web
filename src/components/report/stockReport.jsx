@@ -112,7 +112,7 @@ class StockReport extends Component {
             <Grid.Column>
                 <Input
                   icon="search"
-                  placeholder="By Item and Category ..."
+                  placeholder="By Item Or Category ..."
                   onChange={this.searchHandler}
                 />
             </Grid.Column>

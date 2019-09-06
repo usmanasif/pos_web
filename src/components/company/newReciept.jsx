@@ -1,3 +1,4 @@
+/* eslint-disable use-isnan */
 import React, { Component } from "react";
 import Select from "react-select";
 import http from "../../services/httpService";
@@ -78,7 +79,7 @@ class NewReciept extends Component {
       this.setState({ itemEmptyError: false });
     }
 
-    if (this.state.current_quantity === "") {
+    if (this.state.current_quantity === 0) {
       this.setState({ quantityEmptyError: true });
       return false;
     } else {
@@ -190,7 +191,7 @@ class NewReciept extends Component {
           item_count: ++count,
           quantity: parseFloat(quantity),
           original_quantity: item.current_stock,
-          discount: parseInt(discount)        
+          discount: discount ? discount : 0   
         };
       }
     );
@@ -232,7 +233,10 @@ class NewReciept extends Component {
 
   renderTableData() {
     return this.state.selected_items.map((data, index) => {
-      const { item_count, value, unit_price, quantity, discount } = data;
+      let { item_count, value, unit_price, quantity, discount } = data;
+      if(discount === null){
+        discount = 0
+      }
       return (
         <tr key={item_count}>
           <td>{item_count}</td>
@@ -246,7 +250,6 @@ class NewReciept extends Component {
               onClick={() => {
                 this.decreaseDiscount(index);
               }}
-              style={{color:"red"}}
             />
             <input className="discount-align" value={discount} onChange={(e)=>this.handleDiscount(e, index)}/>%
             <Button
@@ -255,7 +258,6 @@ class NewReciept extends Component {
               onClick={() => {
                 this.increaseDiscount(index);
               }}
-              style={{color:"green"}}
             />
           </td>
           <td>
@@ -286,6 +288,7 @@ class NewReciept extends Component {
 
     return item_bill;
   };
+
   handleDiscount=(e, index)=>{
     let new_selected = [...this.state.selected_items];
     if (new_selected[index].discount < 100) {
@@ -409,7 +412,9 @@ class NewReciept extends Component {
         this.getData();
         this.getDrafts();
       });
+      
     }
+
     
   };
 

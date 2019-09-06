@@ -9,7 +9,8 @@ import { Button, Table, Container, Header, Image, Grid, Input } from "semantic-u
 
 function searchingFor(item) {
   return function(x) {
-    return x.name.toLowerCase().includes(item.toLowerCase());
+    return x.name.toLowerCase().includes(item.toLowerCase()) 
+           || x.category.name.toLowerCase().includes(item.toLowerCase());
   };
 }
 
@@ -111,7 +112,7 @@ class StockReport extends Component {
             <Grid.Column>
                 <Input
                   icon="search"
-                  placeholder="Search by name ..."
+                  placeholder="By Item Or Category ..."
                   onChange={this.searchHandler}
                 />
             </Grid.Column>

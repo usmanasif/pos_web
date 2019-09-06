@@ -21,7 +21,8 @@ import Barcode from 'react-barcode';
 
 function searchingFor(item) {
   return function(x) {
-    return x.name.toLowerCase().includes(item.toLowerCase());
+    return x.name.toLowerCase().includes(item.toLowerCase()) 
+           || x.category.name.toLowerCase().includes(item.toLowerCase());
   };
 }
 
@@ -224,7 +225,7 @@ export default class Inventory extends Component {
             <Form>
               <Input
                 icon="search"
-                placeholder="Search by name ..."
+                placeholder="By Item Or Category ..."
                 onChange={this.searchHandler}
               />
               {apiResponse.length > 0 ? (

@@ -305,3 +305,14 @@ html {
 .barcode svg {
   width: 100%;
 }
+.submit-btn {
+  margin-right: 10px !important;
+}
+
+.drafts-container{
+  margin-top: 100px !important;
+}
+
+.drafts-heading{
+  color: #1969a4;
+}

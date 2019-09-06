@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import http from "../../services/httpService";
-import { Input, Form, Button, Grid, Message, Container, Image, Header } from "semantic-ui-react";
+import { Input, Form, Button, Grid, Message, Container, Image, Header, Table, Icon } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
 
 class NewReciept extends Component {
@@ -25,12 +25,16 @@ class NewReciept extends Component {
       current_discount: "",
       adjustment_amount: 0,
       totalBelowZeroError: false,
-      discount_value:0
+      discount_value:0,
+      draftCreated: false,
+      invoice_drafts: [],
+      invoice_id: null
     };
   }
 
   componentWillMount = () => {
     this.getData();
+    this.getDrafts();
     this.getDiscounts();
   };
 
@@ -38,6 +42,14 @@ class NewReciept extends Component {
     http.get(apiUrl + "/api/v1/items").then(response => {
       this.setState({
         data: response.data[1]
+      });
+    });
+  };
+
+  getDrafts = () => {
+    http.get(apiUrl + "/api/v1/invoices", { params: {status: "drafted", order: "desc"}}).then(response => {
+      this.setState({
+        invoice_drafts: response.data.invoices
       });
     });
   };
@@ -163,6 +175,60 @@ class NewReciept extends Component {
 
     this.setState({ total: total_bill, discounted_total: discounted_bill });
   };
+
+  useDraft = (index) => {
+    let invoice = this.state.invoice_drafts[index]
+    let count = 0
+    const invoice_items = invoice.sold_items.map(
+      ({ item_id, item, quantity, discount }) => {
+        return {
+          value: item.name,
+          label: item.name,
+          unit_price: item.sale_price,
+          current_stock: item.current_stock - parseFloat(quantity),
+          item_id: item_id,
+          item_count: ++count,
+          quantity: parseFloat(quantity),
+          original_quantity: item.current_stock,
+          discount: parseInt(discount)        
+        };
+      }
+    );
+
+    this.setState({
+      selected_items: invoice_items,
+      total: invoice.total,
+      adjustment: invoice.adjustment,
+      item_count: count,
+      invoice_id: invoice.id
+    }, function() {
+      this.setTotalBill();
+    })
+  }
+
+  renderDraftTable() {
+    return this.state.invoice_drafts.map((data, index) => {
+      const { id, total} = data;
+      return (
+        <tr key={id}>
+          <td>{id}</td>
+          <td>{total}</td>
+          <td>
+          <Button 
+            icon 
+            labelPosition='right'
+            onClick={() => {
+              this.useDraft(index);
+            }} 
+            color={'teal'}>
+              Use Draft
+            <Icon name='check' />
+          </Button>
+          </td>
+        </tr>
+      );
+    });
+  }
 
   renderTableData() {
     return this.state.selected_items.map((data, index) => {
@@ -297,18 +363,22 @@ class NewReciept extends Component {
       this.setState({ invalidForm: false });
     }
 
-    http
+    if(e.target.innerHTML === "Pay Bill"){
+      http
       .post(apiUrl + "/api/v1/invoices", {
         total: this.state.discounted_total,
         sold_items_attributes: this.state.selected_items,
         discount_id: this.state.current_discount.id,
-        adjustment: this.state.adjustment_amount
+        adjustment: this.state.adjustment_amount,
+        status: "completed",
+        invoice_id: this.state.invoice_id
       })
       .then(response => {
         if (response.status === 201) {
           this.setState({ invoiceCreated: true });
         }
         this.getData();
+        this.getDrafts();
         this.setState({
           selected_items: [],
           current_quantity: 0,
@@ -317,9 +387,30 @@ class NewReciept extends Component {
           item_count: 0,
           current_discount: "",
           discounted_total: 0,
-          adjustment_amount: 0
+          adjustment_amount: 0,
+          invoice_id: null
         });
       });
+    }
+    else if(e.target.innerHTML === "Save as draft") {
+      http
+      .post(apiUrl + "/api/v1/invoices", {
+        total: this.state.discounted_total,
+        sold_items_attributes: this.state.selected_items,
+        discount_id: this.state.current_discount.id,
+        adjustment: this.state.adjustment_amount,
+        status: "drafted",
+        invoice_id: this.state.invoice_id
+      })
+      .then(response => {
+        if (response.status === 201) {
+          this.setState({ draftCreated: true });
+        }
+        this.getData();
+        this.getDrafts();
+      });
+    }
+    
   };
 
   setDiscount = e => {
@@ -370,7 +461,7 @@ class NewReciept extends Component {
               Devsinc
           </Header>
           <Header as='h2' floated='left'>
-              <Image className="logo" src={require('../../images/logo.png')} />
+              <Image className="logo" src={require('../../images/company_icon.jpeg')} />
               <span className="header-text">New Invoice</span>
           </Header>
         </Container>
@@ -436,6 +527,22 @@ class NewReciept extends Component {
                   onClick={this.populateSelectedItems}
                 />
               </Form>
+              <div className="drafts-container">
+                <h3 className="drafts-heading">Recent Invoice Drafts</h3>
+                <Table color={'teal'} key={'teal'}>
+                  <Table.Header >
+                    <Table.Row >
+                      <Table.HeaderCell>Invoice ID</Table.HeaderCell>
+                      <Table.HeaderCell>Total</Table.HeaderCell>
+                      <Table.HeaderCell>Actions</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+
+                  <Table.Body>
+                    {this.renderDraftTable()}
+                  </Table.Body>
+                </Table>
+              </div>
             </Grid.Column>
             <Grid.Column width={10}>
               <div>
@@ -510,8 +617,19 @@ class NewReciept extends Component {
                     content="Your invoice has been processed successfully!"
                   />
                 ) : null}
-                <Button primary onClick={this.createReciept}>
+                {this.state.draftCreated ? (
+                  <Message
+                    success
+                    header="Draft Created"
+                    content="Your invoice draft has been saved successfully!"
+                  />
+                ) : null}
+                <Button primary className="submit-btn" onClick={this.createReciept}>
                   Pay Bill
+                </Button>
+                
+                <Button color='teal' onClick={this.createReciept}>
+                  Save as draft
                 </Button>
               </div>
             </Grid.Column>

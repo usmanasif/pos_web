@@ -19,13 +19,6 @@ import Paginate from "./pagination";
 import CategorySideBar from "../category/categorySideBar";
 import Barcode from 'react-barcode';
 
-function searchingFor(item) {
-  return function(x) {
-    return x.name.toLowerCase().includes(item.toLowerCase()) 
-           || x.category.name.toLowerCase().includes(item.toLowerCase());
-  };
-}
-
 const initialPagination = {
   activePage: 1,
   totalPages: 0,
@@ -38,6 +31,7 @@ export default class Inventory extends Component {
     open: false,
     column: null,
     categoryID: null,
+    categoryName:"",
     direction: null,
     item: "",
     data: [],
@@ -82,9 +76,20 @@ export default class Inventory extends Component {
   };
 
   searchHandler = e => {
-    this.setState({ item: e.target.value });
+    this.setState({ item: e.target.value },() => {
+      const {per_page,categoryID, item }=this.state;      
+      http
+          .get(`${apiUrl}/api/v1/items`, { params: { page:1, per_page, category_id:categoryID,  item} })
+          .then(res => {
+            this.setState({
+              data: res.data[1],
+              totalPages: res.data[0].total
+            });          
+          })
+          .catch(error => console.log("Error : ", error));
+    });
   };
-
+  
   handleSort = clickedColumn => () => {
     const { column, data, direction } = this.state;
     if (column !== clickedColumn) {
@@ -142,8 +147,12 @@ export default class Inventory extends Component {
     this.close();
   };
 
-  filterItems = cat_id => {
-    this.setState({ categoryID: cat_id });
+  filterItems = (cat_name, cat_id) => {
+    this.setState({
+      categoryName:cat_name,      
+      categoryID: cat_id 
+    });
+
     http
       .get(`${apiUrl}/api/v1/items`, { params: { category_id: cat_id } })
       .then(res => {
@@ -151,15 +160,16 @@ export default class Inventory extends Component {
         const count = res.data[0].total;
         this.setState({
           data: itemData,
-          totalPages: count
+          totalPages: count,
         });
       })
       .catch(error => console.log("Error: ", error));
   };
 
-  filterCategory = item => {
+  filterCategory = category => {
     this.setState({
-      newCategories: item.children
+      newCategories: category.children,
+      categoryName: category.name
     });
   };
 
@@ -179,6 +189,7 @@ export default class Inventory extends Component {
   componentDidMount() {
     this.fetchCategoriesData();
     this.state.categoryID = null;
+    this.state.categoryName="";
     this.setState({
       activePage: 1
     });
@@ -193,11 +204,11 @@ export default class Inventory extends Component {
       data,
       direction,
       apiResponse,
-      item,
       activePage,
       totalPages,
       per_page,
-      newCategories
+      newCategories,
+      categoryName
     } = this.state;
 
     return (
@@ -224,9 +235,9 @@ export default class Inventory extends Component {
           <Grid.Column width={12}>
             <Form>
               <Input
-                icon="search"
-                placeholder="By Item Or Category ..."
-                onChange={this.searchHandler}
+                icon='search'
+                placeholder={categoryName?'Search items in '+ categoryName:'search items'}
+                onChange={this.searchHandler} 
               />
               {apiResponse.length > 0 ? (
                 <AddItem addItem={this.addItem} data={apiResponse} />
@@ -270,7 +281,7 @@ export default class Inventory extends Component {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {data.filter(searchingFor(item)).map(d => (
+                {data.map(d => (
                   <Table.Row key={d.id}>
                     <Table.Cell>{d.name}</Table.Cell>
                     <Table.Cell>{d.current_stock}</Table.Cell>
@@ -313,7 +324,7 @@ export default class Inventory extends Component {
                 handlePagination={this.handlePagination}
                 pageSet={{ activePage, totalPages, per_page, data }}
               />
-            ) : null}
+            ) : <h1 className="items-record">No Record Found</h1>}
           </Grid.Column>
         </Grid>
       </div>

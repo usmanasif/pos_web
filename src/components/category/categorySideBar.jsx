@@ -15,7 +15,7 @@ export default class categorySideBar extends Component {
       this.props.filterCategory(item);
 
     if(item.children.length>=0)
-      this.props.filterItems(item.id)
+      this.props.filterItems(item.name, item.id)
     
   }
 

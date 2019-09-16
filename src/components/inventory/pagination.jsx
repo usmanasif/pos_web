@@ -26,13 +26,13 @@ class Paginate extends Component {
 
   render(){
     this.state.activePage = this.props.pageSet.activePage;
-    this.state.totalPages =  Math.ceil(this.props.pageSet.totalPages/ this.state.per_page);
-
+    this.state.totalPages =  Math.ceil(this.props.pageSet.totalPages/ this.state.per_page);   
     return(
       <Pagination
         boundaryRange={0}
         activePage={this.state.activePage}
         siblingRange={3}
+        disabled={ this.state.totalPages<2?true:false}
         firstItem={{ content: <Icon name='angle double left' />, icon: true }}
         lastItem={{ content: <Icon name='angle double right' />, icon: true }}
         prevItem={{ content: <Icon name='angle left' />, icon: true }}

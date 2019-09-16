@@ -32,7 +32,7 @@ class Home extends Component {
           </Header>
         </Container>
         <div className="ui divider"></div>
-        <Grid columns={5} className="card-contatiner">
+        <Grid columns={4} className="card-contatiner">
           <Grid.Row>
             <Grid.Column>
               <Link to="/reciept">
@@ -97,18 +97,6 @@ class Home extends Component {
                   </Card.Content>
                 </Card>
               </Link>
-            </Grid.Column>
-            <Grid.Column>
-              <Card raised>
-                <Image
-                  src={require("../../images/returns.jpg")}
-                  wrapped
-                  ui={false}
-                />
-                <Card.Content>
-                  <Card.Header className="card-heading">Returns</Card.Header>
-                </Card.Content>
-              </Card>
             </Grid.Column>
           </Grid.Row>
         </Grid>

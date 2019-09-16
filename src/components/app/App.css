@@ -232,6 +232,12 @@ html {
   padding-left: 25px;
   cursor: pointer;
 }
+.items-record{
+  text-align: center;
+  opacity: 0.2;
+  font-size: 50px;
+  margin-top: 50px;
+}
 
 .nav-text {
   text-align: left;

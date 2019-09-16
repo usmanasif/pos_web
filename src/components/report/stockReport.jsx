@@ -4,15 +4,7 @@ import "jspdf-autotable";
 import { apiUrl } from "../../utils/api-config";
 import http from "../../services/httpService";
 import Paginate from "../inventory/pagination";
-
 import { Button, Table, Container, Header, Image, Grid, Input } from "semantic-ui-react";
-
-function searchingFor(item) {
-  return function(x) {
-    return x.name.toLowerCase().includes(item.toLowerCase()) 
-           || x.category.name.toLowerCase().includes(item.toLowerCase());
-  };
-}
 
 const initialPagination = {
   activePage: 1,
@@ -30,48 +22,47 @@ class StockReport extends Component {
       item: ""
     };
   }
+  
+  exportPDF = () => {
+      const unit = "pt";
+      const size = "A4"; // Use A1, A2, A3 or A4
+      const orientation = "portrait"; // portrait or landscape
+  
+      const marginLeft = 40;
+      const doc = new jsPDF(orientation, unit, size);
+  
+      doc.setFontSize(15);
+  
+      const title = "Items Stock Report";
+      const headers = [["NAME","CATEGORY", "STOCK", "UNIT PRICE"]];
+      const data = this.state.allItems.map(elt=> [elt.name, elt.category.name, elt.current_stock, elt.sale_price]);
 
+  
+      let content = {
+        startY: 50,
+        head: headers,
+        body: data
+      };
+  
+      doc.text(title, marginLeft, 40);
+      doc.autoTable(content);
+      doc.save("stock_report.pdf")
 
-    exportPDF = () => {
-        const unit = "pt";
-        const size = "A4"; // Use A1, A2, A3 or A4
-        const orientation = "portrait"; // portrait or landscape
-    
-        const marginLeft = 40;
-        const doc = new jsPDF(orientation, unit, size);
-    
-        doc.setFontSize(15);
-    
-        const title = "Items Stock Report";
-        const headers = [["NAME","CATEGORY", "STOCK", "UNIT PRICE"]];
-        const data = this.state.allItems.map(elt=> [elt.name, elt.category.name, elt.current_stock, elt.sale_price]);
+  }
 
-    
-        let content = {
-          startY: 50,
-          head: headers,
-          body: data
-        };
-    
-        doc.text(title, marginLeft, 40);
-        doc.autoTable(content);
-        doc.save("stock_report.pdf")
+  handlePagination = (page, per_page) => {
+    this.setState({activePage: page, per_page:per_page });
+    const {item} = this.state;
 
-      }
-
-      handlePagination = (page, per_page) => {
-        this.setState({activePage: page, per_page:per_page });
-    
-        http
-          .get(`${apiUrl}/api/v1/items`,{params:{page, per_page}})
-          .then(res => {
-            this.setState({
-              itemsData:res.data[1],
-              totalPages: res.data[0].total
-            });
-          });
-    
-    this.setState({ state: this.state });
+    http
+      .get(`${apiUrl}/api/v1/items`,{params:{page, per_page, item}})
+      .then(res => {
+        this.setState({
+          itemsData:res.data[1],
+          totalPages: res.data[0].total
+        });
+      });
+      this.setState({ state: this.state });
   };
 
   getItems = () => {
@@ -83,7 +74,10 @@ class StockReport extends Component {
   };
 
   searchHandler = e => {
-    this.setState({ item: e.target.value });
+    this.setState({ item: e.target.value },()=>{
+      const {per_page} = this.state;
+      this.handlePagination(1,per_page);
+    });
   };
 
   componentDidMount() {
@@ -112,7 +106,7 @@ class StockReport extends Component {
             <Grid.Column>
                 <Input
                   icon="search"
-                  placeholder="By Item Or Category ..."
+                  placeholder="Search Items"
                   onChange={this.searchHandler}
                 />
             </Grid.Column>
@@ -139,7 +133,7 @@ class StockReport extends Component {
           </Table.Header>
 
           <Table.Body>
-            {itemsData.filter(searchingFor(item)).map(item => (
+            {itemsData.map(item => (
               <Table.Row key={item.id}>
                 <Table.Cell>{item.name}</Table.Cell>
                 <Table.Cell>{item.category.name}</Table.Cell>
@@ -154,7 +148,7 @@ class StockReport extends Component {
             handlePagination={this.handlePagination}
             pageSet={{ activePage, totalPages, per_page }}
           />
-        ) : null}
+        ) : <h1 className="items-record">No Record Found</h1>}
       </div>
     );
   }

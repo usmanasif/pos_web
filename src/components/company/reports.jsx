@@ -229,7 +229,6 @@ class Reports extends Component {
       startDate,
       endDate
     } = this.state;
-    console.log(total_pages);
     
     return (
       <div>

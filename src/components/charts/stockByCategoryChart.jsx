@@ -14,12 +14,24 @@ class StockByCategoryChart extends Component {
         pie: {
           donut: {
             labels: {
-              show: true
+              show: true,
+              total: {
+                show: true,
+                label: "Total"
+              }
             }
           }
         }
       },
-      colors: cahrtColors
+      tooltip: {
+        enabled: false
+      },
+      colors: cahrtColors,
+      dataLabels: {
+        formatter: function (val, opts){
+          return opts.w.config.series[opts.seriesIndex]
+        }
+      }
     },
     series: []
   };

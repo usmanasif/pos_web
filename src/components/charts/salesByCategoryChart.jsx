@@ -14,12 +14,24 @@ class SalesByCategoryChart extends Component {
         pie: {
           donut: {
             labels: {
-              show: true
+              show: true,
+              total: {
+                show: true,
+                label: "Total"
+              }
             }
           }
         }
       },
-      colors: cahrtColors
+      tooltip: {
+        enabled: false
+      },
+      colors: cahrtColors,
+      dataLabels: {
+        formatter: function (val, opts){
+          return opts.w.config.series[opts.seriesIndex]
+        }
+      }
     },
     series: []
   };
@@ -28,8 +40,10 @@ class SalesByCategoryChart extends Component {
     http
       .get(`${apiUrl}/api/v1/items?sales_by_category=true`)
       .then(({ data }) => {
+        console.log(data)
         const options = { ...this.state.options };
         const values = Object.values(data.results).map(Number);
+        console.log(values);
         options.labels = Object.keys(data.results);
         this.setState({ options, series: values });
       })

@@ -229,6 +229,7 @@ class Reports extends Component {
       startDate,
       endDate
     } = this.state;
+    console.log(total_pages);
     
     return (
       <div>
@@ -478,7 +479,8 @@ class Reports extends Component {
             <Pagination
               boundaryRange={0}
               activePage={current_page}
-          siblingRange={1}
+              disabled = {total_pages<2?true:false}
+              siblingRange={1}
               onPageChange={this.handlePaginationChange}
               totalPages={total_pages}
               ellipsisItem={{

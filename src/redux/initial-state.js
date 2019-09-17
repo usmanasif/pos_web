@@ -5,7 +5,8 @@ const initialState = {
       isSignedIn: false,
       isSuperAdmin: false,
       attributes: {
-        name: null // <-- Just an example. Attributes are whatever you specify in your cofig (below).
+        name: null, // <-- Just an example. Attributes are whatever you specify in your cofig (below).
+        role: null
       }
     }
   }

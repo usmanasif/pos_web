@@ -302,6 +302,11 @@ html {
 .card-contatiner {
   margin-top: 40px !important;
   margin-bottom: 50px !important;
+  margin-left: 15px !important;
+}
+
+.card-div {
+  width: 220px !important;
 }
 
 .card-divider{

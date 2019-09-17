@@ -16,6 +16,7 @@ import LastWeekSalesChart from "../charts/lastWeekSalesChart";
 import ItemsStockChart from "../charts/itemsStockChart";
 
 class Home extends Component {
+  
   render() {
     return (
       <React.Fragment>
@@ -32,27 +33,29 @@ class Home extends Component {
           </Header>
         </Container>
         <div className="ui divider"></div>
-        <Grid columns={4} className="card-contatiner">
+        <Grid centered columns={4} className="card-contatiner">
           <Grid.Row>
-            <Grid.Column>
-              <Link to="/reciept">
-                <Card raised>
-                  <Image
-                    src={require("../../images/invoice.jpg")}
-                    wrapped
-                    ui={false}
-                  />
-                  <Card.Content>
-                    <Card.Header className="card-heading">
-                      New Invoice
-                    </Card.Header>
-                  </Card.Content>
-                </Card>
-              </Link>
-            </Grid.Column>
+            { this.props.role === "read_and_write" &&
+              <Grid.Column>
+                <Link to="/reciept">
+                  <Card raised className="card-div">
+                    <Image
+                      src={require("../../images/invoice.jpg")}
+                      wrapped
+                      ui={false}
+                    />
+                    <Card.Content>
+                      <Card.Header className="card-heading">
+                        New Invoice
+                      </Card.Header>
+                    </Card.Content>
+                  </Card>
+                </Link>
+              </Grid.Column>
+            }
             <Grid.Column>
               <Link to="/inventory">
-                <Card raised>
+                <Card raised className="card-div">
                   <Image
                     src={require("../../images/inventory.jpg")}
                     wrapped
@@ -68,7 +71,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column>
               <Link to="/reports">
-                <Card raised>
+                <Card raised className="card-div">
                   <Image
                     src={require("../../images/reports.jpeg")}
                     wrapped
@@ -84,7 +87,7 @@ class Home extends Component {
             </Grid.Column>
             <Grid.Column>
               <Link to="/stock_report">
-                <Card raised>
+                <Card raised className="card-div">
                   <Image
                     src={require("../../images/stock_report.jpg")}
                     wrapped

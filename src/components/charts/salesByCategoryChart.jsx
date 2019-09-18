@@ -40,10 +40,8 @@ class SalesByCategoryChart extends Component {
     http
       .get(`${apiUrl}/api/v1/items?sales_by_category=true`)
       .then(({ data }) => {
-        console.log(data)
         const options = { ...this.state.options };
         const values = Object.values(data.results).map(Number);
-        console.log(values);
         options.labels = Object.keys(data.results);
         this.setState({ options, series: values });
       })

@@ -236,7 +236,7 @@ export default class Inventory extends Component {
             <Form>
               <Input
                 icon='search'
-                placeholder={categoryName?'Search items in '+ categoryName:'search items'}
+                placeholder={categoryName?'search items in '+ categoryName:'search items'}
                 onChange={this.searchHandler} 
               />
               {apiResponse.length > 0 && this.props.role === "read_and_write" ? (

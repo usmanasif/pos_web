@@ -10,10 +10,12 @@ const config = {
   userAttributes: {
     name: "name",
     imageUrl: "image",
-    isSuperAdmin: "super_admin"
+    isSuperAdmin: "super_admin",
+    role: "role"
   },
   userRegistrationAttributes: {
-    name: "name"
+    name: "name",
+    role: "role"
   }
 };
 

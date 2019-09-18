@@ -239,10 +239,11 @@ export default class Inventory extends Component {
                 placeholder={categoryName?'Search items in '+ categoryName:'search items'}
                 onChange={this.searchHandler} 
               />
-              {apiResponse.length > 0 ? (
+              {apiResponse.length > 0 && this.props.role === "read_and_write" ? (
                 <AddItem addItem={this.addItem} data={apiResponse} />
               ) : null}
-              <AddCategory addCategory={this.addCategory} data={apiResponse} />
+              {this.props.role === "read_and_write" && 
+                <AddCategory addCategory={this.addCategory} data={apiResponse} />}
             </Form>
             <Table sortable celled fixed>
               <Table.Header>

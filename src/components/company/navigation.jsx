@@ -62,7 +62,7 @@ class Navigation extends Component {
   };
 
   render() {
-    let { isSignedIn } = this.props;
+    let { isSignedIn, role, isSuperAdmin } = this.props;
     return (
       <ClickOutHandler
         onClickOut={() => {
@@ -100,14 +100,16 @@ class Navigation extends Component {
                       </NavIcon>
                       <NavText>Dashboard</NavText>
                     </NavItem>
-                    <NavItem eventKey="reciept">
-                      <NavIcon>
-                    <Tooltip content="New Invoice" direction="right">
-                        <FontAwesomeIcon icon={faReceipt} />
-                    </Tooltip>
-                      </NavIcon>
-                      <NavText>New Invoice</NavText>
-                    </NavItem>
+                    { role === "read_and_write" &&
+                      <NavItem eventKey="reciept">
+                        <NavIcon>
+                      <Tooltip content="New Invoice" direction="right">
+                          <FontAwesomeIcon icon={faReceipt} />
+                      </Tooltip>
+                        </NavIcon>
+                        <NavText>New Invoice</NavText>
+                      </NavItem>
+                    }
                     <NavItem eventKey="inventory">
                       <NavIcon>
                         <Tooltip content="Inventory" direction="right">
@@ -148,39 +150,39 @@ class Navigation extends Component {
                     <Route
                       path="/home"
                       exact
-                      component={isSignedIn ? Home : Auth}
+                      component={isSignedIn ? () => <Home role={role} /> : Auth}
                     />
                     <Route
                       path="/reciept"
                       exact
-                      component={isSignedIn ? NewReciept : Auth}
+                      component={isSignedIn ? (role === "read_and_write" ? NewReciept : () => <Home role={role} />) : Auth}
                     />
                     <Route
                       path="/company/create"
                       exact
-                      component={isSignedIn ? CreateCompany : Auth}
+                      component={isSignedIn ? (isSuperAdmin ? CreateCompany : () => <Home role={role} />) : Auth}
                     />
                     <Route
                       path="/inventory"
                       exact
-                      component={isSignedIn ? Inventory : Auth}
+                      component={isSignedIn ? () => <Inventory role={role} /> : Auth}
                     />
                     <Route
                       path="/reports"
                       exact
-                      component={isSignedIn ? Reports : Auth}
+                      component={isSignedIn ? () => <Reports role={role} /> : Auth}
                     />
                     <Route
                       path="/stock_report"
                       exact
-                      component={isSignedIn ? StockReport : Auth}
+                      component={isSignedIn ? () => <StockReport role={role} /> : Auth}
                     />
                     <Route path="/register" component={SignUp} />
                     <Route path="/login" component={SignIn} />
                     <Route
                       path="/"
                       exact
-                      component={isSignedIn ? Home : Auth}
+                      component={isSignedIn ? () => <Home role={role} /> : Auth}
                     />
                     <Route component={NoRouteFound}></Route>
                   </Switch>
@@ -200,8 +202,8 @@ function mapStateToProps(state) {
     isLoading,
     attributes
   } = state.reduxTokenAuth.currentUser;
-  const { isSuperAdmin } = attributes;
-  return { isSignedIn, isLoading, isSuperAdmin };
+  const { isSuperAdmin, role } = attributes;
+  return { isSignedIn, isLoading, isSuperAdmin, role};
 }
 
 export default connect(

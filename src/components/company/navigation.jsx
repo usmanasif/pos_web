@@ -149,39 +149,32 @@ class Navigation extends Component {
                   <Switch>
                     <Route
                       path="/home"
-                      exact
                       component={isSignedIn ? () => <Home role={role} /> : Auth}
                     />
                     <Route
                       path="/reciept"
-                      exact
                       component={isSignedIn ? (role === "read_and_write" ? NewReciept : () => <Home role={role} />) : Auth}
                     />
                     <Route
                       path="/company/create"
-                      exact
                       component={isSignedIn ? (isSuperAdmin ? CreateCompany : () => <Home role={role} />) : Auth}
                     />
                     <Route
                       path="/inventory"
-                      exact
                       render={isSignedIn ? () => <Inventory role={role} /> : Auth}
                     />
                     <Route
                       path="/reports"
-                      exact
                       component={isSignedIn ? () => <Reports role={role} /> : Auth}
                     />
                     <Route
                       path="/stock_report"
-                      exact
                       component={isSignedIn ? () => <StockReport role={role} /> : Auth}
                     />
                     <Route path="/register" component={SignUp} />
                     <Route path="/login" component={SignIn} />
                     <Route
                       path="/"
-                      exact
                       component={isSignedIn ? () => <Home role={role} /> : Auth}
                     />
                     <Route component={NoRouteFound}></Route>

@@ -165,7 +165,7 @@ class Navigation extends Component {
                     <Route
                       path="/inventory"
                       exact
-                      component={isSignedIn ? () => <Inventory role={role} /> : Auth}
+                      render={isSignedIn ? () => <Inventory role={role} /> : Auth}
                     />
                     <Route
                       path="/reports"

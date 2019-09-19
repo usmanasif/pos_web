@@ -74,23 +74,29 @@ class NewReciept extends Component {
 
     if (this.state.current_item.length === 0) {
       this.setState({ itemEmptyError: true });
+      setTimeout(()=>{ 
+        this.setState({ itemEmptyError: false });
+      }, 5000);
+
       return false;
-    } else {
-      this.setState({ itemEmptyError: false });
     }
 
     if (this.state.current_quantity === 0) {
       this.setState({ quantityEmptyError: true });
+      setTimeout(()=>{ 
+        this.setState({ quantityEmptyError: false });
+      }, 5000);
+
       return false;
-    } else {
-      this.setState({ quantityEmptyError: false });
     }
 
     if (current_item["current_stock"] < quantity) {
       this.setState({ quantityExceededError: true });
+      setTimeout(()=>{ 
+        this.setState({ quantityExceededError: false });
+      }, 5000);
+      
       return false;
-    } else {
-      this.setState({ quantityExceededError: false });
     }
 
     return true;
@@ -361,9 +367,11 @@ class NewReciept extends Component {
 
     if (this.state.selected_items.length === 0) {
       this.setState({ invalidForm: true });
+      setTimeout(()=>{ 
+        this.setState({ invalidForm: false });
+      }, 5000);
+      
       return null;
-    } else {
-      this.setState({ invalidForm: false });
     }
 
     if(e.target.innerHTML === "Pay Bill"){
@@ -379,6 +387,9 @@ class NewReciept extends Component {
       .then(response => {
         if (response.status === 201) {
           this.setState({ invoiceCreated: true });
+          setTimeout(()=>{ 
+            this.setState({ invoiceCreated: false });
+          }, 5000);
         }
         this.getData();
         this.getDrafts();
@@ -408,6 +419,9 @@ class NewReciept extends Component {
       .then(response => {
         if (response.status === 201) {
           this.setState({ draftCreated: true });
+          setTimeout(()=>{ 
+            this.setState({ draftCreated: false });
+          }, 5000);
         }
         this.getData();
         this.getDrafts();

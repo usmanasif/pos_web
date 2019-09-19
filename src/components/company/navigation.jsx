@@ -165,7 +165,7 @@ class Navigation extends Component {
                     />
                     <Route
                       path="/reports"
-                      component={isSignedIn ? () => <Reports role={role} /> : Auth}
+                      render={isSignedIn ? () => <Reports role={role} /> : Auth}
                     />
                     <Route
                       path="/stock_report"

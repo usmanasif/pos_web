@@ -17,6 +17,7 @@ import {
   Image
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
+import Loader from '../Loader/loader';
 import DatePicker from "react-datepicker";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -39,6 +40,7 @@ class Reports extends Component {
     super(props);
     this.state = {
       data: false,
+      isLoading:true,
       printData:[],
       current_page: 1,
       total_pages: 1,
@@ -80,7 +82,8 @@ class Reports extends Component {
           data,
           total_count: response.data.total_count,
           total: response.data.total,
-          total_pages: response.data.total_pages
+          total_pages: response.data.total_pages,
+          isLoading:false
         });
       });
     };
@@ -122,6 +125,7 @@ class Reports extends Component {
         ? { products: response.data.products }
         : { selected_products: response.data.selected_products };
         this.setState({ printData }, ()=>this.exportSalesReport());
+        
       });
     }
     
@@ -227,7 +231,8 @@ class Reports extends Component {
       current_page,
       total_pages,
       startDate,
-      endDate
+      endDate,
+      isLoading
     } = this.state;
     
     return (
@@ -372,7 +377,7 @@ class Reports extends Component {
                 </Table.Row>
               )}
             </Table.Header>
-
+            {!isLoading?
             <Table.Body>
               {data.invoices && data.invoices.length === 0 ? (
                 <Table.Row error>
@@ -469,8 +474,8 @@ class Reports extends Component {
                   </Table.Row>
                 ))
               )}
-            </Table.Body>
-          </Table>
+            </Table.Body>:<Loader/>}
+            </Table>
           </div>        
         )}
         {data && (

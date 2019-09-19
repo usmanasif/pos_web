@@ -18,6 +18,7 @@ import AddCategory from "../category/addCategory";
 import Paginate from "./pagination";
 import CategorySideBar from "../category/categorySideBar";
 import Barcode from 'react-barcode';
+import Loader from '../Loader/loader'
 
 const initialPagination = {
   activePage: 1,
@@ -35,6 +36,7 @@ export default class Inventory extends Component {
     direction: null,
     item: "",
     data: [],
+    isLoading:true,
     apiResponse: [],
     newCategories: []
   };
@@ -122,7 +124,8 @@ export default class Inventory extends Component {
         .then(res => {
           this.setState({
             data: res.data[1],
-            totalPages: res.data[0].total
+            totalPages: res.data[0].total,
+            isLoading:false
           });
         })
         .catch(error => console.log("Error : ", error));
@@ -136,7 +139,6 @@ export default class Inventory extends Component {
   };
 
   deleteItem = id => {
-    //delete request
     http
       .delete(`${apiUrl}/api/v1/items/${id}`)
       .then(res => {
@@ -201,6 +203,7 @@ export default class Inventory extends Component {
   render() {
     const {
       column,
+      isLoading,
       data,
       direction,
       apiResponse,
@@ -236,7 +239,7 @@ export default class Inventory extends Component {
             <Form>
               <Input
                 icon='search'
-                placeholder={categoryName?'Search items in '+ categoryName:'search items'}
+                placeholder={categoryName?'search items in '+ categoryName:'search items'}
                 onChange={this.searchHandler} 
               />
               {apiResponse.length > 0 && this.props.role === "read_and_write" ? (
@@ -282,7 +285,7 @@ export default class Inventory extends Component {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {data.map(d => (
+                {!isLoading?data.map(d => (
                   <Table.Row key={d.id}>
                     <Table.Cell>{d.name}</Table.Cell>
                     <Table.Cell>{d.current_stock}</Table.Cell>
@@ -317,7 +320,8 @@ export default class Inventory extends Component {
                       />
                     </Table.Cell>
                   </Table.Row>
-                ))}
+                )):<Loader />
+                }
               </Table.Body>
             </Table>
             {totalPages > 0 ? (

@@ -4,6 +4,7 @@ import "jspdf-autotable";
 import { apiUrl } from "../../utils/api-config";
 import http from "../../services/httpService";
 import Paginate from "../inventory/pagination";
+import Loader from "../Loader/loader"
 import { Button, Table, Container, Header, Image, Grid, Input } from "semantic-ui-react";
 
 const initialPagination = {
@@ -17,6 +18,7 @@ class StockReport extends Component {
     super(props);
     this.state = {
       ...initialPagination,
+      isLoading: true,
       itemsData: [],
       allItems: [],
       item: ""
@@ -59,7 +61,8 @@ class StockReport extends Component {
       .then(res => {
         this.setState({
           itemsData:res.data[1],
-          totalPages: res.data[0].total
+          totalPages: res.data[0].total,
+          isLoading:false
         });
       });
       this.setState({ state: this.state });
@@ -87,7 +90,7 @@ class StockReport extends Component {
   }
 
   render() {
-    const { itemsData, activePage, per_page, totalPages,item } = this.state;
+    const { itemsData, activePage, per_page, totalPages,isLoading } = this.state;
 
     return (
       <div>
@@ -133,14 +136,14 @@ class StockReport extends Component {
           </Table.Header>
 
           <Table.Body>
-            {itemsData.map(item => (
+            {!isLoading? itemsData.map(item => (
               <Table.Row key={item.id}>
                 <Table.Cell>{item.name}</Table.Cell>
                 <Table.Cell>{item.category.name}</Table.Cell>
                 <Table.Cell>{item.current_stock}</Table.Cell>
                 <Table.Cell>{item.sale_price}</Table.Cell>
               </Table.Row>
-            ))}
+            )):<Loader/>}
           </Table.Body>
         </Table>
         {totalPages > 0 ? (

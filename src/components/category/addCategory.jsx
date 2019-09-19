@@ -65,9 +65,10 @@ export default class AddCategory extends Component {
       this.initialState();
     }
     else{
-      this.setState({
-        display:true
-      });
+      this.setState({display:true});
+      setTimeout(()=>{ 
+        this.setState({display:false});
+       }, 5000);
     }
   };
 

@@ -175,6 +175,7 @@ class Navigation extends Component {
                     <Route path="/login" component={SignIn} />
                     <Route
                       path="/"
+                      exact
                       component={isSignedIn ? () => <Home role={role} /> : Auth}
                     />
                     <Route component={NoRouteFound}></Route>

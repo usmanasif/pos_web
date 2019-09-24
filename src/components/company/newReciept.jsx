@@ -411,6 +411,9 @@ class NewReciept extends Component {
       .then(response => {
         if (response.status === 201) {
           this.setState({ invoiceCreated: true, invoice_id: response.data.id });
+          setTimeout(()=>{ 
+            this.setState({ invoiceCreated: false });
+          }, 5000);
         }
         this.getData();
         this.getDrafts();
@@ -440,6 +443,9 @@ class NewReciept extends Component {
       .then(response => {
         if (response.status === 201) {
           this.setState({ draftCreated: true, invoice_id: response.data.id });
+          setTimeout(()=>{ 
+            this.setState({ draftCreated: false });
+          }, 5000);
         }
         this.getData();
         this.getDrafts();

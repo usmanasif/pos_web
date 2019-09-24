@@ -327,3 +327,8 @@ html {
 .drafts-heading{
   color: #1969a4;
 }
+
+.remove-draft-btn {
+  color: darkred !important;
+  background: antiquewhite !important;
+}

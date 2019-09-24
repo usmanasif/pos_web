@@ -213,6 +213,22 @@ class NewReciept extends Component {
     })
   }
 
+  removeDraft = (index) => {
+    let invoice_drafts = [...this.state.invoice_drafts];
+    let draft = invoice_drafts.splice(index, 1);
+    http
+      .delete(apiUrl + "/api/v1/invoices/" + draft[0].id)
+      .then((response) => {
+        if(response.status === 200){
+          if(draft[0].id === this.state.invoice_id)
+          {
+            this.setState({invoice_id: null})
+          }
+          this.getDrafts();
+        }
+      })
+  }
+
   renderDraftTable() {
     return this.state.invoice_drafts.map((data, index) => {
       const { id, total} = data;
@@ -231,6 +247,14 @@ class NewReciept extends Component {
               Use Draft
             <Icon name='check' />
           </Button>
+          <Button
+            floated="right"
+            icon="trash"
+            className="remove-draft-btn"
+            onClick={() => {
+              this.removeDraft(index);
+            }}
+          />
           </td>
         </tr>
       );
@@ -386,10 +410,7 @@ class NewReciept extends Component {
       })
       .then(response => {
         if (response.status === 201) {
-          this.setState({ invoiceCreated: true });
-          setTimeout(()=>{ 
-            this.setState({ invoiceCreated: false });
-          }, 5000);
+          this.setState({ invoiceCreated: true, invoice_id: response.data.id });
         }
         this.getData();
         this.getDrafts();
@@ -418,18 +439,13 @@ class NewReciept extends Component {
       })
       .then(response => {
         if (response.status === 201) {
-          this.setState({ draftCreated: true });
-          setTimeout(()=>{ 
-            this.setState({ draftCreated: false });
-          }, 5000);
+          this.setState({ draftCreated: true, invoice_id: response.data.id });
         }
         this.getData();
         this.getDrafts();
       });
       
     }
-
-    
   };
 
   setDiscount = e => {

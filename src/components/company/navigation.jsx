@@ -9,7 +9,8 @@ import {
   faDolly,
   faChartPie,
   faSignOutAlt,
-  faChartLine
+  faChartLine,
+  faCalculator
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import SideNav, { NavItem, NavIcon, NavText } from "@trendmicro/react-sidenav";
@@ -26,6 +27,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import StockReport from "../report/stockReport";
 import NoRouteFound from "../app/404PageNotFound";
 import Tooltip from 'react-tooltip-lite';
+import Accounts from "../accounts/accounts";
 
 
 const NavHeader = styled.div`
@@ -134,6 +136,14 @@ class Navigation extends Component {
                       </NavIcon>
                       <NavText>Stock Report</NavText>
                     </NavItem>
+                    <NavItem eventKey="accounts">
+                      <NavIcon>
+                        <Tooltip content="Accounts" direction="right">
+                          <FontAwesomeIcon icon={faCalculator} />
+                        </Tooltip>
+                      </NavIcon>
+                      <NavText>Accounts</NavText>
+                    </NavItem>
                     <NavItem eventKey="" onClick={this.signOut}>
                       <NavIcon>
                         <Tooltip content="Sign Out" direction="right">
@@ -170,6 +180,10 @@ class Navigation extends Component {
                     <Route
                       path="/stock_report"
                       component={isSignedIn ? () => <StockReport role={role} /> : Auth}
+                    />
+                    <Route
+                      path="/accounts"
+                      component={isSignedIn ? () => <Accounts  /> : Auth}
                     />
                     <Route path="/register" component={SignUp} />
                     <Route path="/login" component={SignIn} />

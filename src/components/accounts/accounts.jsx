@@ -48,7 +48,7 @@ class Accounts extends Component{
 
     fetchTransections = () => {
         http
-        .get(`${apiUrl}/api/v1/transections`)
+        .get(`${apiUrl}/api/v1/transactions`)
         .then(res=>{
             this.setState({
                 Data:res.data

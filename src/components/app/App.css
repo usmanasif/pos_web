@@ -332,3 +332,6 @@ html {
   color: darkred !important;
   background: antiquewhite !important;
 }
+.ui.menu:last-child {
+  margin-bottom: 15px !important;
+}

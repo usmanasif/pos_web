@@ -11,6 +11,8 @@ import { css } from '@emotion/core';
 import FadeLoader from 'react-spinners/FadeLoader';
 
 import "react-toastify/dist/ReactToastify.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import "./App.css";
 
 

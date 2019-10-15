@@ -28,6 +28,7 @@ import StockReport from "../report/stockReport";
 import NoRouteFound from "../app/404PageNotFound";
 import Tooltip from 'react-tooltip-lite';
 import Accounts from "../accounts/accounts";
+import VendorRecord from "../accounts/vendors";
 
 
 const NavHeader = styled.div`
@@ -76,86 +77,86 @@ class Navigation extends Component {
             render={({ location, history }) => (
               <div className="ui-container">
                 {isSignedIn &&
-                <SideNav
-                  expanded={this.state.expanded}
-                  onToggle={expanded => {
-                    this.setState({ expanded });
-                  }}
-                  onSelect={selected => {
-                    const to = "/" + selected;
-                    if (location.pathname !== to) {
-                      history.push(to);
-                    }
-                  }}
-                  className={this.state.expanded?"sidebar-width":null}
-                >
-                  <SideNav.Toggle/>
-                  <NavHeader expanded={this.state.expanded}>
-                    <NavTitle>Devsinc</NavTitle>
-                  </NavHeader>
-                  <SideNav.Nav >
-                    <NavItem eventKey="home" on={['hover', 'click']} content='Multiple events can trigger a popup'>
-                      <NavIcon>
-                        <Tooltip content="Dashboard" direction="right">
-                          <FontAwesomeIcon icon={faHome} />
-                        </Tooltip>
-                      </NavIcon>
-                      <NavText>Dashboard</NavText>
-                    </NavItem>
-                    { role === "read_and_write" &&
-                      <NavItem eventKey="reciept">
+                  <SideNav
+                    expanded={this.state.expanded}
+                    onToggle={expanded => {
+                      this.setState({ expanded });
+                    }}
+                    onSelect={selected => {
+                      const to = "/" + selected;
+                      if (location.pathname !== to) {
+                        history.push(to);
+                      }
+                    }}
+                    className={this.state.expanded ? "sidebar-width" : null}
+                  >
+                    <SideNav.Toggle />
+                    <NavHeader expanded={this.state.expanded}>
+                      <NavTitle>Devsinc</NavTitle>
+                    </NavHeader>
+                    <SideNav.Nav >
+                      <NavItem eventKey="home" on={['hover', 'click']} content='Multiple events can trigger a popup'>
                         <NavIcon>
-                      <Tooltip content="New Invoice" direction="right">
-                          <FontAwesomeIcon icon={faReceipt} />
-                      </Tooltip>
-                        </NavIcon>
-                        <NavText>New Invoice</NavText>
-                      </NavItem>
-                    }
-                    <NavItem eventKey="inventory">
-                      <NavIcon>
-                        <Tooltip content="Inventory" direction="right">
-                          <FontAwesomeIcon icon={faDolly} />
-                        </Tooltip>
-                      </NavIcon>
-                      <NavText>Inventory</NavText>
-                    </NavItem>
-                    <NavItem eventKey="reports">
-                      <NavIcon>
-                          <Tooltip content="Sale Report" direction="right">
-                             <FontAwesomeIcon icon={faChartPie} />
+                          <Tooltip content="Dashboard" direction="right">
+                            <FontAwesomeIcon icon={faHome} />
                           </Tooltip>
-                      </NavIcon>
-                      <NavText>Sale Report</NavText>
-                    </NavItem>
-                    <NavItem eventKey="stock_report">
-                      <NavIcon>
-                        <Tooltip content="Stock Report" direction="right">
-                          <FontAwesomeIcon icon={faChartLine} />
-                        </Tooltip>
-                      </NavIcon>
-                      <NavText>Stock Report</NavText>
-                    </NavItem>
-                    <NavItem eventKey="accounts">
-                      <NavIcon>
-                        <Tooltip content="Accounts" direction="right">
-                          <FontAwesomeIcon icon={faCalculator} />
-                        </Tooltip>
-                      </NavIcon>
-                      <NavText>Accounts</NavText>
-                    </NavItem>
-                    <NavItem eventKey="" onClick={this.signOut}>
-                      <NavIcon>
-                        <Tooltip content="Sign Out" direction="right">
-                          <FontAwesomeIcon icon={faSignOutAlt} />
-                        </Tooltip>
-                      </NavIcon>
-                      <NavText className="nav-text">Sign Out</NavText>
-                    </NavItem>
-                  </SideNav.Nav>
-                </SideNav>
+                        </NavIcon>
+                        <NavText>Dashboard</NavText>
+                      </NavItem>
+                      {role === "read_and_write" &&
+                        <NavItem eventKey="reciept">
+                          <NavIcon>
+                            <Tooltip content="New Invoice" direction="right">
+                              <FontAwesomeIcon icon={faReceipt} />
+                            </Tooltip>
+                          </NavIcon>
+                          <NavText>New Invoice</NavText>
+                        </NavItem>
+                      }
+                      <NavItem eventKey="inventory">
+                        <NavIcon>
+                          <Tooltip content="Inventory" direction="right">
+                            <FontAwesomeIcon icon={faDolly} />
+                          </Tooltip>
+                        </NavIcon>
+                        <NavText>Inventory</NavText>
+                      </NavItem>
+                      <NavItem eventKey="reports">
+                        <NavIcon>
+                          <Tooltip content="Sale Report" direction="right">
+                            <FontAwesomeIcon icon={faChartPie} />
+                          </Tooltip>
+                        </NavIcon>
+                        <NavText>Sale Report</NavText>
+                      </NavItem>
+                      <NavItem eventKey="stock_report">
+                        <NavIcon>
+                          <Tooltip content="Stock Report" direction="right">
+                            <FontAwesomeIcon icon={faChartLine} />
+                          </Tooltip>
+                        </NavIcon>
+                        <NavText>Stock Report</NavText>
+                      </NavItem>
+                      <NavItem eventKey="accounts">
+                        <NavIcon>
+                          <Tooltip content="Accounts" direction="right">
+                            <FontAwesomeIcon icon={faCalculator} />
+                          </Tooltip>
+                        </NavIcon>
+                        <NavText>Accounts</NavText>
+                      </NavItem>
+                      <NavItem eventKey="" onClick={this.signOut}>
+                        <NavIcon>
+                          <Tooltip content="Sign Out" direction="right">
+                            <FontAwesomeIcon icon={faSignOutAlt} />
+                          </Tooltip>
+                        </NavIcon>
+                        <NavText className="nav-text">Sign Out</NavText>
+                      </NavItem>
+                    </SideNav.Nav>
+                  </SideNav>
                 }
-                <Container className="marginTop" textAlign="justified" className={this.state.expanded?"dashboardExpanded": "dashboardNotExpanded"}>
+                <Container className="marginTop" textAlign="justified" className={this.state.expanded ? "dashboardExpanded" : "dashboardNotExpanded"}>
                   <Switch>
                     <Route
                       path="/home"
@@ -182,8 +183,12 @@ class Navigation extends Component {
                       component={isSignedIn ? () => <StockReport role={role} /> : Auth}
                     />
                     <Route
+                      path="/accounts/:id"
+                      component={isSignedIn ? () => <VendorRecord /> : Auth}
+                    />
+                    <Route
                       path="/accounts"
-                      component={isSignedIn ? () => <Accounts  /> : Auth}
+                      component={isSignedIn ? () => <Accounts /> : Auth}
                     />
                     <Route path="/register" component={SignUp} />
                     <Route path="/login" component={SignIn} />
@@ -211,7 +216,7 @@ function mapStateToProps(state) {
     attributes
   } = state.reduxTokenAuth.currentUser;
   const { isSuperAdmin, role } = attributes;
-  return { isSignedIn, isLoading, isSuperAdmin, role};
+  return { isSignedIn, isLoading, isSuperAdmin, role };
 }
 
 export default connect(

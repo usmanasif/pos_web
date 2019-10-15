@@ -29,6 +29,7 @@ import NoRouteFound from "../app/404PageNotFound";
 import Tooltip from 'react-tooltip-lite';
 import Accounts from "../accounts/accounts";
 import VendorRecord from "../accounts/vendors";
+import NewVendor from "../accounts/newVendor"
 
 
 const NavHeader = styled.div`
@@ -181,6 +182,10 @@ class Navigation extends Component {
                     <Route
                       path="/stock_report"
                       component={isSignedIn ? () => <StockReport role={role} /> : Auth}
+                    />
+                    <Route
+                      path="/accounts/new"
+                      component={isSignedIn ? () => <NewVendor /> : Auth}
                     />
                     <Route
                       path="/accounts/:id"

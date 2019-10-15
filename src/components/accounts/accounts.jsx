@@ -11,7 +11,6 @@ class Accounts extends Component {
   }
 
   selectMenu = (item) => {
-    console.log(item)
     this.setState(
       {
         menuItem:item

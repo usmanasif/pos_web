@@ -14,24 +14,6 @@ class Transections extends Component {
     super(props);
     this.state = {
       Transactions: [
-        {
-          transactionId: "12olw",
-          storeName: "ali mobile center",
-          transactionDate: Date(),
-          userName: "john smith",
-          amount: 243,
-          comment: "cash by hand on shop"
-        },
-        {
-          transactionId: "54aw",
-          storeName: "hafeez center",
-          transactionDate: Date(),
-          userName: "Usman Asif",
-          amount: 4478,
-          comment: "cash"
-        }
-
-
       ]
     }
   }

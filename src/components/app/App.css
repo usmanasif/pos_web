@@ -11,6 +11,11 @@ html {
   height: initial !important ;
 }
 
+.vendor-form{
+  width: 65%;
+  margin: auto;
+}
+
 .react-tooltip-lite{
   left: 74px;
   top: 119px;
@@ -331,4 +336,7 @@ html {
 .remove-draft-btn {
   color: darkred !important;
   background: antiquewhite !important;
+}
+.ui.menu:last-child {
+  margin-bottom: 15px !important;
 }

@@ -9,16 +9,14 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const options = [
-  { key: 'js', text: 'John Smith', value: 'John Smith' },
-  { key: 'ak', text: 'Albert Koping', value: 'Albert Koping' },
-  { key: 'ua', text: 'Usman Asif', value: 'Usman Asif' },
-]
-
 class Filters extends Component {
-  state = {
-    startDate: Date(),
-    endDate: Date()
+  constructor(props) {
+    super(props)
+    this.state = {
+      startDate: Date(),
+      endDate: Date(),
+      vendorsList: []
+    }
   }
 
   handleChangeStart = e => {
@@ -30,6 +28,17 @@ class Filters extends Component {
   };
 
   handleChange = (e, { value }) => this.setState({ value })
+
+  componentWillReceiveProps(nextProps) {
+    const users = nextProps.users;
+    Array.prototype.forEach.call(users, element => {
+      this.state.vendorsList.push({
+        key: element.code,
+        value: element.name,
+        text: element.name
+      });
+    });
+  }
 
   render() {
     const {
@@ -65,7 +74,7 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
-            <Dropdown placeholder='Customers' search selection options={options} />
+            <Dropdown placeholder='Customers' search selection options={this.state.vendorsList} />
           </Grid.Column>
           <GridColumn>
             <Button style={{ color: "white", background: "#f48f34" }}><Icon name='refresh' /> SEARCH </Button>

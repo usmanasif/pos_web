@@ -33,7 +33,7 @@ class Home extends Component {
           </Header>
         </Container>
         <div className="ui divider"></div>
-        <Grid centered columns={4} className="card-contatiner">
+        <Grid centered columns={5} className="card-contatiner">
           <Grid.Row>
             { this.props.role === "read_and_write" &&
               <Grid.Column>
@@ -101,10 +101,26 @@ class Home extends Component {
                 </Card>
               </Link>
             </Grid.Column>
+            <Grid.Column>
+              <Link to="/accounts">
+                <Card raised className="card-div">
+                  <Image
+                    src={require("../../images/accounts.jpg")}
+                    wrapped
+                    ui={false}
+                  />
+                  <Card.Content>
+                    <Card.Header className="card-heading">
+                      Accounts
+                    </Card.Header>
+                  </Card.Content>
+                </Card>
+              </Link>
+            </Grid.Column>
           </Grid.Row>
         </Grid>
         <Divider horizontal className="card-divider">Sale Statistics</Divider>
-        <Grid>
+        <Grid centered>
           <Grid.Row>
             <Grid.Column width="8">
               <Segment raised>

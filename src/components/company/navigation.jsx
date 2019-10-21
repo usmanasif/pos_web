@@ -28,8 +28,8 @@ import StockReport from "../report/stockReport";
 import NoRouteFound from "../app/404PageNotFound";
 import Tooltip from 'react-tooltip-lite';
 import Accounts from "../accounts/accounts";
-import VendorRecord from "../accounts/vendors";
 import NewVendor from "../accounts/newVendor"
+import NewTransaction from "../accounts/newTransaction";
 
 
 const NavHeader = styled.div`
@@ -184,12 +184,12 @@ class Navigation extends Component {
                       component={isSignedIn ? () => <StockReport role={role} /> : Auth}
                     />
                     <Route
-                      path="/accounts/new"
+                      path="/accounts/vendor/new"
                       component={isSignedIn ? () => <NewVendor /> : Auth}
                     />
                     <Route
-                      path="/accounts/:id"
-                      component={isSignedIn ? () => <VendorRecord /> : Auth}
+                      path="/accounts/transaction/new"
+                      component={isSignedIn ? () => <NewTransaction /> : Auth}
                     />
                     <Route
                       path="/accounts"

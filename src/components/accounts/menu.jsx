@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Menu } from "semantic-ui-react";
 
 class MenuPointing extends Component {
-  state = { activeItem: 'customers' }
+  state = { activeItem: 'vendors' }
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name })
@@ -15,8 +15,8 @@ class MenuPointing extends Component {
       <React.Fragment>
         <Menu color="blue" pointing>
           <Menu.Item
-            name='customers'
-            active={activeItem === 'customers'}
+            name='vendors'
+            active={activeItem === 'vendors'}
             onClick={this.handleItemClick}
           />
           <Menu.Item

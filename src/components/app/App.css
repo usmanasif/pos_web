@@ -339,3 +339,13 @@ html {
 .ui.menu:last-child {
   margin-bottom: 15px !important;
 }
+
+.account-table td, .account-table th {
+  padding: .4rem !important;
+}
+
+.search-btn{
+  color: white !important;
+  background: rgb(244, 143, 52) !important;
+  margin-top: 19px !important;
+}

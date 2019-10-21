@@ -15,7 +15,8 @@ class Filters extends Component {
     this.state = {
       startDate: Date(),
       endDate: Date(),
-      vendorsList: []
+      vendorsList: [],
+      storesList: []
     }
   }
 
@@ -29,15 +30,29 @@ class Filters extends Component {
 
   handleChange = (e, { value }) => this.setState({ value })
 
+  handleStoreInfo = (element) => {
+    this.state.storesList.push({
+      key: element.code,
+      value: element.store_name,
+      text: element.store_name
+    });
+  }
+
+  handleVendorInfo = (element) => {
+    this.state.vendorsList.push({
+      key: element.code,
+      value: element.name,
+      text: element.name
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     const users = nextProps.users;
-    Array.prototype.forEach.call(users, element => {
-      this.state.vendorsList.push({
-        key: element.code,
-        value: element.name,
-        text: element.name
+    if (users)
+      Array.prototype.forEach.call(users, element => {
+        this.handleVendorInfo(element);
+        this.handleStoreInfo(element);
       });
-    });
   }
 
   render() {
@@ -47,9 +62,10 @@ class Filters extends Component {
     } = this.state;
 
     return (
-      <Grid columns={5} centered style={{ marginTop: "25px" }}>
+      <Grid columns={5} centered>
         <Grid.Row>
           <Grid.Column>
+            From
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(startDate)}
@@ -62,6 +78,7 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
+            To
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(startDate)}
@@ -74,10 +91,15 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
+            Vendor Name
             <Dropdown placeholder='Customers' search selection options={this.state.vendorsList} />
           </Grid.Column>
+          <Grid.Column>
+            Store Name
+            <Dropdown placeholder='Stores' search selection options={this.state.storesList} />
+          </Grid.Column>
           <GridColumn>
-            <Button style={{ color: "white", background: "#f48f34" }}><Icon name='refresh' /> SEARCH </Button>
+            <Button className="search-btn"><Icon name='refresh' /> SEARCH </Button>
           </GridColumn>
         </Grid.Row>
       </Grid>

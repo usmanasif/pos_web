@@ -8,8 +8,8 @@ import Paginate from "../inventory/pagination"
 
 const initialPagination = {
   activePage: 1,
-  totalPages: 10,
-  per_page: 6
+  totalPages: 0,
+  per_page: 10
 };
 class Vendors extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class Vendors extends Component {
 
   handleClick = (id) => this.props.history.push("accounts/" + id);
 
-  redirect = () => this.props.history.push("/accounts/new");
+  redirect = () => this.props.history.push("/accounts/vendor/new");
 
   pageHandler = () => {
     const { activePage, per_page } = this.state;
@@ -52,14 +52,14 @@ class Vendors extends Component {
     return (
       <div>
         <Filters users={this.state.Vendors}></Filters>
-        <Grid>
+        <Grid style={{marginTop:"0px"}}>
           <Grid.Column width={16}>
             <Button style={{ background: "#58ae61", color: "white" }} floated="right" onClick={this.redirect} ><Icon name="plus"></Icon>New</Button>
-            <table className="table table-bordered table-striped mb-2">
+            <table className="table table-bordered table-striped mb-1 account-table">
               <thead style={{ color: "white", background: "#1969a4" }}>
                 <tr>
-                  <th scope="col">Customer Code</th>
-                  <th scope="col">Customer Name</th>
+                  <th scope="col">Vendor Code</th>
+                  <th scope="col">Vendor Name</th>
                   <th scope="col">Store Name</th>
                   <th scope="col">Mobile</th>
                   <th scope="col">Address</th>

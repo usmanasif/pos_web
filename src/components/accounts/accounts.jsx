@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import { Container, Header, Image } from "semantic-ui-react";
 import { withRouter } from "react-router";
 import Vendors from "./vendors";
@@ -7,7 +8,7 @@ import Transactions from "./transactions"
 
 class Accounts extends Component {
   state = {
-    menuItem: "customers"
+    menuItem: "vendors"
   }
 
   selectMenu = (item) => {
@@ -33,7 +34,7 @@ class Accounts extends Component {
         <div className="ui divider"></div>
         <MenuPointing menuItem={this.selectMenu}></MenuPointing>
         {
-          this.state.menuItem === "customers" ? <Vendors></Vendors> :
+          this.state.menuItem === "vendors" ? <Vendors></Vendors> :
             this.state.menuItem === "transactions" ? <Transactions></Transactions> : null
         }
       </React.Fragment>

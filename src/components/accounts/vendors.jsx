@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
-import Filters from "./filter";
+import VendorFilter from "./vendorFilter";
 import { withRouter } from "react-router";
 import http from "../../services/httpService.js";
 import { apiUrl } from "../../utils/api-config";
@@ -51,7 +51,7 @@ class Vendors extends Component {
 
     return (
       <div>
-        <Filters users={this.state.Vendors}></Filters>
+        <VendorFilter users={this.state.Vendors}></VendorFilter>
         <Grid style={{marginTop:"0px"}}>
           <Grid.Column width={16}>
             <Button style={{ background: "#58ae61", color: "white" }} floated="right" onClick={this.redirect} ><Icon name="plus"></Icon>New</Button>

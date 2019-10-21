@@ -15,7 +15,8 @@ class Transections extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Transactions: []
+      Transactions: [],
+      Vendors: []
     }
   }
 
@@ -27,27 +28,39 @@ class Transections extends Component {
     http
       .get(`${apiUrl}/api/v1/transactions`)
       .then(res => {
-        console.log(res);
         this.setState({
-          Transactions: res.data
+          Transactions: res.data.results[1]
         });
       })
       .catch(error => console.log(error))
   }
 
+  getVendors = () =>{
+    http
+      .get(`${apiUrl}/api/v1/vendors`)
+      .then(res => {
+        this.setState({
+          Vendors: res.data.results[1]
+        });
+      })
+      .catch(error => console.log(error));
+
+  }
+
   componentDidMount() {
     this.getTransactions();
+    this.getVendors();
   }
 
   render() {
     return (
       <React.Fragment>
-        <Filters></Filters>
+        <Filters users={this.state.Vendors}></Filters>
         <Grid>
           <Grid.Column width={16}>
             <Button style={{ background: "#58ae61", color: "white" }} floated="right" onClick={this.redirect}><Icon name="plus"></Icon>New</Button>
             <div className="table-wrapper-scroll-y my-custom-scrollbar">
-              <table className="table table-bordered table-striped mb-0">
+              <table className="table table-bordered table-striped mb-0 account-table">
                 <thead style={{ color: "white", background: "#1969a4" }}>
                   <tr>
                     <th scope="col">Txn ID  </th>

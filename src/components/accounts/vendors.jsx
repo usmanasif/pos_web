@@ -16,7 +16,7 @@ class Vendors extends Component {
     super(props);
     this.state = {
       ...initialPagination,
-      Vendors: []
+      allVendors: []
     }
   }
 
@@ -35,12 +35,24 @@ class Vendors extends Component {
       .get(`${apiUrl}/api/v1/vendors`, { params: { page, per_page } })
       .then(res => {
         this.setState({
-          Vendors: res.data.results[1],
+          allVendors: res.data.results[1],
           totalPages: res.data.results[0].total
         });
       })
       .catch(error => console.log(error));
   };
+
+  filterVendors = (vendor) => {
+    http
+      .get(`${apiUrl}/api/v1/vendors`, { params: vendor })
+      .then(res => {
+        this.setState({
+          allVendors: res.data.results[1],
+          totalPages: res.data.results[0].total
+        });
+      })
+      .catch(error => console.log(error))
+  }
 
   componentDidMount() {
     this.pageHandler();
@@ -51,8 +63,8 @@ class Vendors extends Component {
 
     return (
       <div>
-        <VendorFilter users={this.state.Vendors}></VendorFilter>
-        <Grid style={{marginTop:"0px"}}>
+        <VendorFilter users={this.state.allVendors} filterVendors={this.filterVendors}></VendorFilter>
+        <Grid style={{ marginTop: "0px" }}>
           <Grid.Column width={16}>
             <Button style={{ background: "#58ae61", color: "white" }} floated="right" onClick={this.redirect} ><Icon name="plus"></Icon>New</Button>
             <table className="table table-bordered table-striped mb-1 account-table">
@@ -66,7 +78,7 @@ class Vendors extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.Vendors.map(item => {
+                {this.state.allVendors.map(item => {
                   return (
                     <tr key={item.id}>
                       <th scope="row">{item.code}</th>

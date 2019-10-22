@@ -13,11 +13,19 @@ class VendorFilter extends Component {
     super(props)
     this.state = {
       vendorsList: [],
-      storesList: []
+      storesList: [],
+      vendor: '',
+      store: '',
+      mobile: ''
     }
   }
 
-  handleChange = (e, { value }) => this.setState({ value })
+  applyFilter = () => {
+    const { vendor, store, mobile } = this.state;
+    this.props.filterVendors({ vendor, store, mobile });
+  }
+
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   handleStoreInfo = (element) => {
     this.state.storesList.push({
@@ -50,18 +58,32 @@ class VendorFilter extends Component {
         <Grid.Row>
           <Grid.Column>
             Mobile
-            <Input placeholder='Mobile Number' />
+            <Input placeholder='Mobile Number' name="mobile" onChange={this.handleChange} />
           </Grid.Column>
           <Grid.Column>
             Vendor Name
-            <Dropdown placeholder='Customers' search selection options={this.state.vendorsList} />
+            <Dropdown
+              placeholder='Vendors'
+              name="vendor"
+              selection
+              search
+              options={this.state.vendorsList}
+              onChange={this.handleChange}
+            />
           </Grid.Column>
           <Grid.Column>
             Store Name
-            <Dropdown placeholder='Stores' search selection options={this.state.storesList} />
+            <Dropdown
+              placeholder='Stores'
+              name="store"
+              selection
+              search
+              options={this.state.storesList}
+              onChange={this.handleChange}
+            />
           </Grid.Column>
           <GridColumn>
-            <Button className="search-btn"><Icon name='refresh' /> SEARCH </Button>
+            <Button className="search-btn" onClick={this.applyFilter}><Icon name='refresh' /> SEARCH </Button>
           </GridColumn>
         </Grid.Row>
       </Grid>

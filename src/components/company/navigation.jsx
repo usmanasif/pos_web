@@ -30,6 +30,7 @@ import Tooltip from 'react-tooltip-lite';
 import Accounts from "../accounts/accounts";
 import NewVendor from "../accounts/newVendor"
 import NewTransaction from "../accounts/newTransaction";
+import VendorsInfo from "../accounts/vendorsInfo";
 
 
 const NavHeader = styled.div`
@@ -192,9 +193,14 @@ class Navigation extends Component {
                       component={isSignedIn ? () => <NewTransaction /> : Auth}
                     />
                     <Route
+                      path="/accounts/vendor/:id"
+                      component={isSignedIn ? () => <VendorsInfo /> : Auth}
+                    />
+                    <Route
                       path="/accounts"
                       component={isSignedIn ? () => <Accounts /> : Auth}
                     />
+                    
                     <Route path="/register" component={SignUp} />
                     <Route path="/login" component={SignIn} />
                     <Route

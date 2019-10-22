@@ -3,7 +3,6 @@ import {
   Button,
   Form,
   Input,
-  TextArea,
   Container,
   Header,
   Image
@@ -15,40 +14,38 @@ import { apiUrl } from "../../utils/api-config";
 
 class NewVendor extends Component {
   state = {
-    code:"",
-    name:"",
-    store_name:"",
-    phone_number:"",
-    address:"",
-    details:""
+    code: "",
+    name: "",
+    store_name: "",
+    phone_number: "",
+    address: "",
+    details: ""
   }
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  createVendor = () =>{
-    const { code, name, store_name, phone_number, address, details} = this.state
+  createVendor = () => {
+    const { code, name, store_name, phone_number, address } = this.state
     http
-        .post(`${apiUrl}/api/v1/vendors`, {
-          code,
-          name,
-          address,
-          store_name,
-          phone_number
-        })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(error => console.log(error));
+      .post(`${apiUrl}/api/v1/vendors`, {
+        code,
+        name,
+        address,
+        store_name,
+        phone_number
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(error => console.log(error));
 
     this.props.history.push("/accounts");
-    window.location.reload();
-
   }
 
   render() {
-      const { code, name, store_name, phone_number, address, details} = this.state
+    const { code, name, store_name, phone_number, address, details } = this.state
     return (
       <React.Fragment>
         <Container className="page-header">
@@ -83,7 +80,7 @@ class NewVendor extends Component {
               name="address"
               value={address}
               onChange={this.handleChange}
-            /> 
+            />
           </Form.Group>
           <Form.Group widths='equal'>
             <Form.Input
@@ -100,9 +97,9 @@ class NewVendor extends Component {
               name="phone_number"
               value={phone_number}
               onChange={this.handleChange}
-            />            
+            />
           </Form.Group>
-           <Form.TextArea
+          <Form.TextArea
             label='Details'
             placeholder='Tell us more about you...'
             name="details"

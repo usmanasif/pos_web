@@ -9,16 +9,15 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const options = [
-  { key: 'js', text: 'John Smith', value: 'John Smith' },
-  { key: 'ak', text: 'Albert Koping', value: 'Albert Koping' },
-  { key: 'ua', text: 'Usman Asif', value: 'Usman Asif' },
-]
-
 class Filters extends Component {
-  state = {
-    startDate: Date(),
-    endDate: Date()
+  constructor(props) {
+    super(props)
+    this.state = {
+      startDate: Date(),
+      endDate: Date(),
+      vendorsList: [],
+      storesList: []
+    }
   }
 
   handleChangeStart = e => {
@@ -31,6 +30,31 @@ class Filters extends Component {
 
   handleChange = (e, { value }) => this.setState({ value })
 
+  handleStoreInfo = (element) => {
+    this.state.storesList.push({
+      key: element.code,
+      value: element.store_name,
+      text: element.store_name
+    });
+  }
+
+  handleVendorInfo = (element) => {
+    this.state.vendorsList.push({
+      key: element.code,
+      value: element.name,
+      text: element.name
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const users = nextProps.users;
+    if (users)
+      Array.prototype.forEach.call(users, element => {
+        this.handleVendorInfo(element);
+        this.handleStoreInfo(element);
+      });
+  }
+
   render() {
     const {
       startDate,
@@ -38,9 +62,10 @@ class Filters extends Component {
     } = this.state;
 
     return (
-      <Grid columns={5} centered style={{ marginTop: "25px" }}>
+      <Grid columns={5} centered>
         <Grid.Row>
           <Grid.Column>
+            From
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(startDate)}
@@ -53,6 +78,7 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
+            To
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(startDate)}
@@ -65,10 +91,15 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
-            <Dropdown placeholder='Customers' search selection options={options} />
+            Vendor Name
+            <Dropdown placeholder='Customers' search selection options={this.state.vendorsList} />
+          </Grid.Column>
+          <Grid.Column>
+            Store Name
+            <Dropdown placeholder='Stores' search selection options={this.state.storesList} />
           </Grid.Column>
           <GridColumn>
-            <Button style={{ color: "white", background: "#f48f34" }}><Icon name='refresh' /> SEARCH </Button>
+            <Button className="search-btn"><Icon name='refresh' /> SEARCH </Button>
           </GridColumn>
         </Grid.Row>
       </Grid>

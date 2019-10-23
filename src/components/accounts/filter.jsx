@@ -72,7 +72,7 @@ class Filters extends Component {
       <Grid columns={5} centered>
         <Grid.Row>
           <Grid.Column>
-            From
+            Date From
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(startDate)}
@@ -85,7 +85,7 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
-            To
+            Date To
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(endDate)}

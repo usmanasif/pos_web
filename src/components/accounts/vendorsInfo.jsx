@@ -84,8 +84,7 @@ class VendorsInfo extends Component {
           <thead style={{ color: "white", background: "#1969a4" }}>
             <tr>
               <th scope="col">Txn ID</th>
-              <th scope="col">Debit</th>
-              <th scope="col">Credit</th>
+              <th scope="col">Amount</th>
               <th scope="col">Date</th>
               <th scope="col">Details</th>
             </tr>
@@ -95,8 +94,7 @@ class VendorsInfo extends Component {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.transaction_code}</th>
-                  <td>{item.amount > 0 ? item.amount : 0}</td>
-                  <td>{item.amount < 0 ? item.amount : 0}</td>
+                  <td>{item.amount}</td>
                   <td>{new Intl.DateTimeFormat("en-PK", dateOptions).format(
                     new Date(item.transaction_date)
                   )}

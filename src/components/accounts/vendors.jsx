@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
 import VendorFilter from "./vendorFilter";
 import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
+
 import http from "../../services/httpService.js";
 import { apiUrl } from "../../utils/api-config";
-import Paginate from "../inventory/pagination"
+import Paginate from "../inventory/pagination";
 
 const initialPagination = {
   activePage: 1,
@@ -75,6 +77,7 @@ class Vendors extends Component {
                   <th scope="col">Store Name</th>
                   <th scope="col">Mobile</th>
                   <th scope="col">Address</th>
+                  <th scope="col">Details</th>
                 </tr>
               </thead>
               <tbody>
@@ -86,6 +89,7 @@ class Vendors extends Component {
                       <td>{item.store_name}</td>
                       <td>{item.phone_number}</td>
                       <td>{item.address}</td>
+                      <td><Link to={"/accounts/vendor/"+item.id}> view more</Link></td>
                     </tr>)
                 })}
               </tbody>

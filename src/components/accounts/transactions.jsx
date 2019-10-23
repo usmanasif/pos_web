@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Button, Icon } from "semantic-ui-react";
+import { Grid, Button, Icon, Message } from "semantic-ui-react";
 import Filters from "./filter";
 import { withRouter } from "react-router";
 import http from "../../services/httpService.js";
@@ -24,7 +24,8 @@ class Transections extends Component {
     this.state = {
       ...initialPagination,
       Transactions: [],
-      Vendors: []
+      Vendors: [],
+      totalAmount: 0,
     }
   }
 
@@ -37,7 +38,19 @@ class Transections extends Component {
     this.handlePagination(activePage, per_page);
   };
 
+  calculateTransactionTotal = () =>{
+    const {totalAmount, Transactions} = this.state;
+    debugger; 
+    Array.prototype.forEach.call(Transactions, element => {
+      this.setState(prevstate=>({
+        totalAmount:prevstate.totalAmount + element.amount
+      }));
+    });
+  }
+  
+
   handlePagination = (page, per_page) => {
+    // debugger;
     this.setState({ activePage: page, per_page: per_page });
     http
       .get(`${apiUrl}/api/v1/transactions`, { params: { page, per_page } })
@@ -45,21 +58,10 @@ class Transections extends Component {
         this.setState({
           Transactions: res.data.results[1],
           totalPages: res.data.results[0].total
-        });
+        }, ()=>this.calculateTransactionTotal());
       })
       .catch(error => console.log(error))
   };
-
-  getTransactions = () => {
-    http
-      .get(`${apiUrl}/api/v1/transactions`)
-      .then(res => {
-        this.setState({
-          Transactions: res.data.results[1]
-        });
-      })
-      .catch(error => console.log(error))
-  }
 
   getVendors = () =>{
     http
@@ -70,7 +72,18 @@ class Transections extends Component {
         });
       })
       .catch(error => console.log(error));
+  }
 
+  filterTransactions = (transactions) =>{
+    http
+      .get(`${apiUrl}/api/v1/transactions`, {params:transactions})
+      .then(res => {
+        this.setState({
+          Transactions: res.data.results[1],
+          totalPages: res.data.results[0].total
+        });
+      })
+      .catch(error => console.log(error))
   }
 
   componentDidMount() {
@@ -79,10 +92,10 @@ class Transections extends Component {
   }
 
   render() {
-    const {activePage, per_page, totalPages, Vendors, Transactions} = this.state;
+    const {activePage, per_page, totalPages, Vendors, Transactions, totalAmount} = this.state;
     return (
       <React.Fragment>
-        <Filters users={Vendors}></Filters>
+        <Filters users={Vendors} filterTransactions={this.filterTransactions}></Filters>
         <Grid>
           <Grid.Column width={16}>
             <Button style={{ background: "#58ae61", color: "white" }} floated="right" onClick={this.redirect}><Icon name="plus"></Icon>New</Button>
@@ -116,6 +129,7 @@ class Transections extends Component {
                   })}
                 </tbody>
               </table>
+              <Message color='green' style={{padding:"10px"}}><strong>Total</strong> <span style={{marginLeft:"52%"}}><strong>{totalAmount}</strong></span></Message>  
               <Paginate
               handlePagination={this.handlePagination}
               pageSet={{ activePage, totalPages, per_page }}></Paginate>

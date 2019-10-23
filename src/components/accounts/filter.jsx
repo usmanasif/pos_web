@@ -13,11 +13,18 @@ class Filters extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      startDate: Date(),
-      endDate: Date(),
+      startDate: '',
+      endDate: '',
       vendorsList: [],
-      storesList: []
+      storesList: [],
+      vendor: '',
+      store: '',
     }
+  }
+
+  applyFilter = () => {
+    const { vendor, store, startDate, endDate } = this.state;
+    this.props.filterTransactions({ vendor, store, startDate, endDate });
   }
 
   handleChangeStart = e => {
@@ -28,7 +35,7 @@ class Filters extends Component {
     this.setState({ endDate: e });
   };
 
-  handleChange = (e, { value }) => this.setState({ value })
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   handleStoreInfo = (element) => {
     this.state.storesList.push({
@@ -65,7 +72,7 @@ class Filters extends Component {
       <Grid columns={5} centered>
         <Grid.Row>
           <Grid.Column>
-            From
+            Date From
             <DatePicker
               className="ui input date_picker_input"
               selected={Date.parse(startDate)}
@@ -78,28 +85,29 @@ class Filters extends Component {
             />
           </Grid.Column>
           <Grid.Column>
-            To
+            Date To
             <DatePicker
               className="ui input date_picker_input"
-              selected={Date.parse(startDate)}
-              selectsStart
+              selected={Date.parse(endDate)}
+              selectsEnd
               startDate={Date.parse(startDate)}
               endDate={Date.parse(endDate)}
-              onChange={this.handleChangeStart}
+              onChange={this.handleChangeEnd}
+              minDate={Date.parse(startDate)}
               isClearable={true}
               dateFormat=" dd MMMM yyyy"
             />
           </Grid.Column>
           <Grid.Column>
             Vendor Name
-            <Dropdown placeholder='Customers' search selection options={this.state.vendorsList} />
+            <Dropdown placeholder='Customers' name="vendor" search selection options={this.state.vendorsList} onChange={this.handleChange} />
           </Grid.Column>
           <Grid.Column>
             Store Name
-            <Dropdown placeholder='Stores' search selection options={this.state.storesList} />
+            <Dropdown placeholder='Stores' name="store" search selection options={this.state.storesList} onChange={this.handleChange} />
           </Grid.Column>
           <GridColumn>
-            <Button className="search-btn"><Icon name='refresh' /> SEARCH </Button>
+            <Button className="search-btn" onClick={this.applyFilter}><Icon name='refresh' /> SEARCH </Button>
           </GridColumn>
         </Grid.Row>
       </Grid>

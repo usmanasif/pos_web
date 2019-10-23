@@ -102,7 +102,7 @@ class NewTransaction extends Component {
           <Form.Group widths='equal'>
             <Form.Input
               label='Txn code'
-              placeholder='Vendor code'
+              placeholder='Transaction code'
               name="code"
               value={code}
               onChange={this.handleChange}
@@ -140,7 +140,7 @@ class NewTransaction extends Component {
             onChange={this.handleChangeStart}
             isClearable={true}
             dateFormat=" dd MMMM yyyy"
-          />
+          /><br /><br />
           <Form.TextArea
             label='Comment'
             placeholder='add comment on transaction...'

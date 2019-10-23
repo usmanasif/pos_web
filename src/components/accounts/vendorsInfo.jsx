@@ -15,12 +15,12 @@ class VendorsInfo extends Component {
     totalAmount: 0,
     remainingAmount: 0
   }
-  calculateAmount = () =>{
-    const {transactions}=this.state
+  calculateAmount = () => {
+    const { transactions } = this.state
     console.log(this.state);
     Array.prototype.forEach.call(transactions, element => {
-      this.setState(prevstate=>({
-        remainingAmount:prevstate.remainingAmount+element.amount
+      this.setState(prevstate => ({
+        remainingAmount: prevstate.remainingAmount + element.amount
       }));
     });
   }
@@ -34,7 +34,7 @@ class VendorsInfo extends Component {
       .then(res => {
         this.setState({
           transactions: res.data.results[1]
-        },()=>{
+        }, () => {
           this.calculateAmount();
         });
       })
@@ -60,29 +60,25 @@ class VendorsInfo extends Component {
           </Header>
         </Container>
         <div className="ui divider" />
-        <Grid columns={2} centered>
-          <Grid.Column>
-            <Segment raised>
-              <Label as='a' color='red' size="large" ribbon style={{ marginBottom: "10px" }}>
-                Vendor Account
-              </Label>
-              <div>
-                <Label as='a' color='blue' size="large">
-                  Initial Balance:
+        <div style={{textAlign:"center"}}>
+          <Label as='a' color='blue' size="large">
+            Initial Balance:
                   <Label.Detail>{initialBalance}</Label.Detail>
-                </Label>
-                <Label as='a' color='teal' size="large">
-                  Total Amount:
+          </Label>
+          <Label as='a' color='teal' size="large">
+            Total Sales:
                   <Label.Detail>{totalAmount}</Label.Detail>
-                </Label>
-                <Label as='a' color='yellow' size="large">
-                  Remaining Amount:
+          </Label>
+          <Label as='a' color='green' size="large">
+            Received Amount:
+                  <Label.Detail>{0}</Label.Detail>
+          </Label>
+          <Label as='a' color='yellow' size="large">
+            Balance Receivable:
                   <Label.Detail>{remainingAmount}</Label.Detail>
-                </Label>
-              </div>
-            </Segment>
-          </Grid.Column>
-        </Grid>
+          </Label>
+        </div>
+
         <h3>Transactions</h3>
         <table className="table table-bordered table-striped mb-1 account-table">
           <thead style={{ color: "white", background: "#1969a4" }}>

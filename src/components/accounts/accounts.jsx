@@ -6,6 +6,7 @@ import Vendors from "./vendors";
 import MenuPointing from "./menu";
 import Transactions from "./transactions"
 import GeneralAccount from "./generalAccount";
+import Customers from "./customers";
 
 class Accounts extends Component {
   state = {
@@ -37,6 +38,7 @@ class Accounts extends Component {
         {
           this.state.menuItem === "vendors" ? <Vendors></Vendors> :
             this.state.menuItem === "transactions" ? <Transactions></Transactions>:
+            this.state.menuItem === "customers" ? <Customers></Customers>:
             this.state.menuItem === "general" ? <GeneralAccount></GeneralAccount> : null
         }
       </React.Fragment>

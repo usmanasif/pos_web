@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Header, Image, Grid, Segment, Label } from "semantic-ui-react";
-import http from "../../services/httpService.js";
-import { apiUrl } from "../../utils/api-config";
+import http from "../../../services/httpService.js";
+import { apiUrl } from "../../../utils/api-config";
 
 const dateOptions = {
   year: "numeric",
@@ -62,7 +62,7 @@ class VendorsInfo extends Component {
             Devsinc
 					</Header>
           <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
+            <Image className="logo" src={require("../../../images/logo.png")} />
             <span className="header-text">Vendor</span>
           </Header>
         </Container>

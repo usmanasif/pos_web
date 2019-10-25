@@ -9,8 +9,8 @@ import {
 } from 'semantic-ui-react';
 import { withRouter } from "react-router";
 import DatePicker from "react-datepicker";
-import http from "../../services/httpService.js";
-import { apiUrl } from "../../utils/api-config";
+import http from "../../../services/httpService.js";
+import { apiUrl } from "../../../utils/api-config";
 import "react-datepicker/dist/react-datepicker.css";
 
 const options = [
@@ -201,7 +201,7 @@ class NewTransaction extends Component {
             Devsinc
         </Header>
           <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
+            <Image className="logo" src={require("../../../images/logo.png")} />
             <span className="header-text">New Transaction</span>
           </Header>
         </Container>

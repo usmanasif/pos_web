@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Grid, Button, Icon, Message } from "semantic-ui-react";
 import Filters from "./filter";
 import { withRouter } from "react-router";
-import http from "../../services/httpService.js";
-import { apiUrl } from "../../utils/api-config";
-import Paginate from "../inventory/pagination"
+import http from "../../../services/httpService.js";
+import { apiUrl } from "../../../utils/api-config";
+import Paginate from "../../inventory/pagination"
 
 const dateOptions = {
   year: "numeric",

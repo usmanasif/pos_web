@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { Container, Header, Image, Grid, Segment, Label } from "semantic-ui-react";
-import http from "../../services/httpService.js";
-import { apiUrl } from "../../utils/api-config";
+import { Label } from "semantic-ui-react";
+import http from "../../../services/httpService.js";
+import { apiUrl } from "../../../utils/api-config";
 
 const dateOptions = {
   year: "numeric",
   month: "long",
   day: "numeric"
 };
-class CustomersInfo extends Component {
+class GeneralAccount extends Component {
   state = {
     transactions: [],
     initialBalance: 0,
@@ -17,9 +17,9 @@ class CustomersInfo extends Component {
   }
   calculateAmount = () => {
     const { transactions } = this.state
+    console.log(this.state);
     Array.prototype.forEach.call(transactions, element => {
-      if(element.amount>0)
-      {
+      if (element.amount > 0) {
         this.setState(prevstate => ({
           totalAmount: prevstate.totalAmount + element.amount
         }));
@@ -27,17 +27,12 @@ class CustomersInfo extends Component {
       this.setState(prevstate => ({
         remainingAmount: prevstate.remainingAmount + element.amount
       }));
-
     });
   }
 
-  getCustomerTransactions = () => {
-    const { pathname } = window && window.location;
-    var arr = pathname.split("/");
-    const customerID = parseInt(arr[arr.length - 1]);
-    // debugger
+  getVendorTransactions = () => {
     http
-      .get(`${apiUrl}/api/v1/transactions`, { params: { customerID } })
+      .get(`${apiUrl}/api/v1/transactions`, { params: { account_type: "General" } })
       .then(res => {
         this.setState({
           transactions: res.data.results[1]
@@ -50,30 +45,20 @@ class CustomersInfo extends Component {
 
 
   componentDidMount() {
-    this.getCustomerTransactions();
+    this.getVendorTransactions();
   }
 
   render() {
     const { transactions, initialBalance, totalAmount, remainingAmount } = this.state;
     return (
       <React.Fragment>
-        <Container className="page-header">
-          <Header as="h2" className="second-header" floated="right">
-            Devsinc
-					</Header>
-          <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
-            <span className="header-text">Customer</span>
-          </Header>
-        </Container>
-        <div className="ui divider" />
-        <div style={{textAlign:"center"}}>
+        <div style={{ textAlign: "center" }}>
           <Label as='a' color='blue' size="large">
             Initial Balance:
             <Label.Detail>{initialBalance}</Label.Detail>
           </Label>
           <Label as='a' color='teal' size="large">
-            Total Amount:
+            Payable Amount:
             <Label.Detail>{totalAmount}</Label.Detail>
           </Label>
           <Label as='a' color='green' size="large">
@@ -117,4 +102,4 @@ class CustomersInfo extends Component {
   }
 }
 
-export default CustomersInfo;
+export default GeneralAccount;

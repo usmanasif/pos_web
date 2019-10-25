@@ -9,13 +9,14 @@ import {
 } from 'semantic-ui-react';
 import { withRouter } from "react-router";
 
-import http from "../../services/httpService.js";
-import { apiUrl } from "../../utils/api-config";
+import http from "../../../services/httpService.js";
+import { apiUrl } from "../../../utils/api-config";
 
-class NewCustomer extends Component {
+class NewVendor extends Component {
   state = {
     code: "",
     name: "",
+    store_name: "",
     phone_number: "",
     address: "",
     details: ""
@@ -25,13 +26,14 @@ class NewCustomer extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  createCustomer = () => {
-    const { code, name, phone_number, address } = this.state
+  createVendor = () => {
+    const { code, name, store_name, phone_number, address } = this.state
     http
-      .post(`${apiUrl}/api/v1/customers`, {
+      .post(`${apiUrl}/api/v1/vendors`, {
         code,
         name,
         address,
+        store_name,
         phone_number
       })
       .then(res => {
@@ -43,7 +45,7 @@ class NewCustomer extends Component {
   }
 
   render() {
-    const { code, name, phone_number, address, details } = this.state
+    const { code, name, store_name, phone_number, address, details } = this.state
     return (
       <React.Fragment>
         <Container className="page-header">
@@ -51,34 +53,41 @@ class NewCustomer extends Component {
             Devsinc
         </Header>
           <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
-            <span className="header-text">Create Customer</span>
+            <Image className="logo" src={require("../../../images/logo.png")} />
+            <span className="header-text">Create Vendor</span>
           </Header>
         </Container>
         <div className="ui divider"></div>
         <Form className="vendor-form">
           <Form.Group widths='equal'>
             <Form.Input
-              label='Customer code'
-              placeholder='Customer code'
+              label='Vendor code'
+              placeholder='Vendor code'
               name="code"
               value={code}
               onChange={this.handleChange}
             />
             <Form.Input
-              label='Customer name'
-              placeholder='Customer name'
+              label='Vendor name'
+              placeholder='Vendor name'
               name="name"
               value={name}
               onChange={this.handleChange}
             />
-          </Form.Group>
-          <Form.Group widths='equal'>
             <Form.Input
               label='Address'
               placeholder='Address'
               name="address"
               value={address}
+              onChange={this.handleChange}
+            />
+          </Form.Group>
+          <Form.Group widths='equal'>
+            <Form.Input
+              label='Store name'
+              placeholder='Store name'
+              name="store_name"
+              value={store_name}
               onChange={this.handleChange}
             />
             <Form.Input
@@ -97,11 +106,11 @@ class NewCustomer extends Component {
             value={details}
             onChange={this.handleChange}
           />
-          <Button onClick={this.createCustomer} primary>Create</Button>
+          <Button onClick={this.createVendor} primary>Create</Button>
         </Form>
       </React.Fragment>
     )
   }
 }
 
-export default withRouter(NewCustomer);
+export default withRouter(NewVendor);

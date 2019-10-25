@@ -2,9 +2,11 @@ import React, { Component } from "react";
 
 import { Container, Header, Image } from "semantic-ui-react";
 import { withRouter } from "react-router";
-import Vendors from "./vendors";
-import MenuPointing from "./menu";
-import Transactions from "./transactions"
+import Vendors from "./vendor/vendors";
+import MenuPointing from "./menu/menu";
+import Transactions from "./transaction/transactions"
+import GeneralAccount from "./accountTypes/generalAccount";
+import Customers from "./customer/customers";
 
 class Accounts extends Component {
   state = {
@@ -35,7 +37,9 @@ class Accounts extends Component {
         <MenuPointing menuItem={this.selectMenu}></MenuPointing>
         {
           this.state.menuItem === "vendors" ? <Vendors></Vendors> :
-            this.state.menuItem === "transactions" ? <Transactions></Transactions> : null
+            this.state.menuItem === "transactions" ? <Transactions></Transactions>:
+            this.state.menuItem === "customers" ? <Customers></Customers>:
+            this.state.menuItem === "general" ? <GeneralAccount></GeneralAccount> : null
         }
       </React.Fragment>
     )

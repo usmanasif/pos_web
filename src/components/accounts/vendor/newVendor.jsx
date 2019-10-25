@@ -9,8 +9,8 @@ import {
 } from 'semantic-ui-react';
 import { withRouter } from "react-router";
 
-import http from "../../services/httpService.js";
-import { apiUrl } from "../../utils/api-config";
+import http from "../../../services/httpService.js";
+import { apiUrl } from "../../../utils/api-config";
 
 class NewVendor extends Component {
   state = {
@@ -53,7 +53,7 @@ class NewVendor extends Component {
             Devsinc
         </Header>
           <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
+            <Image className="logo" src={require("../../../images/logo.png")} />
             <span className="header-text">Create Vendor</span>
           </Header>
         </Container>

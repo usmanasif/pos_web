@@ -28,9 +28,11 @@ import StockReport from "../report/stockReport";
 import NoRouteFound from "../app/404PageNotFound";
 import Tooltip from 'react-tooltip-lite';
 import Accounts from "../accounts/accounts";
-import NewVendor from "../accounts/newVendor"
-import NewTransaction from "../accounts/newTransaction";
-import VendorsInfo from "../accounts/vendorsInfo";
+import NewVendor from "../accounts/vendor/newVendor"
+import NewTransaction from "../accounts/transaction/newTransaction";
+import VendorsInfo from "../accounts/vendor/vendorsInfo";
+import CustomersInfo from "../accounts/customer/customerInfo";
+import NewCustomer from "../accounts/customer/newcustomer";
 
 
 const NavHeader = styled.div`
@@ -191,6 +193,14 @@ class Navigation extends Component {
                     <Route
                       path="/accounts/transaction/new"
                       component={isSignedIn ? () => <NewTransaction /> : Auth}
+                    />
+                    <Route
+                      path="/accounts/customer/new"
+                      component={isSignedIn ? () => <NewCustomer /> : Auth}
+                    />
+                    <Route
+                      path="/accounts/customer/:id"
+                      component={isSignedIn ? () => <CustomersInfo /> : Auth}
                     />
                     <Route
                       path="/accounts/vendor/:id"

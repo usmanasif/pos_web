@@ -239,7 +239,7 @@ export default class AddItem extends Component {
               Add item
             </Button>
           )}
-          <Modal dimmer = "blurring" open={open} onClose={itemData?this.cancel: this.close}>
+          <Modal className="cat-modal" dimmer = "blurring" open={open} onClose={itemData?this.cancel: this.close}>
             <Modal.Header>{itemData ? "Edit Item" : "Add Item"}</Modal.Header>
             <Form className="itemForm">
               <Form.Group widths="2">

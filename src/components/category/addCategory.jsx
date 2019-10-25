@@ -140,7 +140,7 @@ export default class AddCategory extends Component {
         <Button id="addcategory" onClick={this.show("blurring")} primary>
           Add category
         </Button>
-        <Modal dimmer={dimmer} open={open} onClose={this.close}>
+        <Modal className="cat-modal" dimmer={dimmer} open={open} onClose={this.close}>
           <Modal.Header>Add Category</Modal.Header>
           <Form className="categoryForm">
             <Form.Field>

@@ -17,7 +17,6 @@ class CustomersInfo extends Component {
   }
   calculateAmount = () => {
     const { transactions } = this.state
-    console.log(this.state);
     Array.prototype.forEach.call(transactions, element => {
       if(element.amount>0)
       {
@@ -32,12 +31,13 @@ class CustomersInfo extends Component {
     });
   }
 
-  getVendorTransactions = () => {
+  getCustomerTransactions = () => {
     const { pathname } = window && window.location;
     var arr = pathname.split("/");
-    const vendorID = parseInt(arr[arr.length - 1]);
+    const customerID = parseInt(arr[arr.length - 1]);
+    // debugger
     http
-      .get(`${apiUrl}/api/v1/transactions`, { params: { vendorID } })
+      .get(`${apiUrl}/api/v1/transactions`, { params: { customerID } })
       .then(res => {
         this.setState({
           transactions: res.data.results[1]
@@ -50,7 +50,7 @@ class CustomersInfo extends Component {
 
 
   componentDidMount() {
-    this.getVendorTransactions();
+    this.getCustomerTransactions();
   }
 
   render() {

@@ -31,7 +31,7 @@ import Accounts from "../accounts/accounts";
 import NewVendor from "../accounts/newVendor"
 import NewTransaction from "../accounts/newTransaction";
 import VendorsInfo from "../accounts/vendorsInfo";
-import CustomersInfo from "../accounts/vendorsInfo";
+import CustomersInfo from "../accounts/customerInfo";
 import NewCustomer from "../accounts/newcustomer";
 
 

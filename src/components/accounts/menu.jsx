@@ -33,12 +33,12 @@ class MenuPointing extends Component {
             name='payable'
             active={activeItem === 'payable'}
             onClick={this.handleItemClick}
-          />
+          />*/}
           <Menu.Item
             name='general'
             active={activeItem === 'general'}
             onClick={this.handleItemClick}
-          /> */}
+          /> 
         </Menu>
       </React.Fragment>
     )

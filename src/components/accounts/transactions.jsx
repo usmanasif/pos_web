@@ -15,7 +15,7 @@ const dateOptions = {
 const initialPagination = {
   activePage: 1,
   totalPages: 0,
-  per_page: 10
+  per_page: 15
 };
 
 class Transections extends Component {
@@ -24,6 +24,7 @@ class Transections extends Component {
     this.state = {
       ...initialPagination,
       Transactions: [],
+      allTransactions:[],
       Vendors: [],
       totalAmount: 0,
     }
@@ -39,9 +40,8 @@ class Transections extends Component {
   };
 
   calculateTransactionTotal = () =>{
-    const {totalAmount, Transactions} = this.state;
-    debugger; 
-    Array.prototype.forEach.call(Transactions, element => {
+    const {totalAmount, allTransactions} = this.state;
+    Array.prototype.forEach.call(allTransactions, element => {
       this.setState(prevstate=>({
         totalAmount:prevstate.totalAmount + element.amount
       }));
@@ -50,7 +50,6 @@ class Transections extends Component {
   
 
   handlePagination = (page, per_page) => {
-    // debugger;
     this.setState({ activePage: page, per_page: per_page });
     http
       .get(`${apiUrl}/api/v1/transactions`, { params: { page, per_page } })
@@ -58,7 +57,7 @@ class Transections extends Component {
         this.setState({
           Transactions: res.data.results[1],
           totalPages: res.data.results[0].total
-        }, ()=>this.calculateTransactionTotal());
+        });
       })
       .catch(error => console.log(error))
   };
@@ -86,7 +85,19 @@ class Transections extends Component {
       .catch(error => console.log(error))
   }
 
+  getAllTransactions = () =>{
+    http
+      .get(`${apiUrl}/api/v1/transactions`)
+      .then(res => {
+        this.setState({
+          allTransactions: res.data.results[1]
+        }, ()=>this.calculateTransactionTotal());
+      })
+      .catch(error => console.log(error))
+  }
+
   componentDidMount() {
+    this.getAllTransactions();
     this.pageHandler();
     this.getVendors();
   }
@@ -108,7 +119,8 @@ class Transections extends Component {
                     <th scope="col">Transaction Date</th>
                     <th scope="col">User Name</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Comments</th>
+                    <th scope="col">Account</th>
+                    <th scope="col">Details</th>
 
                   </tr>
                 </thead>
@@ -117,19 +129,20 @@ class Transections extends Component {
                     return (
                       <tr key={item.id}>
                         <th scope="row">{item.transaction_code}</th>
-                        <td>{item.vendor.store_name}</td>
+                        <td>{item.vendor_id?item.vendor.store_name:null}</td>
                         <td>{new Intl.DateTimeFormat("en-PK", dateOptions).format(
                           new Date(item.transaction_date)
                         )}
                         </td>
-                        <td>{item.vendor.name}</td>
+                        <td>{item.vendor_id?item.vendor.name:null}</td>
                         <td>{item.amount}</td>
+                        <td>{item.transaction_category}</td>
                         <td>{item.details}</td>
                       </tr>)
                   })}
                 </tbody>
               </table>
-              <Message color='green' style={{padding:"10px"}}><strong>Total</strong> <span style={{marginLeft:"52%"}}><strong>{totalAmount}</strong></span></Message>  
+              <Message color='green' style={{padding:"10px"}}><strong>Total : </strong> <span style={{marginLeft:"1%"}}><strong>{totalAmount}</strong></span></Message>  
               <Paginate
               handlePagination={this.handlePagination}
               pageSet={{ activePage, totalPages, per_page }}></Paginate>

@@ -61,7 +61,7 @@ class Filters extends Component {
         this.handleStoreInfo(element);
       });
   }
-
+  
   render() {
     const {
       startDate,

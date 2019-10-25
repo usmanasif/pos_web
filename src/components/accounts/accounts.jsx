@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 import Vendors from "./vendors";
 import MenuPointing from "./menu";
 import Transactions from "./transactions"
+import GeneralAccount from "./generalAccount";
 
 class Accounts extends Component {
   state = {
@@ -35,7 +36,8 @@ class Accounts extends Component {
         <MenuPointing menuItem={this.selectMenu}></MenuPointing>
         {
           this.state.menuItem === "vendors" ? <Vendors></Vendors> :
-            this.state.menuItem === "transactions" ? <Transactions></Transactions> : null
+            this.state.menuItem === "transactions" ? <Transactions></Transactions>:
+            this.state.menuItem === "general" ? <GeneralAccount></GeneralAccount> : null
         }
       </React.Fragment>
     )

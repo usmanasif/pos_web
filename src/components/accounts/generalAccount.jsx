@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Header, Image, Grid, Segment, Label } from "semantic-ui-react";
+import { Label } from "semantic-ui-react";
 import http from "../../services/httpService.js";
 import { apiUrl } from "../../utils/api-config";
 
@@ -8,7 +8,7 @@ const dateOptions = {
   month: "long",
   day: "numeric"
 };
-class VendorsInfo extends Component {
+class GeneralAccount extends Component {
   state = {
     transactions: [],
     initialBalance: 0,
@@ -19,8 +19,7 @@ class VendorsInfo extends Component {
     const { transactions } = this.state
     console.log(this.state);
     Array.prototype.forEach.call(transactions, element => {
-      if(element.amount>0)
-      {
+      if (element.amount > 0) {
         this.setState(prevstate => ({
           totalAmount: prevstate.totalAmount + element.amount
         }));
@@ -28,16 +27,12 @@ class VendorsInfo extends Component {
       this.setState(prevstate => ({
         remainingAmount: prevstate.remainingAmount + element.amount
       }));
-
     });
   }
 
   getVendorTransactions = () => {
-    const { pathname } = window && window.location;
-    var arr = pathname.split("/");
-    const vendorID = parseInt(arr[arr.length - 1]);
     http
-      .get(`${apiUrl}/api/v1/transactions`, { params: { vendorID } })
+      .get(`${apiUrl}/api/v1/transactions`, { params: { account_type: "General" } })
       .then(res => {
         this.setState({
           transactions: res.data.results[1]
@@ -57,23 +52,13 @@ class VendorsInfo extends Component {
     const { transactions, initialBalance, totalAmount, remainingAmount } = this.state;
     return (
       <React.Fragment>
-        <Container className="page-header">
-          <Header as="h2" className="second-header" floated="right">
-            Devsinc
-					</Header>
-          <Header as="h2" floated="left">
-            <Image className="logo" src={require("../../images/logo.png")} />
-            <span className="header-text">Vendor</span>
-          </Header>
-        </Container>
-        <div className="ui divider" />
-        <div style={{textAlign:"center"}}>
+        <div style={{ textAlign: "center" }}>
           <Label as='a' color='blue' size="large">
             Initial Balance:
             <Label.Detail>{initialBalance}</Label.Detail>
           </Label>
           <Label as='a' color='teal' size="large">
-            Total Amount:
+            Payable Amount:
             <Label.Detail>{totalAmount}</Label.Detail>
           </Label>
           <Label as='a' color='green' size="large">
@@ -117,4 +102,4 @@ class VendorsInfo extends Component {
   }
 }
 
-export default VendorsInfo;
+export default GeneralAccount;

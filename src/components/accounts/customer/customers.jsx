@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
-import VendorFilter from "../vendor/vendorFilter";
+import CustomerFilter from "../customer/customerFilter";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 
@@ -44,7 +44,7 @@ class Customers extends Component {
       .catch(error => console.log(error));
   };
 
-  filterVendors = (customer) => {
+  filterCustomers = (customer) => {
     http
       .get(`${apiUrl}/api/v1/customers`, { params: customer })
       .then(res => {
@@ -65,7 +65,7 @@ class Customers extends Component {
 
     return (
       <div>
-        {/* <VendorFilter users={this.state.allVendors} filterVendors={this.filterVendors}></VendorFilter> */}
+        <CustomerFilter users={this.state.allCustomers} filterCustomers={this.filterCustomers}></CustomerFilter>
         <Grid style={{ marginTop: "0px" }}>
           <Grid.Column width={16}>
             <Button style={{ background: "#58ae61", color: "white" }} floated="right" onClick={this.redirect} ><Icon name="plus"></Icon>New</Button>

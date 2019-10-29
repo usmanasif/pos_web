@@ -29,21 +29,6 @@ class MenuPointing extends Component {
             active={activeItem === 'transactions'}
             onClick={this.handleItemClick}
           />
-          {/* <Menu.Item
-            name='receivable'
-            active={activeItem === 'receivable'}
-            onClick={this.handleItemClick}
-          />
-          <Menu.Item
-            name='payable'
-            active={activeItem === 'payable'}
-            onClick={this.handleItemClick}
-          />*/}
-          <Menu.Item
-            name='general'
-            active={activeItem === 'general'}
-            onClick={this.handleItemClick}
-          /> 
         </Menu>
       </React.Fragment>
     )

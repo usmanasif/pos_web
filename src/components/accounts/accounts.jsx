@@ -5,7 +5,6 @@ import { withRouter } from "react-router";
 import Vendors from "./vendor/vendors";
 import MenuPointing from "./menu/menu";
 import Transactions from "./transaction/transactions"
-import GeneralAccount from "./accountTypes/generalAccount";
 import Customers from "./customer/customers";
 
 class Accounts extends Component {
@@ -20,7 +19,7 @@ class Accounts extends Component {
       }
     );
   }
-
+  
   render() {
     return (
       <React.Fragment>
@@ -38,8 +37,7 @@ class Accounts extends Component {
         {
           this.state.menuItem === "vendors" ? <Vendors></Vendors> :
             this.state.menuItem === "transactions" ? <Transactions></Transactions>:
-            this.state.menuItem === "customers" ? <Customers></Customers>:
-            this.state.menuItem === "general" ? <GeneralAccount></GeneralAccount> : null
+            this.state.menuItem === "customers" ? <Customers></Customers>:null
         }
       </React.Fragment>
     )

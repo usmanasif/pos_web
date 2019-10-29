@@ -29,7 +29,7 @@ const options = [
     text: "Credit Card",
     value: "Credit Card"
   },
-       
+
   {
     key: "rep",
     text: "Repairing",
@@ -70,7 +70,26 @@ const options = [
     text: "Other Expense",
     value: "Other Expense"
   }
-]
+];
+
+
+const transactionType = [
+  {
+    key: "general",
+    text: "general",
+    value: "general"
+  },
+  {
+    key: "receivable",
+    text: "receivable",
+    value: "receivable"
+  },
+  {
+    key: "payable",
+    text: "payable",
+    value: "payable"
+  }
+];
 
 class NewTransaction extends Component {
   state = {
@@ -80,9 +99,14 @@ class NewTransaction extends Component {
     amount: "",
     details: "",
     account: "",
+    transaction_type: "",
     account_type: "",
     storesList: [],
     data: [],
+    customers: [],
+    allCustomers:[],
+    customer: "",
+    customerID:null,
     startDate: Date()
   }
 
@@ -90,9 +114,49 @@ class NewTransaction extends Component {
     this.setState({ startDate: e });
   };
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+  handleChange = e => this.setState({ [e.target.name]: e.target.value });
+
+  handleTransactionTypeChange = (e, { name, value }) => {
+    this.setState({ [name]: value }, () => {
+      if (value === "payable") {
+        this.setState({
+          customerID:null,
+          customer:"",
+          account:"",
+        });
+        this.getVendors();
+      }
+      else if (value === "receivable") {
+        this.setState({
+          vendorID:null,
+          name:"",
+          value:"",
+          account:""
+        });
+        this.getCustomers();
+      }
+      else{
+        this.setState({
+          customerID:null,
+          vendorID:null,
+          name:"",
+          customer:"",
+          value:""
+        });
+      }
+    });
+  }
+
+  selectCustomer = (e, { name, value }) => {
+    this.setState({ [name]: value });
+    const { allCustomers } = this.state;
+    const customer = allCustomers.find(el => el.name === value);
+    this.setState({
+      customerID: customer.id
+    });
+  }
+
+
 
   handleDropdownChange = (e, { value }) => {
     this.setState({ value });
@@ -110,17 +174,17 @@ class NewTransaction extends Component {
       if (account === "Misc Income") {
         this.setState({
           account_type: "Receiveable"
-        },()=>this.setAmount());
+        }, () => this.setAmount());
       }
       else if (account === "Bank Account" || account === "Credit Card") {
         this.setState({
           account_type: "General"
-        },()=>this.setAmount());
+        }, () => this.setAmount());
       }
       else {
         this.setState({
           account_type: "Payable"
-        },()=>this.setAmount());
+        }, () => this.setAmount());
       }
     })
   };
@@ -157,8 +221,17 @@ class NewTransaction extends Component {
     });
   }
 
+  handleCustomerInfo = (element) => {
+    this.state.customers.push({
+      key: element.id,
+      value: element.name,
+      text: element.name
+    });
+  }
+
   makeNewTransaction = () => {
-    const { amount, details, code, startDate, vendorID, account_type, account } = this.state;
+    debugger;
+    const { amount, details, code, startDate, vendorID, account, customerID,transaction_type } = this.state;
     http
       .post(`${apiUrl}/api/v1/transactions`, {
         transaction_code: code,
@@ -166,13 +239,27 @@ class NewTransaction extends Component {
         amount: parseInt(amount),
         details: details,
         vendor_id: vendorID,
-        account_type: account_type,
-        transaction_category:account
+        customer_id:customerID,
+        account_type: transaction_type,
+        transaction_category: account?account:transaction_type
       })
       .then(res => {
         this.props.history.push("/accounts")
       })
       .catch(error => console.log(error))
+  }
+
+  getCustomers = () => {
+    http
+      .get(`${apiUrl}/api/v1/customers`)
+      .then(res => {
+        const customerList = res.data.results[1];
+        this.setState({ allCustomers: customerList });
+        Array.prototype.forEach.call(customerList, element => {
+          this.handleCustomerInfo(element);
+        });
+      })
+      .catch(error => console.log(error));
   }
 
   getVendors = () => {
@@ -188,12 +275,8 @@ class NewTransaction extends Component {
       .catch(error => console.log(error));
   }
 
-  componentDidMount() {
-    this.getVendors();
-  }
-
   render() {
-    const { code, name, details, storesList, startDate, amount, account_type } = this.state;
+    const { code, name, details, storesList, startDate, amount, account_type, transaction_type, customers } = this.state;
     return (
       <React.Fragment>
         <Container className="page-header">
@@ -215,6 +298,16 @@ class NewTransaction extends Component {
               value={code}
               onChange={this.handleChange}
             />
+            <Form.Dropdown
+              onChange={this.handleTransactionTypeChange}
+              options={transactionType}
+              placeholder='Choose an option'
+              label='Transaction Type'
+              name="transaction_type"
+              selection
+            />
+          </Form.Group>
+          <Form.Group widths='equal'>
             <Form.Input
               label='Amount'
               placeholder='Amount'
@@ -224,46 +317,54 @@ class NewTransaction extends Component {
               onChange={this.handleChange}
             />
           </Form.Group>
-          <Message info style={{ padding: "10px" }}>
-            <strong>{`Select vendor, only if transaction happened with any vendor, Otherwise leave it blank`}</strong>
-          </Message>
-          <Form.Group widths='equal'>
-            <Form.Dropdown
-              onChange={this.handleDropdownChange}
-              options={storesList}
-              placeholder='Choose an option'
-              label='Choose Store'
-              selection
-              value={this.state.value}
-            />
-            <Form.Input
-              label='Vendor name'
-              placeholder='Vendor name'
-              name="name"
-              value={name}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Dropdown
-              onChange={this.handleAccountChange}
-              options={options}
-              placeholder='Choose an option'
-              label='Select account'
-              name="account"
-              selection
-              value={this.state.account}
-            />
-            {account_type === "General" ?
-              <Message positive >
-                <strong>{`This is "General" account type where you can Add Cash (+) OR Remove Cash (-) only`}</strong>
-              </Message> : account_type === "Payable" ? <Message negative>
-                <strong>{`This is "Expense" account type where you can Remove Cash (-) only`}</strong>
-              </Message> : account_type === "Receiveable" ? <Message positive>
-                <strong>{`This is "Income" account type where you can Add Cash (+) only`}</strong>
-              </Message> : null
-            }
-
-          </Form.Group>
+          {transaction_type === "general" ?
+            <Form.Group>
+              <Form.Dropdown
+                onChange={this.handleAccountChange}
+                options={options}
+                placeholder='Choose an option'
+                label='Select account'
+                name="account"
+                selection
+                value={this.state.account}
+              />
+              {account_type === "General" ?
+                <Message positive >
+                  <strong>{`This is "General" account type where you can Add Cash (+) OR Remove Cash (-) only`}</strong>
+                </Message> : account_type === "Payable" ? <Message negative>
+                  <strong>{`This is "Expense" account type where you can Remove Cash (-) only`}</strong>
+                </Message> : account_type === "Receiveable" ? <Message positive>
+                  <strong>{`This is "Income" account type where you can Add Cash (+) only`}</strong>
+                </Message> : null
+              }
+            </Form.Group> : transaction_type === "payable" ?
+              <Form.Group widths='equal'>
+                <Form.Dropdown
+                  onChange={this.handleDropdownChange}
+                  options={storesList}
+                  placeholder='Choose an option'
+                  label='Choose Store'
+                  selection
+                  value={this.state.value}
+                />
+                <Form.Input
+                  label='Vendor name'
+                  placeholder='Vendor name'
+                  name="name"
+                  value={name}
+                />
+              </Form.Group> : transaction_type === "receivable" ?
+                <Form.Group widths='equal'>
+                  <Form.Dropdown
+                    onChange={this.selectCustomer}
+                    options={customers}
+                    placeholder='Choose an option'
+                    label='Customer Name'
+                    name="customer"
+                    selection
+                  />
+                </Form.Group> : null
+          }
 
           <strong>Transaction Date</strong> <br />
           <DatePicker

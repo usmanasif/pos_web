@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {
   Button,
   Form,
-  Input,
   Container,
   Header,
   Image
@@ -12,37 +11,54 @@ import { withRouter } from "react-router";
 import http from "../../../services/httpService.js";
 import { apiUrl } from "../../../utils/api-config";
 
-class NewCustomer extends Component {
+class AddProduct extends Component {
   state = {
     code: "",
     name: "",
-    phone_number: "",
-    address: "",
-    details: ""
+    price: "",
+    quantity: "",
+    details: "",
+    id: null
   }
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  createCustomer = () => {
-    const { code, name, phone_number, address } = this.state
-    http
-      .post(`${apiUrl}/api/v1/customers`, {
-        code,
-        name,
-        address,
-        phone_number
-      })
-      .then(res => {
-      })
-      .catch(error => console.log(error));
-
+  addProduct = () => {
+    const { code, name, price, quantity, details } = this.state;
+    console.log(this.state, this.props);
+    const { vendor_id, customer_id } = this.props.location.state;
+    if (customer_id) {
+      http
+        .post(`${apiUrl}/api/v1/products`, {
+          code,
+          name,
+          price,
+          quantity,
+          details,
+          customer_id
+        })
+        .then(res => {
+        })
+        .catch(error => console.log(error));
+    }
+    else if (vendor_id) {
+      http
+        .post(`${apiUrl}/api/v1/products`, {
+          code,
+          name,
+          price,
+          quantity,
+          details,
+          vendor_id
+        })
+        .then(res => {
+        })
+        .catch(error => console.log(error));
+    }
     this.props.history.push("/accounts");
   }
 
   render() {
-    const { code, name, phone_number, address, details } = this.state
     return (
       <React.Fragment>
         <Container className="page-header">
@@ -51,41 +67,37 @@ class NewCustomer extends Component {
         </Header>
           <Header as="h2" floated="left">
             <Image className="logo" src={require("../../../images/logo.png")} />
-            <span className="header-text">Create Customer</span>
+            <span className="header-text">Add Product</span>
           </Header>
         </Container>
         <div className="ui divider"></div>
         <Form className="vendor-form">
           <Form.Group widths='equal'>
             <Form.Input
-              label='Customer code'
-              placeholder='Customer code'
+              label='Code'
+              placeholder='Product code'
               name="code"
-              value={code}
               onChange={this.handleChange}
             />
             <Form.Input
-              label='Customer name'
-              placeholder='Customer name'
+              label='Name'
+              placeholder='Product name'
               name="name"
-              value={name}
               onChange={this.handleChange}
             />
+
           </Form.Group>
           <Form.Group widths='equal'>
             <Form.Input
-              label='Address'
-              placeholder='Address'
-              name="address"
-              value={address}
+              label='Quantity'
+              placeholder='Product quantity'
+              name="quantity"
               onChange={this.handleChange}
             />
             <Form.Input
-              control={Input}
-              label='Mobile number'
-              placeholder='Mobile number'
-              name="phone_number"
-              value={phone_number}
+              label='Unit Price'
+              placeholder='Product Unit Price'
+              name="price"
               onChange={this.handleChange}
             />
           </Form.Group>
@@ -93,14 +105,13 @@ class NewCustomer extends Component {
             label='Details'
             placeholder='Tell us more about you...'
             name="details"
-            value={details}
             onChange={this.handleChange}
           />
-          <Button onClick={this.createCustomer} primary>Create</Button>
+          <Button onClick={this.addProduct} primary>Add</Button>
         </Form>
       </React.Fragment>
     )
   }
 }
 
-export default withRouter(NewCustomer);
+export default withRouter(AddProduct);

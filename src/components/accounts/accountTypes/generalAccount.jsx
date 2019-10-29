@@ -17,7 +17,6 @@ class GeneralAccount extends Component {
   }
   calculateAmount = () => {
     const { transactions } = this.state
-    console.log(this.state);
     Array.prototype.forEach.call(transactions, element => {
       if (element.amount > 0) {
         this.setState(prevstate => ({

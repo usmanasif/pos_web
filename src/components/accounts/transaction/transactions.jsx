@@ -40,7 +40,7 @@ class Transections extends Component {
   };
 
   calculateTransactionTotal = () =>{
-    const {totalAmount, allTransactions} = this.state;
+    const {allTransactions} = this.state;
     Array.prototype.forEach.call(allTransactions, element => {
       this.setState(prevstate=>({
         totalAmount:prevstate.totalAmount + element.amount
@@ -134,7 +134,7 @@ class Transections extends Component {
                           new Date(item.transaction_date)
                         )}
                         </td>
-                        <td>{item.vendor_id?item.vendor.name:null}</td>
+                        <td>{item.vendor_id?item.vendor.name:item.customer_id?item.customer.name:null}</td>
                         <td>{item.amount}</td>
                         <td>{item.transaction_category}</td>
                         <td>{item.details}</td>

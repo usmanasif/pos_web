@@ -33,6 +33,7 @@ import NewTransaction from "../accounts/transaction/newTransaction";
 import VendorsInfo from "../accounts/vendor/vendorsInfo";
 import CustomersInfo from "../accounts/customer/customerInfo";
 import NewCustomer from "../accounts/customer/newcustomer";
+import AddProduct from "../accounts/product/addProduct"
 
 
 const NavHeader = styled.div`
@@ -193,6 +194,14 @@ class Navigation extends Component {
                     <Route
                       path="/accounts/transaction/new"
                       component={isSignedIn ? () => <NewTransaction /> : Auth}
+                    />
+                    <Route
+                      path="/accounts/vendor/product/new"
+                      component={isSignedIn ? () => <AddProduct /> : Auth}
+                    />
+                    <Route
+                      path="/accounts/customer/product/new"
+                      component={isSignedIn ? () => <AddProduct /> : Auth}
                     />
                     <Route
                       path="/accounts/customer/new"

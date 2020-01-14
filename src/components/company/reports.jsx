@@ -17,12 +17,11 @@ import {
   Image
 } from "semantic-ui-react";
 import { apiUrl } from "../../utils/api-config";
-import Loader from '../Loader/loader';
+import Loader from "../Loader/loader";
 import DatePicker from "react-datepicker";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import "react-datepicker/dist/react-datepicker.css";
-
 
 const dateOptions = {
   year: "numeric",
@@ -40,8 +39,8 @@ class Reports extends Component {
     super(props);
     this.state = {
       data: false,
-      isLoading:true,
-      printData:[],
+      isLoading: true,
+      printData: [],
       current_page: 1,
       total_pages: 1,
       seletedItems: "",
@@ -74,121 +73,149 @@ class Reports extends Component {
       .get(apiUrl + "/api/v1/invoices", { params: this.state.params })
       .then(response => {
         const data = response.data.invoices
-        ? { invoices: response.data.invoices }
-        : response.data.products
-        ? { products: response.data.products }
-        : { selected_products: response.data.selected_products };
+          ? { invoices: response.data.invoices }
+          : response.data.products
+          ? { products: response.data.products }
+          : { selected_products: response.data.selected_products };
         this.setState({
           data,
           total_count: response.data.total_count,
           total: response.data.total,
           total_pages: response.data.total_pages,
-          isLoading:false
+          isLoading: false
         });
       });
-    };
-    applyFilter = () => {
-      const params = { ...this.state.params };
-      if (this.state.filterBy === "today") {
-        params.today = true;
-        delete params.from_date;
-        delete params.to_date;
-      }
-      if (this.state.filterBy === "byDate") {
-        delete params.today;
-        params["from_date"] = this.state.startDate;
-        params["to_date"] = this.state.endDate;
-      }
-      this.state.by_selected_products === true
+  };
+  applyFilter = () => {
+    const params = { ...this.state.params };
+    if (this.state.filterBy === "today") {
+      params.today = true;
+      delete params.from_date;
+      delete params.to_date;
+    }
+    if (this.state.filterBy === "byDate") {
+      delete params.today;
+      params["from_date"] = this.state.startDate;
+      params["to_date"] = this.state.endDate;
+    }
+    this.state.by_selected_products === true
       ? (params["by_selected_products"] = this.state.seletedItems.toString())
       : delete params["by_selected_products"];
-      
-      this.state.by_product
+
+    this.state.by_product
       ? (params.by_product = true)
       : delete params.by_product;
-      params.page = 1;
-      params.per_page = this.state.by_product === true ? 8 : 5;
-      this.setState({ params, current_page: 1 }, () => this.fetchData());
-    };
+    params.page = 1;
+    params.per_page = this.state.by_product === true ? 8 : 5;
+    this.setState({ params, current_page: 1 }, () => this.fetchData());
+  };
 
-    fetchDataToPrint(){
-      const params = this.state.params
-      delete params.per_page;
-      delete params.page;
+  fetchDataToPrint() {
+    const params = this.state.params;
+    delete params.per_page;
+    delete params.page;
 
-      http
-      .get(apiUrl + "/api/v1/invoices", {params:params})
-      .then(response =>{
-        const printData = response.data.invoices
+    http.get(apiUrl + "/api/v1/invoices", { params: params }).then(response => {
+      const printData = response.data.invoices
         ? { invoices: response.data.invoices }
         : response.data.products
         ? { products: response.data.products }
         : { selected_products: response.data.selected_products };
-        this.setState({ printData }, ()=>this.exportSalesReport());
-        
+      this.setState({ printData }, () => this.exportSalesReport());
+    });
+  }
+
+  exportSalesReport = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+    let title = "";
+    let headers = "";
+    let salesContent = [];
+    const marginLeft = 40;
+    const doc = new jsPDF(orientation, unit, size);
+    doc.setFontSize(15);
+
+    if (this.state.printData.invoices) {
+      title = "Sales Report By Date";
+      headers = [["INVOICE ID", "INVOICE TOTAL", "DATE", "TIME"]];
+      this.state.printData.invoices.forEach(elt => {
+        const date = new Intl.DateTimeFormat("en-PK", dateOptions).format(
+          new Date(elt.created_at)
+        );
+        const time = new Intl.DateTimeFormat("en-PK", timeOptions).format(
+          new Date(elt.created_at)
+        );
+        salesContent.push([elt.id, elt.total, date, time]);
       });
     }
-    
-    exportSalesReport = () => {
-      const unit = "pt";
-      const size = "A4"; // Use A1, A2, A3 or A4
-      const orientation = "portrait"; // portrait or landscape
-      let title = "";
-      let headers = "";
-      let salesContent = [];
-      const marginLeft = 40;
-      const doc = new jsPDF(orientation, unit, size);      
-      doc.setFontSize(15);
 
-      if (this.state.printData.invoices) {
-        title = "Sales Report By Date";
-        headers = [["INVOICE ID","INVOICE TOTAL", "DATE", "TIME"]];
-        this.state.printData.invoices.forEach(elt=>{
-          const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
-          const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));
-          salesContent.push ([elt.id, elt.total, date, time])
-        });
-      }
-
-      if(this.state.printData.products){
-        title = "Sales Report By Product";
-        headers = [["PRODUCT ID","PRODUCT NAME", "SOLD QUANTITY", "TOTAL"]];   
-        this.state.printData.products.forEach(elt=>{
-          salesContent.push ([elt.id, elt.name, elt.quantity, elt.total_sold_price])
-        });
-      }
-      
-      if(this.state.printData.selected_products){
-        title = "Sales Report By Selected Product";
-        headers = [["INVOICE ID", "PRODUCT ID","NAME", "QUANTITY", "UNIT PRICE", "DATE", "TIME"]];
-        this.state.printData.selected_products.forEach(elt=>{
-          const date =  new Intl.DateTimeFormat("en-PK", dateOptions).format(new Date(elt.created_at));
-          const time  =  new Intl.DateTimeFormat("en-PK", timeOptions).format(new Date(elt.created_at));
-          salesContent.push ([elt.invoice_id, elt.item_id, elt.name, elt.quantity, elt.unit_price, date, time])
-        });
-      }
-      
-      let content = {
-        startY: 50,
-        head: headers,
-        body: salesContent
-      };
-  
-      doc.text(title, marginLeft, 40);
-      doc.autoTable(content);
-      doc.save("sales_report.pdf")
-    }
-    
-    handlePaginationChange = (e, { activePage }) => {
-      const params = { ...this.state.params };
-      params.page = activePage;
-      this.setState({ current_page: activePage, params }, () => {
-        this.fetchData();
+    if (this.state.printData.products) {
+      title = "Sales Report By Product";
+      headers = [["PRODUCT ID", "PRODUCT NAME", "SOLD QUANTITY", "TOTAL"]];
+      this.state.printData.products.forEach(elt => {
+        salesContent.push([
+          elt.id,
+          elt.name,
+          elt.quantity,
+          elt.total_sold_price
+        ]);
       });
+    }
+
+    if (this.state.printData.selected_products) {
+      title = "Sales Report By Selected Product";
+      headers = [
+        [
+          "INVOICE ID",
+          "PRODUCT ID",
+          "NAME",
+          "QUANTITY",
+          "UNIT PRICE",
+          "DATE",
+          "TIME"
+        ]
+      ];
+      this.state.printData.selected_products.forEach(elt => {
+        const date = new Intl.DateTimeFormat("en-PK", dateOptions).format(
+          new Date(elt.created_at)
+        );
+        const time = new Intl.DateTimeFormat("en-PK", timeOptions).format(
+          new Date(elt.created_at)
+        );
+        salesContent.push([
+          elt.invoice_id,
+          elt.item_id,
+          elt.name,
+          elt.quantity,
+          elt.unit_price,
+          date,
+          time
+        ]);
+      });
+    }
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: salesContent
     };
-    handleChangeStart = e => {
-      this.setState({ startDate: e });
-    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save("sales_report.pdf");
+  };
+
+  handlePaginationChange = (e, { activePage }) => {
+    const params = { ...this.state.params };
+    params.page = activePage;
+    this.setState({ current_page: activePage, params }, () => {
+      this.fetchData();
+    });
+  };
+  handleChangeStart = e => {
+    this.setState({ startDate: e });
+  };
   handleChangeEnd = e => {
     this.setState({ endDate: e });
   };
@@ -202,19 +229,19 @@ class Reports extends Component {
     const by_selected_products = this.state.by_selected_products;
     if (by_selected_products === false) {
       http
-      .get(`${apiUrl}/api/v1/items`)
-      .then(({ data }) => {
-        const items = [];
-        data[1].forEach(i =>
-          items.push({ key: i.id, value: i.id, text: i.name })
+        .get(`${apiUrl}/api/v1/items`)
+        .then(({ data }) => {
+          const items = [];
+          data[1].forEach(i =>
+            items.push({ key: i.id, value: i.id, text: i.name })
           );
           this.setState({ items });
         })
         .catch(error => console.log(error));
-      }
-      this.setState({
-        by_product: false,
-        by_selected_products: !by_selected_products
+    }
+    this.setState({
+      by_product: false,
+      by_selected_products: !by_selected_products
     });
   };
   handleBySelectedProductsFilter = (e, { value }) => {
@@ -234,19 +261,19 @@ class Reports extends Component {
       endDate,
       isLoading
     } = this.state;
-    
+
     return (
       <div>
         <Container className="page-header">
-          <Header as='h2' className="second-header" floated='right'>
-              Devsinc
+          <Header as="h2" className="second-header" floated="right">
+            Devsinc
           </Header>
-          <Header as='h2' floated='left'>
-              <Image className="logo" src={require('../../images/logo.png')} />
-              <span className="header-text">Sale Report</span>
+          <Header as="h2" floated="left">
+            <Image className="logo" src={require("../../images/logo.png")} />
+            <span className="header-text">Sale Report</span>
           </Header>
         </Container>
-        <div className="ui divider"></div> 
+        <div className="ui divider"></div>
         <Container>
           <Form>
             <Form.Group className="filter_form_fields">
@@ -343,147 +370,153 @@ class Reports extends Component {
         {data && (
           <div>
             <Table className="filter_table" celled>
-            <Table.Header>
-              {data.invoices && (
-                <Table.Row>
-                  <Table.HeaderCell>Company</Table.HeaderCell>
-                  <Table.HeaderCell>Invoice ID</Table.HeaderCell>
-                  <Table.HeaderCell>Invoice Total</Table.HeaderCell>
-                  <Table.HeaderCell>Date</Table.HeaderCell>
-                  <Table.HeaderCell>Time</Table.HeaderCell>
-                  <Table.HeaderCell />
-                </Table.Row>
-              )}
-              {data.products && (
-                <Table.Row>
-                  <Table.HeaderCell>Company</Table.HeaderCell>
-                  <Table.HeaderCell>Product ID</Table.HeaderCell>
-                  <Table.HeaderCell>Name</Table.HeaderCell>
-                  <Table.HeaderCell>Sold Quantity</Table.HeaderCell>
-                  <Table.HeaderCell>Total</Table.HeaderCell>
-                </Table.Row>
-              )}
-              {data.selected_products && (
-                <Table.Row>
-                  <Table.HeaderCell>Company</Table.HeaderCell>
-                  <Table.HeaderCell>Name</Table.HeaderCell>
-                  <Table.HeaderCell>Date</Table.HeaderCell>
-                  <Table.HeaderCell>Time</Table.HeaderCell>
-                  <Table.HeaderCell>Quantity</Table.HeaderCell>
-                  <Table.HeaderCell>Total</Table.HeaderCell>
-                  <Table.HeaderCell textAlign="center">
-                    Invoice
-                  </Table.HeaderCell>
-                </Table.Row>
-              )}
-            </Table.Header>
-            {!isLoading?
-            <Table.Body>
-              {data.invoices && data.invoices.length === 0 ? (
-                <Table.Row error>
-                  <Table.Cell colSpan="6">
-                    <h3>No Recoard Found</h3>
-                  </Table.Cell>
-                </Table.Row>
-              ) : (
-                data.invoices &&
-                data.invoices.map(i => (
-                  <Table.Row key={i.id}>
-                    <Table.Cell>Devsinc</Table.Cell>
-                    <Table.Cell>{i.id}</Table.Cell>
-                    <Table.Cell>{i.total}</Table.Cell>
-                    <Table.Cell>
-                      {new Intl.DateTimeFormat("en-PK", dateOptions).format(
-                        new Date(i.created_at)
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {new Intl.DateTimeFormat("en-PK", timeOptions).format(
-                        new Date(i.created_at)
-                      )}
-                    </Table.Cell>
-                    <Table.Cell textAlign="center">
-                      <Button
-                        animated
-                        basic
-                        color="blue"
-                        onClick={() => this.openInvoiceModal(i.id)}
-                      >
-                        <Button.Content hidden>Show</Button.Content>
-                        <Button.Content visible>
-                          <Icon name="file" />
-                        </Button.Content>
-                      </Button>
-                    </Table.Cell>
+              <Table.Header>
+                {data.invoices && (
+                  <Table.Row>
+                    <Table.HeaderCell>Company</Table.HeaderCell>
+                    <Table.HeaderCell>Invoice ID</Table.HeaderCell>
+                    <Table.HeaderCell>Invoice Total</Table.HeaderCell>
+                    <Table.HeaderCell>Date</Table.HeaderCell>
+                    <Table.HeaderCell>Time</Table.HeaderCell>
+                    <Table.HeaderCell />
                   </Table.Row>
-                ))
-              )}
-              {data.products && data.products.length === 0 ? (
-                <Table.Row error>
-                  <Table.Cell colSpan="5">
-                    <h3>No Recoard Found</h3>
-                  </Table.Cell>
-                </Table.Row>
-              ) : (
-                data.products &&
-                data.products.map(p => (
-                  <Table.Row key={p.id}>
-                    <Table.Cell>Devsinc</Table.Cell>
-                    <Table.Cell>{p.id}</Table.Cell>
-                    <Table.Cell>{p.name}</Table.Cell>
-                    <Table.Cell>{p.quantity}</Table.Cell>
-                    <Table.Cell>{p.total_sold_price}</Table.Cell>
+                )}
+                {data.products && (
+                  <Table.Row>
+                    <Table.HeaderCell>Company</Table.HeaderCell>
+                    <Table.HeaderCell>Product ID</Table.HeaderCell>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Sold Quantity</Table.HeaderCell>
+                    <Table.HeaderCell>Total</Table.HeaderCell>
                   </Table.Row>
-                ))
-              )}
-              {data.selected_products && data.selected_products.length === 0 ? (
-                <Table.Row error>
-                  <Table.Cell colSpan="7">
-                    <h3>No Recoard Found</h3>
-                  </Table.Cell>
-                </Table.Row>
-              ) : (
-                data.selected_products &&
-                data.selected_products.map(p => (
-                  <Table.Row key={p.id}>
-                    <Table.Cell>Devsinc</Table.Cell>
-                    <Table.Cell>{p.name}</Table.Cell>
-                    <Table.Cell>
-                      {new Intl.DateTimeFormat("en-PK", dateOptions).format(
-                        new Date(p.created_at)
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {new Intl.DateTimeFormat("en-PK", timeOptions).format(
-                        new Date(p.created_at)
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>{p.quantity}</Table.Cell>
-                    <Table.Cell>{p.quantity * p.unit_price}</Table.Cell>
-                    <Table.Cell textAlign="center">
-                      <Button
-                        animated
-                        basic
-                        color="blue"
-                        onClick={() => this.openInvoiceModal(p.invoice_id)}
-                      >
-                        <Button.Content hidden>Show</Button.Content>
-                        <Button.Content visible>{p.invoice_id}</Button.Content>
-                      </Button>
-                    </Table.Cell>
+                )}
+                {data.selected_products && (
+                  <Table.Row>
+                    <Table.HeaderCell>Company</Table.HeaderCell>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Date</Table.HeaderCell>
+                    <Table.HeaderCell>Time</Table.HeaderCell>
+                    <Table.HeaderCell>Quantity</Table.HeaderCell>
+                    <Table.HeaderCell>Total</Table.HeaderCell>
+                    <Table.HeaderCell textAlign="center">
+                      Invoice
+                    </Table.HeaderCell>
                   </Table.Row>
-                ))
+                )}
+              </Table.Header>
+              {!isLoading ? (
+                <Table.Body>
+                  {data.invoices && data.invoices.length === 0 ? (
+                    <Table.Row error>
+                      <Table.Cell colSpan="6">
+                        <h3>No Record Found</h3>
+                      </Table.Cell>
+                    </Table.Row>
+                  ) : (
+                    data.invoices &&
+                    data.invoices.map(i => (
+                      <Table.Row key={i.id}>
+                        <Table.Cell>Devsinc</Table.Cell>
+                        <Table.Cell>{i.id}</Table.Cell>
+                        <Table.Cell>{i.total}</Table.Cell>
+                        <Table.Cell>
+                          {new Intl.DateTimeFormat("en-PK", dateOptions).format(
+                            new Date(i.created_at)
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {new Intl.DateTimeFormat("en-PK", timeOptions).format(
+                            new Date(i.created_at)
+                          )}
+                        </Table.Cell>
+                        <Table.Cell textAlign="center">
+                          <Button
+                            animated
+                            basic
+                            color="blue"
+                            onClick={() => this.openInvoiceModal(i.id)}
+                          >
+                            <Button.Content hidden>Show</Button.Content>
+                            <Button.Content visible>
+                              <Icon name="file" />
+                            </Button.Content>
+                          </Button>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))
+                  )}
+                  {data.products && data.products.length === 0 ? (
+                    <Table.Row error>
+                      <Table.Cell colSpan="5">
+                        <h3>No Record Found</h3>
+                      </Table.Cell>
+                    </Table.Row>
+                  ) : (
+                    data.products &&
+                    data.products.map(p => (
+                      <Table.Row key={p.id}>
+                        <Table.Cell>Devsinc</Table.Cell>
+                        <Table.Cell>{p.id}</Table.Cell>
+                        <Table.Cell>{p.name}</Table.Cell>
+                        <Table.Cell>{p.quantity}</Table.Cell>
+                        <Table.Cell>{p.total_sold_price}</Table.Cell>
+                      </Table.Row>
+                    ))
+                  )}
+                  {data.selected_products &&
+                  data.selected_products.length === 0 ? (
+                    <Table.Row error>
+                      <Table.Cell colSpan="7">
+                        <h3>No Record Found</h3>
+                      </Table.Cell>
+                    </Table.Row>
+                  ) : (
+                    data.selected_products &&
+                    data.selected_products.map(p => (
+                      <Table.Row key={p.id}>
+                        <Table.Cell>Devsinc</Table.Cell>
+                        <Table.Cell>{p.name}</Table.Cell>
+                        <Table.Cell>
+                          {new Intl.DateTimeFormat("en-PK", dateOptions).format(
+                            new Date(p.created_at)
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {new Intl.DateTimeFormat("en-PK", timeOptions).format(
+                            new Date(p.created_at)
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>{p.quantity}</Table.Cell>
+                        <Table.Cell>{p.quantity * p.unit_price}</Table.Cell>
+                        <Table.Cell textAlign="center">
+                          <Button
+                            animated
+                            basic
+                            color="blue"
+                            onClick={() => this.openInvoiceModal(p.invoice_id)}
+                          >
+                            <Button.Content hidden>Show</Button.Content>
+                            <Button.Content visible>
+                              {p.invoice_id}
+                            </Button.Content>
+                          </Button>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))
+                  )}
+                </Table.Body>
+              ) : (
+                <Loader />
               )}
-            </Table.Body>:<Loader/>}
             </Table>
-          </div>        
+          </div>
         )}
         {data && (
           <Container>
             <Pagination
               boundaryRange={0}
               activePage={current_page}
-              disabled = {total_pages<2?true:false}
+              disabled={total_pages < 2 ? true : false}
               siblingRange={1}
               onPageChange={this.handlePaginationChange}
               totalPages={total_pages}
@@ -502,7 +535,14 @@ class Reports extends Component {
               prevItem={{ content: <Icon name="angle left" />, icon: true }}
               nextItem={{ content: <Icon name="angle right" />, icon: true }}
             />
-            <Button  floated='right' icon="download" content='Download Report' color="blue" onClick={() => this.fetchDataToPrint()} style={{marginBottom: "10px"}} />
+            <Button
+              floated="right"
+              icon="download"
+              content="Download Report"
+              color="blue"
+              onClick={() => this.fetchDataToPrint()}
+              style={{ marginBottom: "10px" }}
+            />
           </Container>
         )}
         {data.invoices && (

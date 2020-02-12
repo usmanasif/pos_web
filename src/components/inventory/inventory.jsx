@@ -17,8 +17,8 @@ import { apiUrl } from "../../utils/api-config";
 import AddCategory from "../category/addCategory";
 import Paginate from "./pagination";
 import CategorySideBar from "../category/categorySideBar";
-import Barcode from 'react-barcode';
-import Loader from '../Loader/loader'
+import Barcode from "react-barcode";
+import Loader from "../Loader/loader";
 
 const initialPagination = {
   activePage: 1,
@@ -32,11 +32,12 @@ export default class Inventory extends Component {
     open: false,
     column: null,
     categoryID: null,
-    categoryName:"",
+    categoryName: "",
     direction: null,
+    sizes: [],
     item: "",
     data: [],
-    isLoading:true,
+    isLoading: true,
     apiResponse: [],
     newCategories: []
   };
@@ -77,21 +78,34 @@ export default class Inventory extends Component {
       .catch(function(error) {});
   };
 
+  fetchSizes = () => {
+    http
+      .get(apiUrl + "/api/v1/sizes")
+      .then(response => {
+        this.setState({
+          sizes: response.data
+        });
+      })
+      .catch(error => console.log(error));
+  };
+
   searchHandler = e => {
-    this.setState({ item: e.target.value },() => {
-      const {per_page,categoryID, item }=this.state;      
+    this.setState({ item: e.target.value }, () => {
+      const { per_page, categoryID, item } = this.state;
       http
-          .get(`${apiUrl}/api/v1/items`, { params: { page:1, per_page, category_id:categoryID,  item} })
-          .then(res => {
-            this.setState({
-              data: res.data[1],
-              totalPages: res.data[0].total
-            });          
-          })
-          .catch(error => console.log("Error : ", error));
+        .get(`${apiUrl}/api/v1/items`, {
+          params: { page: 1, per_page, category_id: categoryID, item }
+        })
+        .then(res => {
+          this.setState({
+            data: res.data[1],
+            totalPages: res.data[0].total
+          });
+        })
+        .catch(error => console.log("Error : ", error));
     });
   };
-  
+
   handleSort = clickedColumn => () => {
     const { column, data, direction } = this.state;
     if (column !== clickedColumn) {
@@ -123,9 +137,9 @@ export default class Inventory extends Component {
         .get(`${apiUrl}/api/v1/items`, { params: { page, per_page } })
         .then(res => {
           this.setState({
-            data: res.data[1],
-            totalPages: res.data[0].total,
-            isLoading:false
+            data: res.data.items,
+            totalPages: res.data.total,
+            isLoading: false
           });
         })
         .catch(error => console.log("Error : ", error));
@@ -151,8 +165,8 @@ export default class Inventory extends Component {
 
   filterItems = (cat_name, cat_id) => {
     this.setState({
-      categoryName:cat_name,      
-      categoryID: cat_id 
+      categoryName: cat_name,
+      categoryID: cat_id
     });
 
     http
@@ -162,7 +176,7 @@ export default class Inventory extends Component {
         const count = res.data[0].total;
         this.setState({
           data: itemData,
-          totalPages: count,
+          totalPages: count
         });
       })
       .catch(error => console.log("Error: ", error));
@@ -190,8 +204,9 @@ export default class Inventory extends Component {
 
   componentDidMount() {
     this.fetchCategoriesData();
+    this.fetchSizes();
     this.state.categoryID = null;
-    this.state.categoryName="";
+    this.state.categoryName = "";
     this.setState({
       activePage: 1
     });
@@ -211,7 +226,8 @@ export default class Inventory extends Component {
       totalPages,
       per_page,
       newCategories,
-      categoryName
+      categoryName,
+      sizes
     } = this.state;
 
     return (
@@ -238,15 +254,28 @@ export default class Inventory extends Component {
           <Grid.Column width={12}>
             <Form>
               <Input
-                icon='search'
-                placeholder={categoryName?'search items in '+ categoryName:'search items'}
-                onChange={this.searchHandler} 
+                icon="search"
+                placeholder={
+                  categoryName
+                    ? "search items in " + categoryName
+                    : "search items"
+                }
+                onChange={this.searchHandler}
               />
-              {apiResponse.length > 0 && this.props.role === "read_and_write" ? (
-                <AddItem addItem={this.addItem} data={apiResponse} />
+              {apiResponse.length > 0 &&
+              this.props.role === "read_and_write" ? (
+                <AddItem
+                  addItem={this.addItem}
+                  data={apiResponse}
+                  sizes={sizes}
+                />
               ) : null}
-              {this.props.role === "read_and_write" && 
-                <AddCategory addCategory={this.addCategory} data={apiResponse} />}
+              {this.props.role === "read_and_write" && (
+                <AddCategory
+                  addCategory={this.addCategory}
+                  data={apiResponse}
+                />
+              )}
             </Form>
             <Table sortable celled fixed>
               <Table.Header>
@@ -262,6 +291,12 @@ export default class Inventory extends Component {
                     onClick={this.handleSort("quantity")}
                   >
                     Quantity
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    sorted={column === "size" ? direction : null}
+                    onClick={this.handleSort("size")}
+                  >
+                    Size
                   </Table.HeaderCell>
                   <Table.HeaderCell
                     sorted={column === "code" ? direction : null}
@@ -285,43 +320,62 @@ export default class Inventory extends Component {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {!isLoading?data.map(d => (
-                  <Table.Row key={d.id}>
-                    <Table.Cell>{d.name}</Table.Cell>
-                    <Table.Cell>{d.current_stock}</Table.Cell>
-                    <Table.Cell className='barcode'><Barcode value={d.code} /></Table.Cell>
-                    <Table.Cell>{d.category.name}</Table.Cell>
-                    <Table.Cell>{d.sale_price}</Table.Cell>
-                    <Table.Cell>
-                      <Modal
-                        dimmer="inverted"
-                        trigger={
-                          <Button
-                            basic
-                            color="red"
-                            icon="trash alternate outline"
-                          />
-                        }
-                        basic
-                        size="tiny"
-                        header={
-                          <Header
-                            icon="trash alternate outline"
-                            content="Are you Sure"
-                          />
-                        }
-                        actions={[{ key: "ok", content: "Ok", positive: true, onClick:() => this.confirmDelete(d) }]}
-                        onClose={this.close}
-                      />
-                      <AddItem
-                        itemData={d}
-                        editItem={this.editItem}
-                        data={apiResponse}
-                      />
-                    </Table.Cell>
-                  </Table.Row>
-                )):<Loader />
-                }
+                {!isLoading ? (
+                  data.map(item =>
+                    item.item_sizes_attributes.map(item_size => {
+                      return (
+                        <Table.Row key={item_size.code}>
+                          <Table.Cell>{item.name}</Table.Cell>
+                          <Table.Cell>{item_size.quantity}</Table.Cell>
+                          <Table.Cell>
+                            {item_size.size_attributes.size_type}
+                          </Table.Cell>
+                          <Table.Cell className="barcode">
+                            <Barcode value={item_size.code} />
+                          </Table.Cell>
+                          <Table.Cell>{item.category}</Table.Cell>
+                          <Table.Cell>{item_size.price}</Table.Cell>
+                          <Table.Cell>
+                            <Modal
+                              dimmer="inverted"
+                              trigger={
+                                <Button
+                                  basic
+                                  color="red"
+                                  icon="trash alternate outline"
+                                />
+                              }
+                              basic
+                              size="tiny"
+                              header={
+                                <Header
+                                  icon="trash alternate outline"
+                                  content="Are you Sure"
+                                />
+                              }
+                              actions={[
+                                {
+                                  key: "ok",
+                                  content: "Ok",
+                                  positive: true,
+                                  onClick: () => this.confirmDelete(item)
+                                }
+                              ]}
+                              onClose={this.close}
+                            />
+                            <AddItem
+                              itemData={item}
+                              editItem={this.editItem}
+                              data={apiResponse}
+                            />
+                          </Table.Cell>
+                        </Table.Row>
+                      );
+                    })
+                  )
+                ) : (
+                  <Loader />
+                )}
               </Table.Body>
             </Table>
             {totalPages > 0 ? (
@@ -329,7 +383,9 @@ export default class Inventory extends Component {
                 handlePagination={this.handlePagination}
                 pageSet={{ activePage, totalPages, per_page, data }}
               />
-            ) : <h1 className="items-record">No Record Found</h1>}
+            ) : (
+              <h1 className="items-record">No Record Found</h1>
+            )}
           </Grid.Column>
         </Grid>
       </div>

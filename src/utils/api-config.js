@@ -3,6 +3,8 @@ var arr = hostname.split(".");
 const subDomain = arr[0];
 var url = "";
 if (arr[1] === "herokuapp") {
+  // topdomain = "backendherokuapp.com"
+  // url = hostname+topdomain
   url = "https://devsinc-pos-backend.herokuapp.com";
 } else if (
   (arr.length === 3 && arr[1] + "." + arr[2] === "lvh.me") ||
